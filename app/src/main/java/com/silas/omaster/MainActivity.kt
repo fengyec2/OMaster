@@ -220,7 +220,9 @@ fun MainApp(navController: NavHostController) {
                     },
                     onScrollStateChanged = { isScrollingUp ->
                         isHomeScrollingUp = isScrollingUp
-                    }
+                    },
+                    currentVersionCode = 10000, // 1.0.0
+                    currentVersionName = "1.0.0"
                 )
             }
         }

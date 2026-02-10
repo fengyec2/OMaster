@@ -43,22 +43,6 @@
 # 保留 Serializable
 -keep class * implements java.io.Serializable { *; }
 
-# 优化移除日志
--assumenosideffects class android.util.Log {
-    public static boolean isLoggable(java.lang.String, int);
-    public static int v(java.lang.String, java.lang.String);
-    public static int v(java.lang.String, java.lang.String, java.lang.Throwable);
-    public static int d(java.lang.String, java.lang.String);
-    public static int d(java.lang.String, java.lang.String, java.lang.Throwable);
-    public static int i(java.lang.String, java.lang.String);
-    public static int i(java.lang.String, java.lang.String, java.lang.Throwable);
-    public static int w(java.lang.String, java.lang.String);
-    public static int w(java.lang.String, java.lang.Throwable);
-    public static int w(java.lang.String, java.lang.String, java.lang.Throwable);
-    public static int e(java.lang.String, java.lang.String);
-    public static int e(java.lang.String, java.lang.String, java.lang.Throwable);
-}
-
 # 保留友盟 SDK
 -keep class com.umeng.** { *; }
 -dontwarn com.umeng.**
