@@ -10,14 +10,15 @@
 
 <p align="center">
   <a href="https://github.com/iCurrer/OMaster/releases">
-    <img src="https://img.shields.io/github/v/release/iCurrer/OMaster?include_prereleases&color=FF6B35&label=最新版本" alt="Release"/>
+    <img src="https://img.shields.io/badge/版本-v1.0.0-FF6B35.svg?style=flat-square" alt="Version"/>
   </a>
   <a href="https://github.com/iCurrer/OMaster/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/许可证-MIT-blue.svg" alt="License"/>
+    <img src="https://img.shields.io/badge/许可证-MIT-blue.svg?style=flat-square" alt="License"/>
   </a>
-  <img src="https://img.shields.io/badge/平台-Android%2014+-brightgreen.svg" alt="Platform"/>
-  <img src="https://img.shields.io/badge/技术-Jetpack%20Compose-4285F4.svg" alt="Tech"/>
+  <img src="https://img.shields.io/badge/平台-Android%2014+-brightgreen.svg?style=flat-square" alt="Platform"/>
+  <img src="https://img.shields.io/badge/技术-Jetpack%20Compose-4285F4.svg?style=flat-square" alt="Tech"/>
 </p>
+
 
 ---
 
