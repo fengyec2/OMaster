@@ -185,10 +185,7 @@ fun DetailScreen(
         FloatingWindowGuideDialog(
             onDismiss = {
                 showFloatingWindowGuide = false
-                // 用户选择"以后再说"，仍然尝试打开权限设置
-                preset?.let { p ->
-                    handleFloatingWindowClick(context, p)
-                }
+                // 用户选择"以后再说"，只是关闭对话框，不执行任何操作
             },
             onGoToSettings = {
                 showFloatingWindowGuide = false
