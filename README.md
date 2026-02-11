@@ -10,10 +10,10 @@
 
 <p align="center">
   <a href="https://github.com/iCurrer/OMaster/releases">
-    <img src="https://img.shields.io/badge/版本-v1.0.1-FF6B35.svg?style=flat-square" alt="Version"/>
+    <img src="https://img.shields.io/badge/版本-v1.0.3-FF6B35.svg?style=flat-square" alt="Version"/>
   </a>
-  <a href="https://github.com/iCurrer/OMaster/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/许可证-MIT-blue.svg?style=flat-square" alt="License"/>
+  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
+    <img src="https://img.shields.io/badge/协议-CC%20BY--NC--SA%204.0-orange.svg?style=flat-square" alt="License"/>
   </a>
   <img src="https://img.shields.io/badge/平台-Android%2014+-brightgreen.svg?style=flat-square" alt="Platform"/>
   <img src="https://img.shields.io/badge/技术-Jetpack%20Compose-4285F4.svg?style=flat-square" alt="Tech"/>
@@ -108,6 +108,19 @@ OMaster 支持的大师模式参数包括：
 
 ## 📝 更新日志
 
+### v1.0.2 (2025-02-11)
+
+#### 🔥 重要更新
+- **移除友盟统计 SDK**，解决安装时敏感权限提示问题
+- **集成 Firebase Analytics**，无需敏感权限即可统计使用数据
+- 优化悬浮窗权限申请流程
+
+#### 🐛 Bug 修复
+- 修复 OPPO 安装管理器提示敏感权限导致权限被锁定的问题
+- 修复 BuildConfig 编译错误
+
+---
+
 ### v1.0.1 (2025-02-11)
 
 #### ✨ 新增预设
@@ -181,7 +194,22 @@ OMaster 支持的大师模式参数包括：
 
 ## 📄 开源协议
 
-本项目采用 [MIT 许可证](LICENSE) 开源
+本项目采用 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)（知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议）开源
+
+### 协议要点
+
+- **署名** (BY) - 您必须给出适当的署名，提供指向本许可协议的链接，并标明是否作出了修改
+- **非商业性使用** (NC) - 您不得将本作品用于商业目的
+- **相同方式共享** (SA) - 如果您再混合、转换或基于本作品进行创作，您必须基于与原先相同的许可协议分发您的贡献作品
+
+### 详细说明
+
+1. **免费使用**：任何人都可以免费使用、修改本软件的源代码
+2. **禁止商用**：禁止将本软件或基于本软件开发的衍生作品用于商业销售或盈利目的
+3. **保留版权**：使用或修改时必须保留原始版权声明和作者信息
+4. **协议继承**：修改后的作品必须使用 CC BY-NC-SA 4.0 协议开源
+
+完整的协议内容请参阅 [LICENSE](LICENSE) 文件或访问 [Creative Commons 官网](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.zh-hans)
 
 ---
 

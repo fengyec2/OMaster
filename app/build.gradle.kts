@@ -20,8 +20,8 @@ android {
         // versionName: 对外显示版本号，格式 主.次.修订
         // 正式版: 1.0, 1.0.1, 1.1.0, 2.0.0
         // 测试版: 1.0.0-beta1, 1.0.0-beta2
-        versionCode = 2
-        versionName = "1.0.1"
+        versionCode = 4
+        versionName = "1.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -44,7 +44,7 @@ android {
 
     buildFeatures {
         compose = true
-        buildConfig = false
+        buildConfig = true
     }
 
     packaging {
@@ -82,9 +82,9 @@ dependencies {
 
     // Room 数据库已移除，使用 SharedPreferences 替代
 
-    // 友盟统计SDK
-    implementation("com.umeng.umsdk:common:9.4.7")
-    implementation("com.umeng.umsdk:asms:1.4.0")
+    // 友盟统计 SDK
+    implementation("com.umeng.umsdk:common:9.4.7") // 必选
+    implementation("com.umeng.umsdk:asms:1.4.0") // 必选
 
     // 测试依赖
     testImplementation(libs.junit)

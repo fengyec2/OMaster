@@ -9,7 +9,6 @@ class OMasterApplication : Application() {
     companion object {
         private const val PREFS_NAME = "omaster_prefs"
         private const val KEY_USER_AGREED = "user_agreed_to_policy"
-        private const val KEY_UMENG_INITIALIZED = "umeng_initialized"
 
         private lateinit var instance: OMasterApplication
         private lateinit var prefs: SharedPreferences
@@ -23,21 +22,32 @@ class OMasterApplication : Application() {
         instance = this
         prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
+        // 每次冷启动都调用预初始化（不采集数据）
         preInitUMeng()
 
-        if (hasUserAgreed() && !isUMengInitialized()) {
+        // 如果用户已同意隐私政策，则调用正式初始化
+        if (hasUserAgreed()) {
             initUMeng()
         }
     }
 
+    /**
+     * 预初始化友盟
+     * 不会采集设备信息，也不会上报数据
+     * 必须在 Application.onCreate 中调用
+     */
     private fun preInitUMeng() {
-        UMConfigure.setLogEnabled(true)
+        UMConfigure.setLogEnabled(false)
         UMConfigure.preInit(this, "698938eb9a7f3764885bbdaa", "default")
     }
 
+    /**
+     * 正式初始化友盟
+     * 用户同意隐私政策后才能调用
+     * 此时才会采集设备信息并上报数据
+     */
     fun initUMeng() {
         UMConfigure.init(this, "698938eb9a7f3764885bbdaa", "default", UMConfigure.DEVICE_TYPE_PHONE, null)
-        setUMengInitialized(true)
     }
 
     fun hasUserAgreed(): Boolean {
@@ -47,14 +57,4 @@ class OMasterApplication : Application() {
     fun setUserAgreed(agreed: Boolean) {
         prefs.edit().putBoolean(KEY_USER_AGREED, agreed).apply()
     }
-
-    private fun isUMengInitialized(): Boolean {
-        return prefs.getBoolean(KEY_UMENG_INITIALIZED, false)
-    }
-
-    private fun setUMengInitialized(initialized: Boolean) {
-        prefs.edit().putBoolean(KEY_UMENG_INITIALIZED, initialized).apply()
-    }
-
-
 }

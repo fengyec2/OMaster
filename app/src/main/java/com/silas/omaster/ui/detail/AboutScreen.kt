@@ -69,8 +69,8 @@ import kotlinx.coroutines.launch
 fun AboutScreen(
     onBack: () -> Unit,
     onScrollStateChanged: (Boolean) -> Unit,
-    currentVersionCode: Int = 10000,
-    currentVersionName: String = "1.0.0"
+    currentVersionCode: Int = 10003, // 1.0.3
+    currentVersionName: String = "1.0.3"
 ) {
     val scrollState = rememberScrollState()
     var previousScrollValue by remember { mutableIntStateOf(0) }
