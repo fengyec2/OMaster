@@ -230,7 +230,7 @@ OMaster 支持的大师模式参数包括：
 如有问题或建议，欢迎通过以下方式联系：
 
 - 提交 [GitHub Issue](https://github.com/iCurrer/OMaster/issues)
-- 发送邮件至：（待添加）
+- 发送邮件至：iboy66lee@qq.com
 
 ---
 
