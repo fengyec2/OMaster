@@ -271,6 +271,66 @@ fun AboutScreen(
                         )
                     }
 
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "                    ",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White.copy(alpha = 0.8f)
+                        )
+                        Text(
+                            text = "@蘭州白鴿",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = HasselbladOrange,
+                            textDecoration = TextDecoration.Underline,
+                            modifier = Modifier.clickable {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://xhslink.com/m/4h5lx4Lg37n"))
+                                context.startActivity(intent)
+                            }
+                        )
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "                    ",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White.copy(alpha = 0.8f)
+                        )
+                        Text(
+                            text = "@派瑞特凯",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = HasselbladOrange,
+                            textDecoration = TextDecoration.Underline,
+                            modifier = Modifier.clickable {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://xhslink.com/m/AkrgUI0kgg1"))
+                                context.startActivity(intent)
+                            }
+                        )
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "                    ",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White.copy(alpha = 0.8f)
+                        )
+                        Text(
+                            text = "@ONESTEP™",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = HasselbladOrange,
+                            textDecoration = TextDecoration.Underline,
+                            modifier = Modifier.clickable {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://xhslink.com/m/4LZ8zRdNCSv"))
+                                context.startActivity(intent)
+                            }
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(

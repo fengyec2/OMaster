@@ -316,32 +316,6 @@ class FloatingWindowService : Service() {
             // 渐变标题栏
             mainContainer.addView(createGradientHeader(name, onCollapse))
 
-            // Pro 模式参数区域
-            val hasProParams = exposure.isNotEmpty() || colorTemperature != -1 ||
-                              colorHue != -999 || whiteBalance.isNotEmpty() || colorTone.isNotEmpty()
-
-            if (hasProParams) {
-                mainContainer.addView(createSectionTitle("专业参数"))
-
-                if (exposure.isNotEmpty()) {
-                    mainContainer.addView(createParamItem("☀", "曝光", exposure))
-                }
-                if (colorTemperature != -1) {
-                    mainContainer.addView(createParamItem("🌡", "色温", "${colorTemperature}K"))
-                }
-                if (colorHue != -999) {
-                    mainContainer.addView(createParamItem("🎨", "色调", colorHue.formatSigned()))
-                }
-                if (whiteBalance.isNotEmpty()) {
-                    mainContainer.addView(createParamItem("⚖", "白平衡", whiteBalance))
-                }
-                if (colorTone.isNotEmpty()) {
-                    mainContainer.addView(createParamItem("✦", "色调风格", colorTone))
-                }
-
-                mainContainer.addView(createSpacing(dpToPx(12)))
-            }
-
             // 基础参数区域
             mainContainer.addView(createSectionTitle("基础参数"))
 

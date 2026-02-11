@@ -19,6 +19,8 @@ import android.os.Parcelable
  * @param exposureCompensation 曝光补偿，如 "-1.0", "+0.7" 或数字，仅在 pro 模式下有效
  * @param colorTemperature 色温数值，范围 2000-8000，仅在 pro 模式下有效
  * @param colorHue 色调数值，范围 -150 到 150，仅在 pro 模式下有效
+ * @param iso ISO 感光度，如 "100", "200-400"，仅在 pro 模式下有效
+ * @param shutterSpeed 快门速度，如 "1/125", "1/60"，仅在 pro 模式下有效
  * @param softLight 柔光强度，数字 0-100 或文字如 "梦幻"
  * @param tone 影调，范围 -100 到 +100，控制整体明暗对比
  * @param saturation 饱和度，范围 -100 到 +100
@@ -40,6 +42,8 @@ data class MasterPreset(
     val exposureCompensation: String?,
     val colorTemperature: Int? = null,
     val colorHue: Int? = null,
+    val iso: String? = null,
+    val shutterSpeed: String? = null,
     val softLight: String,
     val tone: Int,
     val saturation: Int,
@@ -63,6 +67,8 @@ data class MasterPreset(
         exposureCompensation = parcel.readString(),
         colorTemperature = parcel.readValue(Int::class.java.classLoader) as? Int,
         colorHue = parcel.readValue(Int::class.java.classLoader) as? Int,
+        iso = parcel.readString(),
+        shutterSpeed = parcel.readString(),
         softLight = parcel.readString() ?: "无",
         tone = parcel.readInt(),
         saturation = parcel.readInt(),
@@ -87,6 +93,8 @@ data class MasterPreset(
         parcel.writeString(exposureCompensation)
         parcel.writeValue(colorTemperature)
         parcel.writeValue(colorHue)
+        parcel.writeString(iso)
+        parcel.writeString(shutterSpeed)
         parcel.writeString(softLight)
         parcel.writeInt(tone)
         parcel.writeInt(saturation)

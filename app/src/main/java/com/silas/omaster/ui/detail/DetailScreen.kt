@@ -174,13 +174,34 @@ fun DetailScreen(
 private fun ProModeParameters(preset: MasterPreset?) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(
-            text = "专业参数",
+            text = "专业参数（具体视环境调整）",
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Medium,
             color = Color.White.copy(alpha = 0.8f)
         )
 
-        // 第一行：曝光补偿、色温
+        // 第一行：ISO、快门速度
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            preset?.iso?.let {
+                ParameterCard(
+                    label = "ISO",
+                    value = it,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            preset?.shutterSpeed?.let {
+                ParameterCard(
+                    label = "快门",
+                    value = it,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+
+        // 第二行：曝光补偿、色温（优先显示 colorTemperature，没有则显示 whiteBalance）
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -192,43 +213,47 @@ private fun ProModeParameters(preset: MasterPreset?) {
                     modifier = Modifier.weight(1f)
                 )
             }
-            preset?.colorTemperature?.let {
-                ParameterCard(
-                    label = "色温",
-                    value = "${it}K",
-                    modifier = Modifier.weight(1f)
-                )
+            // 优先显示数值型色温，如果没有则显示字符串型白平衡
+            when {
+                preset?.colorTemperature != null -> {
+                    ParameterCard(
+                        label = "色温",
+                        value = "${preset.colorTemperature}K",
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                preset?.whiteBalance != null -> {
+                    ParameterCard(
+                        label = "白平衡",
+                        value = preset.whiteBalance,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
         }
 
-        // 第二行：色调数值、色调（字符串）
+        // 第三行：色调（优先显示 colorHue，没有则显示 colorTone）
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            preset?.colorHue?.let {
-                ParameterCard(
-                    label = "色调",
-                    value = it.formatSigned(),
-                    modifier = Modifier.weight(1f)
-                )
+            // 优先显示数值型色调，如果没有则显示字符串型色调风格
+            when {
+                preset?.colorHue != null -> {
+                    ParameterCard(
+                        label = "色调",
+                        value = preset.colorHue.formatSigned(),
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                preset?.colorTone != null -> {
+                    ParameterCard(
+                        label = "色调风格",
+                        value = preset.colorTone,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
-            preset?.colorTone?.let {
-                ParameterCard(
-                    label = "色调风格",
-                    value = it,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-        }
-
-        // 第三行：白平衡
-        preset?.whiteBalance?.let {
-            ParameterCard(
-                label = "白平衡",
-                value = it,
-                modifier = Modifier.fillMaxWidth()
-            )
         }
     }
 }
