@@ -332,6 +332,26 @@ fun AboutScreen(
                         )
                     }
 
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "                    ",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White.copy(alpha = 0.8f)
+                        )
+                        Text(
+                            text = "@盒子叔",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = HasselbladOrange,
+                            textDecoration = TextDecoration.Underline,
+                            modifier = Modifier.clickable {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://xhslink.com/m/4mje9mimNXJ"))
+                                context.startActivity(intent)
+                            }
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(

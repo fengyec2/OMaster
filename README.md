@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://github.com/iCurrer/OMaster/releases">
-    <img src="https://img.shields.io/badge/版本-v1.0.3-FF6B35.svg?style=flat-square" alt="Version"/>
+    <img src="https://img.shields.io/badge/版本-v1.1.0-FF6B35.svg?style=flat-square" alt="Version"/>
   </a>
   <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
     <img src="https://img.shields.io/badge/协议-CC%20BY--NC--SA%204.0-orange.svg?style=flat-square" alt="License"/>
@@ -108,7 +108,24 @@ OMaster 支持的大师模式参数包括：
 
 ## 📝 更新日志
 
-### v1.0.2 (2025-02-11)
+### v1.1.0 (2026-02-12)
+#### ✨ 新增功能
+- 悬浮窗新增切换预设功能，支持左右切换查看不同预设参数
+- 悬浮窗切换时无闪动，保持窗口位置不变
+- 自定义预设删除时增加二次确认对话框，防止误删
+- 优化版本号管理，统一从 BuildConfig 读取，避免多处修改
+
+#### 🎨 UI 优化
+- 悬浮窗引导对话框优化，增加 10 秒倒计时功能
+- 优化对话框样式，使用品牌色渐变和圆角设计
+
+#### 🐛 Bug 修复
+- 修复悬浮窗引导对话框点击"以后再说"仍跳转权限设置的问题
+- 修复版本号不一致导致更新检查错误的问题
+
+---
+
+### v1.0.2 (2026-02-11)
 
 #### 🔥 重要更新
 - **移除友盟统计 SDK**，解决安装时敏感权限提示问题
@@ -121,7 +138,7 @@ OMaster 支持的大师模式参数包括：
 
 ---
 
-### v1.0.1 (2025-02-11)
+### v1.0.1 (2026-02-11)
 
 #### ✨ 新增预设
 - **人文** - 适合人文街拍，作者：@蘭州白鴿
@@ -137,6 +154,30 @@ OMaster 支持的大师模式参数包括：
 #### 🐛 Bug 修复
 - 修复专业参数重复显示问题
 - 优化预设详情页参数展示逻辑
+
+---
+
+## ❓ 常见问题
+
+### 悬浮窗无法开启怎么办？
+
+部分 ColorOS / OxygenOS 系统（OPPO / 一加 / Realme）可能会将本应用识别为"未知来源应用"，从而限制悬浮窗权限授权。
+
+**解决方法：解除未知来源应用的授权限制**
+
+#### 方式一：系统设置
+1. 打开**设置** → **应用** → **应用管理**
+2. 找到 **OMaster**，点击**权限管理**
+3. 点击右上角 **⋮** 图标，选择**"解除所有授权限制"**
+4. 返回应用重新开启悬浮窗权限
+
+#### 方式二：桌面快捷操作
+1. 长按桌面上的 **OMaster** 应用图标
+2. 点击**"应用详情"**
+3. 选择**"权限管理"**
+4. 点击右上角 **⋮** 图标，选择**"解除所有授权限制"**
+
+> ⚠️ 注意：解除限制后，请确保只授予"悬浮窗"权限，其他敏感权限可根据需要选择是否授予。
 
 ---
 
@@ -220,6 +261,7 @@ OMaster 支持的大师模式参数包括：
   - [@蘭州白鴿](https://xhslink.com/m/4h5lx4Lg37n)
   - [@派瑞特凯](https://xhslink.com/m/AkrgUI0kgg1)
   - [@ONESTEP™](https://xhslink.com/m/4LZ8zRdNCSv)
+  - [@盒子叔](https://xhslink.com/m/4mje9mimNXJ)
 - 设计灵感：哈苏相机品牌色系
 - 开发框架：Jetpack Compose
 
