@@ -1,11 +1,11 @@
-{
+﻿{
   "presets": [
     {
       "name": "富士胶片",
-      "coverPath": "images/fsjp_01.jpg",
+      "coverPath": "images/fsjp_01.webp",
       "galleryImages": [
-        "images/fsjp_02.jpg",
-        "images/fsjp_03.jpg"
+        "images/fsjp_02.webp",
+        "images/fsjp_03.webp"
       ],
       "author": "@OPPO影像",
       "mode": "auto",
@@ -27,10 +27,10 @@
     },
     {
       "name": "胶片感",
-      "coverPath": "images/jpg_01.jpg",
+      "coverPath": "images/jpg_01.webp",
       "galleryImages": [
-        "images/jpg_02.jpg",
-        "images/jpg_03.jpg"
+        "images/jpg_02.webp",
+        "images/jpg_03.webp"
       ],
       "author": "@OPPO影像",
       "mode": "auto",
@@ -52,10 +52,10 @@
     },
     {
       "name": "童话",
-      "coverPath": "images/th_01.jpg",
+      "coverPath": "images/th_01.webp",
       "galleryImages": [
-        "images/th_02.jpg",
-        "images/th_03.jpg"
+        "images/th_02.webp",
+        "images/th_03.webp"
       ],
       "author": "@OPPO影像",
       "mode": "auto",
@@ -77,10 +77,10 @@
     },
     {
       "name": "高对比黑白",
-      "coverPath": "images/gdbhb_01.jpg",
+      "coverPath": "images/gdbhb_01.webp",
       "galleryImages": [
-        "images/gdbhb_02.jpg",
-        "images/gdbhb_03.jpg"
+        "images/gdbhb_02.webp",
+        "images/gdbhb_03.webp"
       ],
       "author": "@OPPO影像",
       "mode": "auto",
@@ -102,10 +102,10 @@
     },
     {
       "name": "理光绿",
-      "coverPath": "images/lgl_01.jpg",
+      "coverPath": "images/lgl_01.webp",
       "galleryImages": [
-        "images/lgl_02.jpg",
-        "images/lgl_03.jpg"
+        "images/lgl_02.webp",
+        "images/lgl_03.webp"
       ],
       "author": "@OPPO影像",
       "mode": "auto",
@@ -127,10 +127,10 @@
     },
     {
       "name": "理光蓝",
-      "coverPath": "images/lglan_01.jpg",
+      "coverPath": "images/lglan_01.webp",
       "galleryImages": [
-        "images/lglan_02.jpg",
-        "images/lglan_03.jpg"
+        "images/lglan_02.webp",
+        "images/lglan_03.webp"
       ],
       "author": "@OPPO影像",
       "mode": "auto",
@@ -152,9 +152,9 @@
     },
     {
       "name": "蓝调时刻",
-      "coverPath": "images/ldsk_01.jpg",
+      "coverPath": "images/ldsk_01.webp",
       "galleryImages": [
-        "images/ldsk_02.jpg"
+        "images/ldsk_02.webp"
       ],
       "author": "@OPPO影像",
       "mode": "auto",
@@ -170,17 +170,16 @@
       "tone": -5,
       "saturation": 15,
       "warmCool": 47,
-      
       "cyanMagenta": 28,
       "sharpness": 12,
       "vignette": "开"
     },
     {
       "name": "梦幻黑柔",
-      "coverPath": "images/mhhr_01.jpg",
+      "coverPath": "images/mhhr_01.webp",
       "galleryImages": [
-        "images/mhhr_02.jpg",
-        "images/mhhr_03.jpg"
+        "images/mhhr_02.webp",
+        "images/mhhr_03.webp"
       ],
       "author": "@OPPO影像",
       "mode": "auto",
@@ -202,10 +201,10 @@
     },
     {
       "name": "富士NC",
-      "coverPath": "images/fsnc_01.jpg",
+      "coverPath": "images/fsnc_01.webp",
       "galleryImages": [
-        "images/fsnc_02.jpg",
-        "images/fsnc_03.jpg"
+        "images/fsnc_02.webp",
+        "images/fsnc_03.webp"
       ],
       "author": "@OPPO影像",
       "mode": "auto",
@@ -227,10 +226,10 @@
     },
     {
       "name": "人文",
-      "coverPath": "images/rw_01.jpg",
+      "coverPath": "images/rw_01.webp",
       "galleryImages": [
-        "images/rw_02.jpg",
-        "images/rw_03.jpg"
+        "images/rw_02.webp",
+        "images/rw_03.webp"
       ],
       "author": "@蘭州白鴿",
       "mode": "pro",
@@ -252,10 +251,10 @@
     },
     {
       "name": "清新人文",
-      "coverPath": "images/qxrw_01.jpg",
+      "coverPath": "images/qxrw_01.webp",
       "galleryImages": [
-        "images/qxrw_02.jpg",
-        "images/qxrw_03.jpg"
+        "images/qxrw_02.webp",
+        "images/qxrw_03.webp"
       ],
       "author": "@蘭州白鴿",
       "mode": "pro",
@@ -277,10 +276,10 @@
     },
     {
       "name": "氛围雪夜",
-      "coverPath": "images/fwxy_01.jpg",
+      "coverPath": "images/fwxy_01.webp",
       "galleryImages": [
-        "images/fwxy_02.jpg",
-        "images/fwxy_03.jpg"
+        "images/fwxy_02.webp",
+        "images/fwxy_03.webp"
       ],
       "author": "@派瑞特凯",
       "mode": "auto",
@@ -302,9 +301,9 @@
     },
     {
       "name": "美味流芳",
-      "coverPath": "images/mwlf_01.jpg",
+      "coverPath": "images/mwlf_01.webp",
       "galleryImages": [
-        "images/mwlf_02.jpg"
+        "images/mwlf_02.webp"
       ],
       "author": "@ONESTEP™",
       "mode": "auto",
@@ -326,10 +325,10 @@
     },
     {
       "name": "手机徕卡",
-      "coverPath": "images/sjlk_01.jpg",
+      "coverPath": "images/sjlk_01.webp",
       "galleryImages": [
-        "images/sjlk_02.jpg",
-        "images/sjlk_03.jpg"
+        "images/sjlk_02.webp",
+        "images/sjlk_03.webp"
       ],
       "author": "@盒子叔",
       "mode": "auto",
@@ -351,10 +350,10 @@
     },
     {
       "name": "梦幻富士",
-      "coverPath": "images/mhfs_01.jpg",
+      "coverPath": "images/mhfs_01.webp",
       "galleryImages": [
-        "images/mhfs_02.jpg",
-        "images/mhfs_03.jpg"
+        "images/mhfs_02.webp",
+        "images/mhfs_03.webp"
       ],
       "author": "@盒子叔",
       "mode": "pro",
@@ -373,6 +372,108 @@
       "cyanMagenta": -20,
       "sharpness": 3,
       "vignette": "开"
+    },
+    {
+      "name": "哈苏浓郁",
+      "coverPath": "images/hsny_01.webp",
+      "galleryImages": [
+        "images/hsny_02.webp",
+        "images/hsny_03.webp"
+      ],
+      "author": "Aurora",
+      "mode": "auto",
+      "iso": null,
+      "shutterSpeed": null,
+      "exposureCompensation": null,
+      "colorTemperature": null,
+      "colorHue": null,
+      "whiteBalance": null,
+      "colorTone": null,
+      "filter": "浓郁 100%",
+      "softLight": "梦幻",
+      "tone": -5,
+      "saturation": 5,
+      "warmCool": 10,
+      "cyanMagenta": 0,
+      "sharpness": 0,
+      "vignette": "开",
+      "isNew": true
+    },
+    {
+      "name": "假日清新",
+      "coverPath": "images/jrqx_01.webp",
+      "galleryImages": [
+        "images/jrqx_02.webp",
+        "images/jrqx_03.webp"
+      ],
+      "author": "Aurora",
+      "mode": "auto",
+      "iso": null,
+      "shutterSpeed": null,
+      "exposureCompensation": null,
+      "colorTemperature": null,
+      "colorHue": null,
+      "whiteBalance": null,
+      "colorTone": null,
+      "filter": "清新 100%",
+      "softLight": "无",
+      "tone": 30,
+      "saturation": -10,
+      "warmCool": 15,
+      "cyanMagenta": -5,
+      "sharpness": 0,
+      "vignette": "开",
+      "isNew": true
+    },
+    {
+      "name": "梦幻黑白",
+      "coverPath": "images/mhhb_01.webp",
+      "galleryImages": [
+        "images/mhhb_02.webp"
+      ],
+      "author": "Aurora",
+      "mode": "auto",
+      "iso": null,
+      "shutterSpeed": null,
+      "exposureCompensation": null,
+      "colorTemperature": null,
+      "colorHue": null,
+      "whiteBalance": null,
+      "colorTone": null,
+      "filter": "黑白 25%",
+      "softLight": "梦幻",
+      "tone": 0,
+      "saturation": 0,
+      "warmCool": -80,
+      "cyanMagenta": 0,
+      "sharpness": 10,
+      "vignette": "开",
+      "isNew": true
+    },
+    {
+      "name": "美味梦境",
+      "coverPath": "images/mwmj_01.webp",
+      "galleryImages": [
+        "images/mwmj_02.webp"
+      ],
+      "author": "Aurora",
+      "mode": "auto",
+      "iso": null,
+      "shutterSpeed": null,
+      "exposureCompensation": null,
+      "colorTemperature": null,
+      "colorHue": null,
+      "whiteBalance": null,
+      "colorTone": null,
+      "filter": "美味 50%",
+      "softLight": "梦幻",
+      "tone": -20,
+      "saturation": 10,
+      "warmCool": 10,
+      "cyanMagenta": -9,
+      "sharpness": 0,
+      "vignette": "开",
+      "isNew": true
     }
   ]
 }

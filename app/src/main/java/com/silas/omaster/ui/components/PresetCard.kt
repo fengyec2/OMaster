@@ -1,5 +1,6 @@
 package com.silas.omaster.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,8 +24,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.silas.omaster.model.MasterPreset
 import com.silas.omaster.ui.theme.DarkGray
 import com.silas.omaster.ui.theme.HasselbladOrange
@@ -58,7 +61,7 @@ fun PresetCard(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp),  // 优化：圆角从 12dp 增加到 16dp
         colors = CardDefaults.cardColors(
             containerColor = DarkGray
         ),
@@ -72,7 +75,7 @@ fun PresetCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(imageHeight.dp)
-                    .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))  // 优化：与卡片圆角一致
             ) {
                 // 使用通用 PresetImage 组件加载本地 assets 图片
                 PresetImage(
@@ -118,13 +121,34 @@ fun PresetCard(
                         )
                     }
                 }
+
+                // NEW 标签（左上角，新预设显示）
+                if (preset.isNew) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(8.dp)
+                            .background(
+                                color = HasselbladOrange,
+                                shape = RoundedCornerShape(4.dp)
+                            )
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = "NEW",
+                            fontSize = 10.sp,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
 
             // 预设名称
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 12.dp)
+                    .padding(horizontal = 16.dp, vertical = 12.dp)  // 优化：水平内边距从 12dp 增加到 16dp
             ) {
                 Text(
                     text = preset.name,

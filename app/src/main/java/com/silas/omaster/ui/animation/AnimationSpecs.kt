@@ -91,13 +91,15 @@ object AnimationSpecs {
 
     /**
      * 列表项错开延迟基准值
+     * 优化：从 50ms 减少到 20ms，提升加载流畅度
      */
-    const val StaggerDelayMillis = 50
+    const val StaggerDelayMillis = 20
 
     /**
      * 列表项最大延迟
+     * 优化：从 300ms 减少到 150ms，提升加载流畅度
      */
-    const val MaxStaggerDelayMillis = 300
+    const val MaxStaggerDelayMillis = 150
 
     /**
      * 自动播放间隔

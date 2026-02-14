@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -173,11 +175,26 @@ fun HomeScreen(
                             viewModel.selectTab(index)
                         },
                         text = {
-                            Text(
-                                text = "$title($count)",
-                                color = if (isSelected) HasselbladOrange else Color.White.copy(alpha = 0.6f),
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                            )
+                            // 修复：计数使用小号字体放在右上角，避免Tab宽度不均
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                Text(
+                                    text = title,
+                                    color = if (isSelected) HasselbladOrange else Color.White.copy(alpha = 0.6f),
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                )
+                                // 计数徽章
+                                if (count > 0) {
+                                    Text(
+                                        text = count.toString(),
+                                        fontSize = 10.sp,
+                                        color = if (isSelected) HasselbladOrange.copy(alpha = 0.8f) else Color.White.copy(alpha = 0.4f),
+                                        modifier = Modifier.padding(top = 2.dp)
+                                    )
+                                }
+                            }
                         }
                     )
                 }
@@ -211,7 +228,8 @@ fun HomeScreen(
                                 presetToDelete = it
                                 showDeleteConfirm = true
                             },
-                            onScrollStateChanged = onScrollStateChanged
+                            onScrollStateChanged = onScrollStateChanged,
+                            showLoadingTip = false
                         )
                         2 -> PresetGrid(
                             presets = customPresets,
@@ -222,6 +240,7 @@ fun HomeScreen(
                                 presetToDelete = it
                                 showDeleteConfirm = true
                             },
+                            showLoadingTip = false,
                             onScrollStateChanged = onScrollStateChanged
                         )
                     }
@@ -298,27 +317,28 @@ private fun PresetGrid(
     onNavigateToDetail: (MasterPreset) -> Unit,
     onToggleFavorite: (String) -> Unit,
     onDeletePreset: (String) -> Unit,
-    onScrollStateChanged: (Boolean) -> Unit = {}
+    onScrollStateChanged: (Boolean) -> Unit = {},
+    showLoadingTip: Boolean = true
 ) {
     val listState = rememberLazyStaggeredGridState()
+
+    // 修复：使用 snapshotFlow 安全地检测滚动方向
+    // 避免在 derivedStateOf 中修改外部状态
+    var isScrollingUp by remember { mutableStateOf(false) }
     var previousIndex by remember { mutableIntStateOf(0) }
     var previousScrollOffset by remember { mutableIntStateOf(0) }
 
-    // 检测滚动方向，上滑返回 true，下滑返回 false
-    val isScrollingUp by remember {
-        derivedStateOf {
-            val currentIndex = listState.firstVisibleItemIndex
-            val currentOffset = listState.firstVisibleItemScrollOffset
+    LaunchedEffect(listState) {
+        snapshotFlow {
+            listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset
+        }.collect { (currentIndex, currentOffset) ->
             val isUp = currentIndex < previousIndex ||
                        (currentIndex == previousIndex && currentOffset <= previousScrollOffset)
+            isScrollingUp = isUp
             previousIndex = currentIndex
             previousScrollOffset = currentOffset
-            isUp
+            onScrollStateChanged(isUp)
         }
-    }
-
-    LaunchedEffect(isScrollingUp) {
-        onScrollStateChanged(isScrollingUp)
     }
 
     if (presets.isEmpty()) {
@@ -340,8 +360,8 @@ private fun PresetGrid(
                 top = 8.dp,
                 bottom = 100.dp
             ),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalItemSpacing = 12.dp,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),  // 优化：水平间距从 12dp 增加到 16dp
+            verticalItemSpacing = 16.dp,  // 优化：垂直间距从 12dp 增加到 16dp
             modifier = Modifier.fillMaxSize()
         ) {
             itemsIndexed(
@@ -377,9 +397,11 @@ private fun PresetGrid(
                 }
             }
 
-            // 底部提示
-            item(span = StaggeredGridItemSpan.FullLine) {
-                LoadingMoreTip()
+            // 底部提示（仅在全部预设页面显示）
+            if (showLoadingTip) {
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    LoadingMoreTip()
+                }
             }
         }
     }

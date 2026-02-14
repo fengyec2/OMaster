@@ -11,30 +11,55 @@ import java.text.Normalizer
 import java.util.Locale
 
 /**
- * JSON 工具类
- * 负责从 assets 目录加载和解析预设数据
+ * 【内置预设加载工具类 - App 更新时会重新加载】
+ * JSON 工具类 - 负责从 assets 目录加载和解析预设数据
+ * 
+ * 【重要区别】
+ * 此文件管理的是内置预设（随 App 一起打包的数据）
+ * 与 CustomPresetManager 管理的用户数据完全不同
+ * 
+ * 【App 更新行为】
+ * - App 更新时，assets/presets.json 会被新版本覆盖
+ * - 这是正常的，因为内置预设应该随 App 更新而更新
+ * - 用户数据（SharedPreferences）完全不受影响
+ * 
+ * 【数据流向】
+ * assets/presets.json -> JsonUtil.loadPresets() -> PresetRepository -> UI 展示
  */
 object JsonUtil {
 
     private val gson = Gson()
+    
+    /**
+     * 【内存缓存】
+     * 缓存已加载的预设列表，避免重复解析 JSON
+     * 注意：App 重启后缓存会清空，需要重新加载
+     */
     private var cachedPresets: List<MasterPreset>? = null
 
     /**
+     * 【内置预设加载方法】
      * 从 assets 目录加载 presets.json 文件
-     *
+     * 
+     * 【关键说明】
+     * 1. 文件位置：app/src/main/assets/presets.json
+     * 2. 此文件随 App 打包，用户无法修改
+     * 3. App 更新时，此文件会被新版本覆盖
+     * 4. 使用缓存避免重复解析
+     * 
      * @param context 应用上下文
      * @param fileName JSON 文件名，默认为 "presets.json"
      * @return 解析后的预设列表，如果加载失败则返回空列表
      */
     fun loadPresets(context: Context, fileName: String = "presets.json"): List<MasterPreset> {
-        // 如果已有缓存，直接返回缓存
+        // 如果已有缓存，直接返回缓存（性能优化）
         cachedPresets?.let {
             android.util.Log.d("JsonUtil", "Returning cached presets, count: ${it.size}")
             return it
         }
 
         return try {
-            // 打开 assets 目录下的文件
+            // 打开 assets 目录下的文件（只读）
             context.assets.open(fileName).use { inputStream ->
                 InputStreamReader(inputStream).use { reader ->
                     // 使用 Gson 解析 JSON 数据
@@ -50,7 +75,8 @@ object JsonUtil {
                     // 处理 presets 为 null 的情况
                     val presets = presetList.presets ?: emptyList()
 
-                    // 为没有 id 的预设生成基于 name 的 ID
+                    // 【ID 生成逻辑】为没有 id 的预设生成基于 name 的 ID
+                    // 这是为了兼容旧版本数据或手动编辑的 JSON
                     val processedPresets = presets.mapIndexed { index, preset ->
                         if (preset.id == null) {
                             // 使用 name 生成简洁的 ID
@@ -70,20 +96,28 @@ object JsonUtil {
                 }
             }
         } catch (e: IOException) {
-            // 文件读取失败时返回空列表
+            // 文件读取失败时返回空列表（不会崩溃）
             android.util.Log.e("JsonUtil", "Failed to load presets from assets", e)
             emptyList()
         } catch (e: Exception) {
-            // JSON 解析失败时返回空列表
+            // JSON 解析失败时返回空列表（不会崩溃）
             android.util.Log.e("JsonUtil", "Failed to parse presets JSON", e)
             emptyList()
         }
     }
 
     /**
+     * 【ID 生成算法】
      * 基于预设名称生成简洁的 ID
-     * 例如："富士胶片" -> "fuji_film", "蓝调时刻" -> "blue_hour"
-     *
+     * 例如："富士胶片" -> "fuji_film_0", "蓝调时刻" -> "blue_hour_1"
+     * 
+     * 【算法步骤】
+     * 1. 移除音调符号（拼音化）
+     * 2. 转换为小写
+     * 3. 替换非字母数字字符为下划线
+     * 4. 限制长度
+     * 5. 添加索引后缀避免重复
+     * 
      * @param name 预设名称
      * @param index 索引（用于处理重复名称）
      * @return 生成的 ID
@@ -112,9 +146,10 @@ object JsonUtil {
     }
 
     /**
+     * 【调试工具方法】
      * 将预设列表转换为 JSON 字符串
      * 用于调试或导出数据
-     *
+     * 
      * @param presets 预设列表
      * @return JSON 格式的字符串
      */

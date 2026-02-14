@@ -185,7 +185,12 @@ fun AboutScreen(
                 checkError = checkError,
                 lastCheckTime = lastCheckTime,
                 onCheckClick = { checkForUpdate() },
-                onDownloadClick = { UpdateChecker.openDownloadPage(context) },
+                onDownloadClick = { 
+                    // 【修改】使用 UpdateInfo 中的下载链接（国内链接优先）
+                    updateInfo?.let { info ->
+                        UpdateChecker.openDownloadPage(context, info.downloadUrl)
+                    }
+                },
                 onRetryClick = {
                     checkError = null
                     checkForUpdate()
@@ -352,6 +357,26 @@ fun AboutScreen(
                         )
                     }
 
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "                    ",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White.copy(alpha = 0.8f)
+                        )
+                        Text(
+                            text = "@Aurora",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = HasselbladOrange,
+                            textDecoration = TextDecoration.Underline,
+                            modifier = Modifier.clickable {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://xhslink.com/m/2Ebow4iyVOE"))
+                                context.startActivity(intent)
+                            }
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
@@ -492,7 +517,7 @@ private fun UpdateCard(
                                     Spacer(modifier = Modifier.height(12.dp))
                                 }
 
-                                // 下载按钮
+                                // 下载按钮（使用国内链接）
                                 Button(
                                     onClick = onDownloadClick,
                                     colors = ButtonDefaults.buttonColors(
@@ -506,7 +531,7 @@ private fun UpdateCard(
                                         modifier = Modifier.size(18.dp)
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Text("立即更新")
+                                    Text("国内下载")
                                 }
                             }
                         } else {

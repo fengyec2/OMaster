@@ -36,6 +36,8 @@ import com.silas.omaster.ui.create.CreatePresetViewModelFactory
 import com.silas.omaster.ui.detail.AboutScreen
 import com.silas.omaster.ui.detail.DetailScreen
 import com.silas.omaster.ui.detail.PrivacyPolicyScreen
+import com.silas.omaster.ui.edit.EditPresetScreen
+import com.silas.omaster.ui.edit.EditPresetViewModelFactory
 import com.silas.omaster.ui.home.HomeScreen
 import com.silas.omaster.ui.service.FloatingWindowController
 import com.silas.omaster.ui.theme.OMasterTheme
@@ -55,6 +57,9 @@ sealed class Screen {
 
     @Serializable
     data object CreatePreset : Screen()
+
+    @Serializable
+    data class EditPreset(val presetId: String) : Screen()
 
     @Serializable
     data object About : Screen()
@@ -208,6 +213,9 @@ fun MainApp(navController: NavHostController) {
                     presetId = detail.presetId,
                     onBack = {
                         navController.popBackStack()
+                    },
+                    onEdit = { presetId ->
+                        navController.navigate(Screen.EditPreset(presetId))
                     }
                 )
             }
@@ -224,6 +232,24 @@ fun MainApp(navController: NavHostController) {
                     },
                     viewModel = viewModel(
                         factory = CreatePresetViewModelFactory(localContext, repository)
+                    )
+                )
+            }
+
+            composable<Screen.EditPreset> { backStackEntry ->
+                val editPreset = backStackEntry.toRoute<Screen.EditPreset>()
+                val localContext = androidx.compose.ui.platform.LocalContext.current
+                val repository = PresetRepository.getInstance(localContext)
+                EditPresetScreen(
+                    presetId = editPreset.presetId,
+                    onSave = {
+                        navController.popBackStack()
+                    },
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    viewModel = viewModel(
+                        factory = EditPresetViewModelFactory(localContext, repository)
                     )
                 )
             }

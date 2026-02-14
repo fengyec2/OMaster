@@ -20,6 +20,7 @@ import android.os.Build
 import android.provider.Settings
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.OpenInNew
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Icon
@@ -57,7 +58,8 @@ import com.silas.omaster.util.formatSigned
 @Composable
 fun DetailScreen(
     presetId: String,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onEdit: ((String) -> Unit)? = null
 ) {
     val context = LocalContext.current
     val repository = remember { PresetRepository.getInstance(context) }
@@ -115,6 +117,23 @@ fun DetailScreen(
                         contentDescription = "悬浮窗",
                         tint = HasselbladOrange
                     )
+                }
+
+                // 编辑按钮（仅自定义预设显示）
+                if (preset?.isCustom == true && onEdit != null) {
+                    IconButton(
+                        onClick = {
+                            preset?.id?.let { presetId ->
+                                onEdit(presetId)
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = "编辑",
+                            tint = Color.White
+                        )
+                    }
                 }
 
                 // 收藏按钮

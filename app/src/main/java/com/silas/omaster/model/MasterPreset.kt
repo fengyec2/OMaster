@@ -28,6 +28,7 @@ import android.os.Parcelable
  * @param cyanMagenta 青品色调，范围 -100 到 +100，负值偏青，正值偏品红
  * @param sharpness 锐度，数字 0-100
  * @param vignette 暗角开关，"开" 或 "关"
+ * @param isNew 是否为新预设，用于显示 NEW 标签和置顶（手动控制）
  */
 data class MasterPreset(
     val id: String? = null,
@@ -52,7 +53,8 @@ data class MasterPreset(
     val sharpness: Int,
     val vignette: String,
     val isFavorite: Boolean = false,
-    val isCustom: Boolean = false
+    val isCustom: Boolean = false,
+    val isNew: Boolean = false  // 新增：是否为新预设（手动在JSON中标记）
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         id = parcel.readString(),
@@ -77,7 +79,8 @@ data class MasterPreset(
         sharpness = parcel.readInt(),
         vignette = parcel.readString() ?: "关",
         isFavorite = parcel.readByte() != 0.toByte(),
-        isCustom = parcel.readByte() != 0.toByte()
+        isCustom = parcel.readByte() != 0.toByte(),
+        isNew = parcel.readByte() != 0.toByte()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -104,6 +107,7 @@ data class MasterPreset(
         parcel.writeString(vignette)
         parcel.writeByte(if (isFavorite) 1 else 0)
         parcel.writeByte(if (isCustom) 1 else 0)
+        parcel.writeByte(if (isNew) 1 else 0)
     }
 
     override fun describeContents(): Int = 0
