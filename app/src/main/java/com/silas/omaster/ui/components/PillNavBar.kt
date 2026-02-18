@@ -1,5 +1,6 @@
 package com.silas.omaster.ui.components
 
+import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -33,14 +34,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.silas.omaster.R
 import com.silas.omaster.ui.theme.HasselbladOrange
 
 private val NavBarBackground = Color(0xFF1A1A1A)
@@ -60,8 +64,8 @@ fun PillNavBar(
     modifier: Modifier = Modifier
 ) {
     val navItems = listOf(
-        NavItem("home", "主页", Icons.Default.Home),
-        NavItem("about", "关于", Icons.Default.Info)
+        NavItem("home", stringResource(R.string.nav_home), Icons.Default.Home),
+        NavItem("about", stringResource(R.string.nav_about), Icons.Default.Info)
     )
 
     AnimatedVisibility(
@@ -92,7 +96,7 @@ fun PillNavBar(
                         spotColor = Color.Black.copy(alpha = 0.8f)
                     )
             ) {
-                // 导航栏主体
+                // 磨砂玻璃背景层
                 Box(
                     modifier = Modifier
                         .width(200.dp)
@@ -101,33 +105,80 @@ fun PillNavBar(
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
-                                    NavBarBackground.copy(alpha = 0.98f),
-                                    NavBarBackground.copy(alpha = 0.95f)
+                                    NavBarBackground.copy(alpha = 0.85f),
+                                    NavBarBackground.copy(alpha = 0.75f)
                                 )
                             )
                         )
+                )
+
+                // 顶部高光线条
+                Box(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(64.dp)
+                        .clip(RoundedCornerShape(32.dp))
                         .background(
-                            color = NavBarBorder.copy(alpha = 0.3f),
-                            shape = RoundedCornerShape(32.dp)
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.White.copy(alpha = 0.15f),
+                                    Color.White.copy(alpha = 0.05f),
+                                    Color.Transparent
+                                )
+                            )
+                        )
+                )
+
+                // 边框
+                Box(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(64.dp)
+                        .clip(RoundedCornerShape(32.dp))
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    NavBarBorder.copy(alpha = 0.5f),
+                                    NavBarBorder.copy(alpha = 0.2f)
+                                )
+                            )
                         )
                         .padding(1.dp)
                 ) {
-                    Row(
+                    // 内部背景
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        navItems.forEach { item ->
-                            val selected = currentRoute == item.route
-
-                            NavItemButton(
-                                item = item,
-                                selected = selected,
-                                onClick = { onNavigate(item.route) }
+                            .height(62.dp)
+                            .clip(RoundedCornerShape(31.dp))
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        NavBarBackground.copy(alpha = 0.9f),
+                                        NavBarBackground.copy(alpha = 0.8f)
+                                    )
+                                )
                             )
-                        }
+                    )
+                }
+
+                // 导航项
+                Row(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(64.dp)
+                        .padding(horizontal = 8.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    navItems.forEach { item ->
+                        val selected = currentRoute == item.route
+
+                        NavItemButton(
+                            item = item,
+                            selected = selected,
+                            onClick = { onNavigate(item.route) }
+                        )
                     }
                 }
             }
@@ -154,13 +205,13 @@ private fun NavItemButton(
     )
 
     val backgroundColor = when {
-        selected -> HasselbladOrange.copy(alpha = 0.2f)
+        selected -> HasselbladOrange.copy(alpha = 0.15f)
         else -> Color.Transparent
     }
 
     val contentColor = when {
         selected -> HasselbladOrange
-        else -> Color.White.copy(alpha = 0.4f)
+        else -> Color.White.copy(alpha = 0.5f)
     }
 
     val iconScale by animateFloatAsState(

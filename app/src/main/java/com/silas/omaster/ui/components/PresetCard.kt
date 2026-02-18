@@ -1,7 +1,10 @@
 package com.silas.omaster.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,32 +23,27 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.silas.omaster.R
 import com.silas.omaster.model.MasterPreset
+import com.silas.omaster.ui.theme.CardBorderHighlight
+import com.silas.omaster.ui.theme.CardBorderLight
 import com.silas.omaster.ui.theme.DarkGray
+import com.silas.omaster.ui.theme.GradientOrangeEnd
+import com.silas.omaster.ui.theme.GradientOrangeStart
 import com.silas.omaster.ui.theme.HasselbladOrange
 
-/**
- * 预设卡片组件
- *
- * 展示预设的封面图片和名称，采用瀑布流风格的卡片设计
- *
- * @param preset 预设数据
- * @param onClick 点击回调
- * @param onFavoriteClick 收藏点击回调
- * @param onDeleteClick 删除点击回调（仅自定义预设有效）
- * @param showFavoriteButton 是否显示收藏按钮
- * @param showDeleteButton 是否显示删除按钮
- * @param modifier 修饰符
- * @param imageHeight 图片高度（用于实现瀑布流效果的不同高度）
- */
 @Composable
 fun PresetCard(
     preset: MasterPreset,
@@ -57,33 +55,45 @@ fun PresetCard(
     modifier: Modifier = Modifier,
     imageHeight: Int = 200
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    
+    val borderColor = if (isPressed) CardBorderHighlight else CardBorderLight
+    val borderWidth = if (isPressed) 1.5.dp else 1.dp
+
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),  // 优化：圆角从 12dp 增加到 16dp
+            .border(
+                width = borderWidth,
+                color = borderColor,
+                shape = RoundedCornerShape(16.dp)
+            )
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick
+            ),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = DarkGray
         ),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
+            defaultElevation = if (isPressed) 8.dp else 4.dp
         )
     ) {
         Column {
-            // 图片容器
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(imageHeight.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))  // 优化：与卡片圆角一致
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
             ) {
-                // 使用通用 PresetImage 组件加载本地 assets 图片
                 PresetImage(
                     preset = preset,
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                // 收藏按钮（右上角）
                 if (showFavoriteButton) {
                     IconButton(
                         onClick = onFavoriteClick,
@@ -92,19 +102,31 @@ fun PresetCard(
                             .padding(8.dp)
                             .size(36.dp)
                     ) {
-                        Icon(
-                            imageVector = if (preset.isFavorite)
-                                Icons.Filled.Favorite
-                            else
-                                Icons.Outlined.FavoriteBorder,
-                            contentDescription = if (preset.isFavorite) "已收藏" else "收藏",
-                            tint = if (preset.isFavorite) HasselbladOrange else Color.White,
-                            modifier = Modifier.size(24.dp)
-                        )
+                        Box(
+                            modifier = Modifier
+                                .size(28.dp)
+                                .background(
+                                    color = if (preset.isFavorite) 
+                                        HasselbladOrange.copy(alpha = 0.2f) 
+                                    else 
+                                        Color.Black.copy(alpha = 0.3f),
+                                    shape = RoundedCornerShape(14.dp)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = if (preset.isFavorite)
+                                    Icons.Filled.Favorite
+                                else
+                                    Icons.Outlined.FavoriteBorder,
+                                contentDescription = if (preset.isFavorite) stringResource(R.string.preset_favorited) else stringResource(R.string.preset_favorite),
+                                tint = if (preset.isFavorite) HasselbladOrange else Color.White,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
                     }
                 }
 
-                // 删除按钮（左上角，仅自定义预设显示）
                 if (showDeleteButton && preset.isCustom) {
                     IconButton(
                         onClick = onDeleteClick,
@@ -113,29 +135,40 @@ fun PresetCard(
                             .padding(8.dp)
                             .size(36.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.Delete,
-                            contentDescription = "删除",
-                            tint = Color.Red,
-                            modifier = Modifier.size(24.dp)
-                        )
+                        Box(
+                            modifier = Modifier
+                                .size(28.dp)
+                                .background(
+                                    color = Color.Black.copy(alpha = 0.3f),
+                                    shape = RoundedCornerShape(14.dp)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Delete,
+                                contentDescription = stringResource(R.string.preset_delete),
+                                tint = Color.Red,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
                     }
                 }
 
-                // NEW 标签（左上角，新预设显示）
                 if (preset.isNew) {
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopStart)
                             .padding(8.dp)
                             .background(
-                                color = HasselbladOrange,
+                                brush = Brush.horizontalGradient(
+                                    colors = listOf(GradientOrangeStart, GradientOrangeEnd)
+                                ),
                                 shape = RoundedCornerShape(4.dp)
                             )
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Text(
-                            text = "NEW",
+                            text = stringResource(R.string.preset_new),
                             fontSize = 10.sp,
                             color = Color.White,
                             fontWeight = FontWeight.Bold
@@ -144,11 +177,10 @@ fun PresetCard(
                 }
             }
 
-            // 预设名称
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp)  // 优化：水平内边距从 12dp 增加到 16dp
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
                 Text(
                     text = preset.name,
@@ -162,13 +194,6 @@ fun PresetCard(
     }
 }
 
-/**
- * 预设卡片占位符
- *
- * 用于加载失败或数据为空时的显示
- *
- * @param modifier 修饰符
- */
 @Composable
 fun PresetCardPlaceholder(
     modifier: Modifier = Modifier
@@ -176,7 +201,12 @@ fun PresetCardPlaceholder(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(250.dp),
+            .height(250.dp)
+            .border(
+                width = 1.dp,
+                color = CardBorderLight,
+                shape = RoundedCornerShape(12.dp)
+            ),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = DarkGray
@@ -187,7 +217,7 @@ fun PresetCardPlaceholder(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "暂无数据",
+                text = stringResource(R.string.empty_no_data),
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White.copy(alpha = 0.5f)
             )

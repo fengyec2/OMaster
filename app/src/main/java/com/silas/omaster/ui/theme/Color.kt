@@ -27,3 +27,12 @@ val OffWhite = Color(0xFFF5F5F5)
 val SuccessGreen = Color(0xFF4CAF50)
 val ErrorRed = Color(0xFFE53935)
 val WarningYellow = Color(0xFFFFB300)
+
+/**
+ * UI 扩展色
+ */
+val CardBorderLight = Color(0xFFFFFFFF).copy(alpha = 0.05f)
+val CardBorderHighlight = Color(0xFFFF6600).copy(alpha = 0.3f)
+val SurfaceElevated = Color(0xFF222222)
+val GradientOrangeStart = Color(0xFFFF6600)
+val GradientOrangeEnd = Color(0xFFFF8533)

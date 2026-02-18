@@ -1,3 +1,238 @@
 <resources>
+    <!-- 应用名称 -->
     <string name="app_name">OMaster</string>
+    <string name="app_slogan">大师模式调色参数库</string>
+
+    <!-- 通用按钮 -->
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="save">保存</string>
+    <string name="delete">删除</string>
+    <string name="edit">编辑</string>
+    <string name="back">返回</string>
+    <string name="refresh">刷新</string>
+    <string name="update">更新</string>
+    <string name="retry">重试</string>
+    <string name="loading">加载中…</string>
+    <string name="checking">检查中…</string>
+
+    <!-- 底部导航 -->
+    <string name="nav_home">主页</string>
+    <string name="nav_about">关于</string>
+
+    <!-- 主页 Tab -->
+    <string name="tab_all">全部</string>
+    <string name="tab_favorites">收藏</string>
+    <string name="tab_my">我的</string>
+
+    <!-- 主页操作 -->
+    <string name="create_preset">新建预设</string>
+    <string name="delete_preset_title">确认删除</string>
+    <string name="delete_preset_message">确定要删除这个预设吗？此操作无法撤销。</string>
+
+    <!-- 空状态 -->
+    <string name="empty_no_presets">暂无预设数据</string>
+    <string name="empty_no_favorites">暂无收藏预设</string>
+    <string name="empty_no_custom">暂无自定义预设</string>
+    <string name="empty_no_data">暂无数据</string>
+    <string name="empty_hint_add_presets">请在 assets/presets.json 中添加数据</string>
+    <string name="empty_hint_favorite">点击心形图标收藏预设</string>
+    <string name="empty_hint_create">点击右下角按钮创建预设</string>
+    <string name="load_more_hint">持续更新 · 敬请期待</string>
+
+    <!-- 预设卡片 -->
+    <string name="preset_favorite">收藏</string>
+    <string name="preset_favorited">已收藏</string>
+    <string name="preset_delete">删除</string>
+    <string name="preset_new">NEW</string>
+
+    <!-- 详情页 -->
+    <string name="detail_title">预设详情</string>
+    <string name="detail_load_failed">预设数据加载失败</string>
+    <string name="floating_window">悬浮窗</string>
+
+    <!-- 专业参数 -->
+    <string name="param_iso">ISO</string>
+    <string name="param_shutter">快门</string>
+    <string name="param_exposure">曝光补偿</string>
+    <string name="param_color_temp">色温</string>
+    <string name="param_white_balance">白平衡</string>
+    <string name="param_tone">色调</string>
+    <string name="param_tone_style">色调风格</string>
+    <string name="param_pro_adjust">专业参数（具体视环境调整）</string>
+
+    <!-- 调色参数 -->
+    <string name="section_color_grading">调色参数</string>
+    <string name="param_filter">滤镜</string>
+    <string name="param_soft_light">柔光</string>
+    <string name="param_tone_curve">影调</string>
+    <string name="param_saturation">饱和度</string>
+    <string name="param_warm_cool">冷暖</string>
+    <string name="param_cyan_magenta">青品</string>
+    <string name="param_sharpness">锐度</string>
+    <string name="param_vignette">暗角</string>
+
+    <!-- 拍摄模式 -->
+    <string name="mode_pro">Pro 模式</string>
+    <string name="mode_auto">Auto 模式</string>
+
+    <!-- 创建/编辑预设 -->
+    <string name="create_preset_title">新建预设</string>
+    <string name="edit_preset_title">编辑预设</string>
+    <string name="save_preset">保存预设</string>
+    <string name="save_changes">保存修改</string>
+    <string name="save_failed">保存失败，请重试</string>
+
+    <!-- 封面图片 -->
+    <string name="cover_image">封面图片</string>
+    <string name="change_image">点击更换图片</string>
+    <string name="select_image">选择封面图片</string>
+    <string name="image_ratio_hint">建议使用 16:9 比例的图片</string>
+
+    <!-- 预设名称 -->
+    <string name="preset_name">预设名称</string>
+    <string name="preset_name_hint">给你的预设起个名字</string>
+
+    <!-- 参数分类 -->
+    <string name="section_basic">基础参数</string>
+    <string name="section_pro">专业参数</string>
+    <string name="section_color">调色参数</string>
+    <string name="section_other">其他</string>
+    <string name="shooting_mode">拍摄模式</string>
+    <string name="filter_style">滤镜风格</string>
+    <string name="filter_intensity">滤镜强度</string>
+    <string name="soft_light_effect">柔光效果</string>
+
+    <!-- 滤镜选项 -->
+    <string name="filter_standard">标准</string>
+    <string name="filter_neon">霓虹</string>
+    <string name="filter_fresh">清新</string>
+    <string name="filter_vintage">复古</string>
+    <string name="filter_clear">通透</string>
+    <string name="filter_vivid">明艳</string>
+    <string name="filter_fairy">童话</string>
+    <string name="filter_humanities">人文</string>
+    <string name="filter_natural">自然</string>
+    <string name="filter_delicious">美味</string>
+    <string name="filter_cool">冷调</string>
+    <string name="filter_warm">暖调</string>
+    <string name="filter_rich">浓郁</string>
+    <string name="filter_advanced_gray">高级灰</string>
+    <string name="filter_bw">黑白</string>
+    <string name="filter_mono">单色</string>
+    <string name="filter_cyberpunk">赛博朋克</string>
+
+    <!-- 柔光选项 -->
+    <string name="soft_none">无</string>
+    <string name="soft_gentle">柔美</string>
+    <string name="soft_dreamy">梦幻</string>
+    <string name="soft_hazy">朦胧</string>
+
+    <!-- 暗角选项 -->
+    <string name="vignette_on">开启</string>
+    <string name="vignette_off">关闭</string>
+
+    <!-- 关于页 -->
+    <string name="about_title">关于</string>
+    <string name="version_current">当前版本：v%1$s</string>
+    <string name="version_check">点击检查更新</string>
+    <string name="version_checking">正在检查更新…</string>
+    <string name="version_new_found">发现新版本 v%1$s</string>
+    <string name="version_latest">当前已是最新版本</string>
+    <string name="version_check_failed">检查失败</string>
+    <string name="version_download">国内下载</string>
+    <string name="version_download_btn">更新</string>
+    <string name="version_is_latest">已是最新</string>
+    <string name="version_retry">点击重试</string>
+    <string name="last_check">最后检查：%1$s</string>
+    <string name="time_just_now">刚刚</string>
+    <string name="time_minutes_ago">%1$d分钟前</string>
+    <string name="time_hours_ago">%1$d小时前</string>
+    <string name="time_days_ago">%1$d天前</string>
+
+    <!-- 功能介绍 -->
+    <string name="feature_title">功能介绍</string>
+    <string name="feature_desc_1">OMaster 是一款专为OPPO/一加/Realme手机摄影爱好者设计的调色参数管理工具。</string>
+    <string name="feature_desc_2">您可以在这里查看、收藏和复现大师模式的摄影调色参数，包括曝光、对比度、饱和度、色温等专业参数。</string>
+
+    <!-- 制作信息 -->
+    <string name="credits_title">制作信息</string>
+    <string name="developer">开发者</string>
+    <string name="developer_name">Silas</string>
+    <string name="material_provider">素材提供</string>
+
+    <!-- 页脚 -->
+    <string name="footer_local">纯本地化运作，数据存储在本地</string>
+    <string name="privacy_policy">《用户协议和隐私政策》</string>
+
+    <!-- 隐私政策页 -->
+    <string name="privacy_title">用户协议和隐私政策</string>
+    <string name="welcome_title">欢迎使用 OMaster</string>
+    <string name="welcome_desc">OMaster 是一款专为 OPPO/一加/Realme 手机摄影爱好者设计的调色参数管理工具。在这里，您可以查看、收藏和复现大师模式的摄影调色参数。</string>
+    <string name="features_title">功能介绍</string>
+    <string name="features_list">• 查看大师模式调色参数\n• 支持多种预设风格\n• 纯本地化运作，数据存储在本地\n• 无需联网即可使用</string>
+    <string name="data_collection_title">数据收集说明</string>
+    <string name="data_collection_desc">为了提供更好的服务，我们使用了友盟统计分析 SDK 来收集应用使用数据。</string>
+    <string name="sdk_info_title">友盟 SDK 信息</string>
+    <string name="sdk_name_label">使用 SDK 名称</string>
+    <string name="sdk_name">友盟 SDK</string>
+    <string name="service_type_label">服务类型</string>
+    <string name="service_type">统计分析</string>
+    <string name="collect_info_label">收集个人信息类型</string>
+    <string name="collect_info">设备信息（MAC/Android ID/IDFA/GUID/IP信息等）</string>
+    <string name="privacy_link_label">隐私权政策链接：</string>
+    <string name="user_rights_title">用户权利</string>
+    <string name="user_rights_desc">您有权访问、更正、删除您的个人信息。如需行使这些权利，请通过应用内的联系方式与我们联系。</string>
+    <string name="contact_title">联系我们</string>
+    <string name="contact_info">如果您对本隐私政策有任何疑问，请联系：\n开发者：Silas \n邮箱：iboy66lee@qq.com</string>
+    <string name="last_updated">最后更新日期：%1$s</string>
+
+    <!-- 欢迎对话框 -->
+    <string name="welcome_dialog_title">欢迎使用 OMaster</string>
+    <string name="welcome_version">大师模式调色参数库 v1.0</string>
+    <string name="feature_1_title">专业参数</string>
+    <string name="feature_1_desc">查看大师模式的专业摄影调色参数</string>
+    <string name="feature_2_title">多种风格</string>
+    <string name="feature_2_desc">支持多种预设风格，满足不同拍摄需求</string>
+    <string name="feature_3_title">本地存储</string>
+    <string name="feature_3_desc">纯本地化运作，数据存储在本地</string>
+    <string name="agree_prefix">我已阅读并同意</string>
+    <string name="umeng_notice">• 我们使用友盟 SDK 进行统计分析\n• 收集设备信息以优化应用体验</string>
+    <string name="privacy_hint">点击《用户协议和隐私政策》查看详细信息</string>
+    <string name="disagree">不同意</string>
+    <string name="agree_and_start">同意并开始</string>
+
+    <!-- 悬浮窗引导对话框 -->
+    <string name="floating_guide_title">开启悬浮窗权限</string>
+    <string name="floating_guide_desc">为了在拍摄时方便查看参数，OMaster 需要悬浮窗权限</string>
+    <string name="permission_trouble">如果遇到权限开启失败：</string>
+    <string name="permission_step_1">前往「设置 → 应用管理」</string>
+    <string name="permission_step_2">找到 OMaster 应用</string>
+    <string name="permission_step_3">点击右上角 ⋮ 菜单</string>
+    <string name="permission_step_4">选择「解除所有授权限制」</string>
+    <string name="permission_tip">提示：解除限制后，请确保只授予「悬浮窗」权限</string>
+    <string name="go_to_settings">去开启权限</string>
+    <string name="later">以后再说</string>
+
+    <!-- 悬浮窗服务 -->
+    <string name="floating_preset">预设</string>
+    <string name="floating_original">原图</string>
+    <string name="floating_basic_params">基础参数</string>
+    <string name="floating_filter_icon">◈</string>
+    <string name="floating_filter_label">滤镜风格</string>
+    <string name="floating_soft_icon">✦</string>
+    <string name="floating_soft_label">柔光</string>
+    <string name="floating_tone_icon">◐</string>
+    <string name="floating_tone_label">影调</string>
+    <string name="floating_saturation_icon">◉</string>
+    <string name="floating_saturation_label">饱和度</string>
+    <string name="floating_warm_icon">◑</string>
+    <string name="floating_warm_label">冷暖</string>
+    <string name="floating_cyan_icon">◒</string>
+    <string name="floating_cyan_label">青品</string>
+    <string name="floating_sharpness_icon">◆</string>
+    <string name="floating_sharpness_label">锐度</string>
+    <string name="floating_vignette_icon">◍</string>
+    <string name="floating_vignette_label">暗角</string>
+
 </resources>

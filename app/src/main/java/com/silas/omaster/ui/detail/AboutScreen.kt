@@ -5,7 +5,9 @@ import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +29,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
@@ -49,8 +54,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -58,8 +65,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.silas.omaster.R
 import com.silas.omaster.ui.components.OMasterTopAppBar
+import com.silas.omaster.ui.theme.CardBorderLight
 import com.silas.omaster.ui.theme.DarkGray
+import com.silas.omaster.ui.theme.GradientOrangeEnd
+import com.silas.omaster.ui.theme.GradientOrangeStart
 import com.silas.omaster.ui.theme.HasselbladOrange
 import com.silas.omaster.util.UpdateChecker
 import com.silas.omaster.util.VersionInfo
@@ -87,7 +98,6 @@ fun AboutScreen(
         }
     }
 
-    // 更新检查状态
     var isChecking by remember { mutableStateOf(false) }
     var updateInfo by remember { mutableStateOf<UpdateChecker.UpdateInfo?>(null) }
     var checkError by remember { mutableStateOf<String?>(null) }
@@ -97,9 +107,10 @@ fun AboutScreen(
         onScrollStateChanged(isScrollingUp)
     }
 
-    // 自动检查更新（进入页面时）
+    val checkFailedText = stringResource(R.string.version_check_failed)
+
     LaunchedEffect(Unit) {
-        delay(500) // 延迟500ms，让页面先渲染完成
+        delay(500)
         if (updateInfo == null && checkError == null) {
             isChecking = true
             checkError = null
@@ -109,17 +120,16 @@ fun AboutScreen(
                     updateInfo = result
                     lastCheckTime = System.currentTimeMillis()
                 } else {
-                    checkError = "无法获取更新信息"
+                    checkError = checkFailedText
                 }
             } catch (e: Exception) {
-                checkError = e.message ?: "未知错误"
+                checkError = e.message ?: checkFailedText
             } finally {
                 isChecking = false
             }
         }
     }
 
-    // 检查更新的函数
     val checkForUpdate = {
         scope.launch {
             isChecking = true
@@ -130,10 +140,10 @@ fun AboutScreen(
                     updateInfo = result
                     lastCheckTime = System.currentTimeMillis()
                 } else {
-                    checkError = "无法获取更新信息"
+                    checkError = checkFailedText
                 }
             } catch (e: Exception) {
-                checkError = e.message ?: "未知错误"
+                checkError = e.message ?: checkFailedText
             } finally {
                 isChecking = false
             }
@@ -144,7 +154,7 @@ fun AboutScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         OMasterTopAppBar(
-            title = "关于",
+            title = stringResource(R.string.about_title),
             modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
         )
 
@@ -155,29 +165,10 @@ fun AboutScreen(
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 应用 Logo 和名称
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = HasselbladOrange)) {
-                        append("O")
-                    }
-                    withStyle(style = SpanStyle(color = Color.White)) {
-                        append("Master")
-                    }
-                },
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
-
-            Text(
-                text = "大师模式调色参数库 v$currentVersionName",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.White.copy(alpha = 0.6f)
-            )
+            AppTitleSection(currentVersionName)
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // 检查更新卡片 - 优化版
             UpdateCard(
                 currentVersionName = currentVersionName,
                 isChecking = isChecking,
@@ -186,7 +177,6 @@ fun AboutScreen(
                 lastCheckTime = lastCheckTime,
                 onCheckClick = { checkForUpdate() },
                 onDownloadClick = { 
-                    // 【修改】使用 UpdateInfo 中的下载链接（国内链接优先）
                     updateInfo?.let { info ->
                         UpdateChecker.openDownloadPage(context, info.downloadUrl)
                     }
@@ -199,204 +189,61 @@ fun AboutScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 功能介绍卡片
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = DarkGray
-                ),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = "功能介绍",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = HasselbladOrange
-                    )
-                    Text(
-                        text = "OMaster 是一款专为OPPO/一加/Realme手机摄影爱好者设计的调色参数管理工具。",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.White.copy(alpha = 0.8f),
-                        textAlign = TextAlign.Start
-                    )
-                    Text(
-                        text = "您可以在这里查看、收藏和复现大师模式的摄影调色参数，包括曝光、对比度、饱和度、色温等专业参数。",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.White.copy(alpha = 0.8f),
-                        textAlign = TextAlign.Start
-                    )
-                }
-            }
+            FeatureCard()
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 制作信息卡片
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = DarkGray
-                ),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = "制作信息",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = HasselbladOrange
-                    )
-                    Text(
-                        text = "开发者：Silas",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.White.copy(alpha = 0.8f)
-                    )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "素材提供：",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.White.copy(alpha = 0.8f)
-                        )
-                        Text(
-                            text = "@OPPO影像",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = HasselbladOrange,
-                            textDecoration = TextDecoration.Underline,
-                            modifier = Modifier.clickable {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://xhslink.com/m/8c2gJYGlCTR"))
-                                context.startActivity(intent)
-                            }
-                        )
-                    }
+            CreditsCard(context)
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "                    ",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.White.copy(alpha = 0.8f)
-                        )
-                        Text(
-                            text = "@蘭州白鴿",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = HasselbladOrange,
-                            textDecoration = TextDecoration.Underline,
-                            modifier = Modifier.clickable {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://xhslink.com/m/4h5lx4Lg37n"))
-                                context.startActivity(intent)
-                            }
-                        )
-                    }
+            Spacer(modifier = Modifier.height(24.dp))
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "                    ",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.White.copy(alpha = 0.8f)
-                        )
-                        Text(
-                            text = "@派瑞特凯",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = HasselbladOrange,
-                            textDecoration = TextDecoration.Underline,
-                            modifier = Modifier.clickable {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://xhslink.com/m/AkrgUI0kgg1"))
-                                context.startActivity(intent)
-                            }
-                        )
-                    }
+            FooterSection(context)
+        }
+    }
+}
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "                    ",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.White.copy(alpha = 0.8f)
-                        )
-                        Text(
-                            text = "@ONESTEP™",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = HasselbladOrange,
-                            textDecoration = TextDecoration.Underline,
-                            modifier = Modifier.clickable {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://xhslink.com/m/4LZ8zRdNCSv"))
-                                context.startActivity(intent)
-                            }
-                        )
-                    }
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "                    ",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.White.copy(alpha = 0.8f)
-                        )
-                        Text(
-                            text = "@盒子叔",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = HasselbladOrange,
-                            textDecoration = TextDecoration.Underline,
-                            modifier = Modifier.clickable {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://xhslink.com/m/4mje9mimNXJ"))
-                                context.startActivity(intent)
-                            }
-                        )
-                    }
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "                    ",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.White.copy(alpha = 0.8f)
-                        )
-                        Text(
-                            text = "@Aurora",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = HasselbladOrange,
-                            textDecoration = TextDecoration.Underline,
-                            modifier = Modifier.clickable {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://xhslink.com/m/2Ebow4iyVOE"))
-                                context.startActivity(intent)
-                            }
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = "纯本地化运作，数据存储在本地",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.White.copy(alpha = 0.6f)
-                    )
-
-                    Text(
-                        text = "查看《用户协议和隐私政策》",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = HasselbladOrange,
-                        textDecoration = TextDecoration.Underline,
-                        modifier = Modifier.clickable {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.umeng.com/page/policy"))
-                            context.startActivity(intent)
-                        }
-                    )
+@Composable
+private fun AppTitleSection(currentVersionName: String) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = buildAnnotatedString {
+                withStyle(style = SpanStyle(color = HasselbladOrange)) {
+                    append("O")
                 }
-            }
+                withStyle(style = SpanStyle(color = Color.White)) {
+                    append("Master")
+                }
+            },
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = stringResource(R.string.app_slogan),
+            style = MaterialTheme.typography.bodyLarge,
+            color = Color.White.copy(alpha = 0.7f)
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Box(
+            modifier = Modifier
+                .background(
+                    color = HasselbladOrange.copy(alpha = 0.15f),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                .padding(horizontal = 12.dp, vertical = 4.dp)
+        ) {
+            Text(
+                text = "v$currentVersionName",
+                style = MaterialTheme.typography.labelMedium,
+                color = HasselbladOrange,
+                fontWeight = FontWeight.Medium
+            )
         }
     }
 }
@@ -412,8 +259,223 @@ private fun UpdateCard(
     onDownloadClick: () -> Unit,
     onRetryClick: () -> Unit
 ) {
+    val hasUpdate = updateInfo?.isNewer == true
+
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(
+                width = if (hasUpdate) 1.5.dp else 1.dp,
+                color = if (hasUpdate) HasselbladOrange.copy(alpha = 0.5f) else CardBorderLight,
+                shape = RoundedCornerShape(16.dp)
+            ),
+        colors = CardDefaults.cardColors(
+            containerColor = DarkGray
+        ),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            // 顶部：图标 + 版本号 + 刷新
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(36.dp)
+                            .background(
+                                color = if (hasUpdate) HasselbladOrange.copy(alpha = 0.15f) else Color.White.copy(alpha = 0.05f),
+                                shape = RoundedCornerShape(10.dp)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Download,
+                            contentDescription = null,
+                            tint = if (hasUpdate) HasselbladOrange else Color.White.copy(alpha = 0.6f),
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    Column {
+                        Text(
+                            text = "v$currentVersionName",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        if (lastCheckTime != null && !isChecking) {
+                            val diff = System.currentTimeMillis() - lastCheckTime
+                            val timeText = when {
+                                diff < 60000 -> stringResource(R.string.time_just_now)
+                                diff < 3600000 -> stringResource(R.string.time_minutes_ago, diff / 60000)
+                                diff < 86400000 -> stringResource(R.string.time_hours_ago, diff / 3600000)
+                                else -> stringResource(R.string.time_days_ago, diff / 86400000)
+                            }
+                            Text(
+                                text = stringResource(R.string.last_check, timeText),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.White.copy(alpha = 0.4f)
+                            )
+                        }
+                    }
+                }
+
+                if (!isChecking) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = stringResource(R.string.refresh),
+                        tint = HasselbladOrange.copy(alpha = 0.7f),
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable { onCheckClick() }
+                    )
+                }
+            }
+
+            // 状态显示
+            Box(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                when {
+                    isChecking -> {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(18.dp),
+                                color = HasselbladOrange,
+                                strokeWidth = 2.dp
+                            )
+                            Text(
+                                text = stringResource(R.string.checking),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.White.copy(alpha = 0.7f)
+                            )
+                        }
+                    }
+                    updateInfo != null -> {
+                        if (updateInfo.isNewer) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .background(
+                                                color = HasselbladOrange.copy(alpha = 0.2f),
+                                                shape = RoundedCornerShape(6.dp)
+                                            )
+                                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                                    ) {
+                                        Text(
+                                            text = "v${updateInfo.versionName}",
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = HasselbladOrange,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
+                                }
+                                Button(
+                                    onClick = onDownloadClick,
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = HasselbladOrange
+                                    ),
+                                    shape = RoundedCornerShape(10.dp),
+                                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                                ) {
+                                    Text(
+                                        stringResource(R.string.version_download_btn),
+                                        style = MaterialTheme.typography.labelMedium
+                                    )
+                                }
+                            }
+                        } else {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.CheckCircle,
+                                    contentDescription = null,
+                                    tint = Color(0xFF4CAF50),
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Text(
+                                    text = stringResource(R.string.version_is_latest),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Color.White.copy(alpha = 0.7f)
+                                )
+                            }
+                        }
+                    }
+                    checkError != null -> {
+                        Row(
+                            modifier = Modifier.clickable { onRetryClick() },
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Warning,
+                                contentDescription = null,
+                                tint = Color(0xFFFF5252),
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Text(
+                                text = stringResource(R.string.version_retry),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = HasselbladOrange
+                            )
+                        }
+                    }
+                    else -> {
+                        Row(
+                            modifier = Modifier.clickable { onCheckClick() },
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = null,
+                                tint = Color.White.copy(alpha = 0.5f),
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Text(
+                                text = stringResource(R.string.version_check),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.White.copy(alpha = 0.5f)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FeatureCard() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = CardBorderLight,
+                shape = RoundedCornerShape(16.dp)
+            ),
         colors = CardDefaults.cardColors(
             containerColor = DarkGray
         ),
@@ -423,207 +485,207 @@ private fun UpdateCard(
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // 标题行
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = null,
+                    tint = HasselbladOrange,
+                    modifier = Modifier.size(20.dp)
+                )
                 Text(
-                    text = "版本更新",
+                    text = stringResource(R.string.feature_title),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = HasselbladOrange
+                    color = Color.White
                 )
+            }
+            Text(
+                text = stringResource(R.string.feature_desc_1),
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White.copy(alpha = 0.8f),
+                textAlign = TextAlign.Start
+            )
+            Text(
+                text = stringResource(R.string.feature_desc_2),
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White.copy(alpha = 0.8f),
+                textAlign = TextAlign.Start
+            )
+        }
+    }
+}
 
-                // 刷新按钮
-                if (!isChecking) {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = "刷新",
-                        tint = HasselbladOrange,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .clickable { onCheckClick() }
-                    )
-                }
+private data class Contributor(
+    val name: String,
+    val url: String
+)
+
+@Composable
+private fun CreditsCard(context: android.content.Context) {
+    val contributors = listOf(
+        Contributor("@OPPO影像", "https://xhslink.com/m/8c2gJYGlCTR"),
+        Contributor("@蘭州白鴿", "https://xhslink.com/m/4h5lx4Lg37n"),
+        Contributor("@派瑞特凯", "https://xhslink.com/m/AkrgUI0kgg1"),
+        Contributor("@ONESTEP™", "https://xhslink.com/m/4LZ8zRdNCSv"),
+        Contributor("@盒子叔", "https://xhslink.com/m/4mje9mimNXJ"),
+        Contributor("@Aurora", "https://xhslink.com/m/2Ebow4iyVOE")
+    )
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = CardBorderLight,
+                shape = RoundedCornerShape(16.dp)
+            ),
+        colors = CardDefaults.cardColors(
+            containerColor = DarkGray
+        ),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = null,
+                    tint = HasselbladOrange,
+                    modifier = Modifier.size(20.dp)
+                )
+                Text(
+                    text = stringResource(R.string.credits_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
             }
 
-            // 当前版本
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = null,
+                    tint = Color.White.copy(alpha = 0.6f),
+                    modifier = Modifier.size(16.dp)
+                )
+                Text(
+                    text = stringResource(R.string.developer) + "：",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White.copy(alpha = 0.6f)
+                )
+                Text(
+                    text = stringResource(R.string.developer_name),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
             Text(
-                text = "当前版本：v$currentVersionName",
+                text = stringResource(R.string.material_provider),
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.White.copy(alpha = 0.6f)
+                color = Color.White.copy(alpha = 0.5f)
             )
 
-            // 状态显示区域
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.CenterStart
+            Row(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                when {
-                    isChecking -> {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
-                                color = HasselbladOrange,
-                                strokeWidth = 2.dp
-                            )
-                            Text(
-                                text = "正在检查更新...",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.White.copy(alpha = 0.8f)
-                            )
-                        }
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    contributors.take(3).forEach { contributor ->
+                        ContributorItem(
+                            name = contributor.name,
+                            url = contributor.url,
+                            context = context
+                        )
                     }
-                    updateInfo != null -> {
-                        if (updateInfo.isNewer) {
-                            // 有新版本
-                            Column(
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Download,
-                                        contentDescription = null,
-                                        tint = HasselbladOrange,
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                    Text(
-                                        text = "发现新版本 v${updateInfo.versionName}",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = HasselbladOrange,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.height(8.dp))
-
-                                // 更新日志
-                                if (updateInfo.releaseNotes.isNotBlank()) {
-                                    Text(
-                                        text = updateInfo.releaseNotes.take(150) +
-                                                if (updateInfo.releaseNotes.length > 150) "..." else "",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = Color.White.copy(alpha = 0.7f),
-                                        lineHeight = MaterialTheme.typography.bodySmall.lineHeight * 1.2
-                                    )
-                                    Spacer(modifier = Modifier.height(12.dp))
-                                }
-
-                                // 下载按钮（使用国内链接）
-                                Button(
-                                    onClick = onDownloadClick,
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = HasselbladOrange
-                                    ),
-                                    shape = RoundedCornerShape(8.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Download,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text("国内下载")
-                                }
-                            }
-                        } else {
-                            // 已是最新
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.CheckCircle,
-                                    contentDescription = null,
-                                    tint = Color(0xFF4CAF50),
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Text(
-                                    text = "当前已是最新版本",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = Color.White.copy(alpha = 0.8f)
-                                )
-                            }
-                        }
-                    }
-                    checkError != null -> {
-                        // 检查失败
-                        Column {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Warning,
-                                    contentDescription = null,
-                                    tint = Color(0xFFFF5252),
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Text(
-                                    text = "检查失败",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = Color(0xFFFF5252)
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = checkError,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color.White.copy(alpha = 0.6f)
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "点击重试",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = HasselbladOrange,
-                                textDecoration = TextDecoration.Underline,
-                                modifier = Modifier.clickable { onRetryClick() }
-                            )
-                        }
-                    }
-                    else -> {
-                        // 初始状态
-                        Text(
-                            text = "点击检查更新",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.White.copy(alpha = 0.6f),
-                            modifier = Modifier.clickable { onCheckClick() }
+                }
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    contributors.drop(3).forEach { contributor ->
+                        ContributorItem(
+                            name = contributor.name,
+                            url = contributor.url,
+                            context = context
                         )
                     }
                 }
             }
-
-            // 最后检查时间
-            AnimatedVisibility(
-                visible = lastCheckTime != null && !isChecking,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                lastCheckTime?.let { time ->
-                    val timeText = remember(time) {
-                        val diff = System.currentTimeMillis() - time
-                        when {
-                            diff < 60000 -> "刚刚"
-                            diff < 3600000 -> "${diff / 60000}分钟前"
-                            diff < 86400000 -> "${diff / 3600000}小时前"
-                            else -> "${diff / 86400000}天前"
-                        }
-                    }
-                    Text(
-                        text = "最后检查：$timeText",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.White.copy(alpha = 0.4f)
-                    )
-                }
-            }
         }
+    }
+}
+
+@Composable
+private fun ContributorItem(
+    name: String,
+    url: String,
+    context: android.content.Context
+) {
+    Row(
+        modifier = Modifier
+            .clickable {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                context.startActivity(intent)
+            }
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(6.dp)
+                .background(
+                    HasselbladOrange.copy(alpha = 0.6f),
+                    RoundedCornerShape(50)
+                )
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = name,
+            style = MaterialTheme.typography.bodyMedium,
+            color = HasselbladOrange,
+            textDecoration = TextDecoration.Underline
+        )
+    }
+}
+
+@Composable
+private fun FooterSection(context: android.content.Context) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.footer_local),
+            style = MaterialTheme.typography.bodySmall,
+            color = Color.White.copy(alpha = 0.5f)
+        )
+
+        Text(
+            text = stringResource(R.string.privacy_policy),
+            style = MaterialTheme.typography.bodySmall,
+            color = HasselbladOrange.copy(alpha = 0.8f),
+            textDecoration = TextDecoration.Underline,
+            modifier = Modifier.clickable {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.umeng.com/page/policy"))
+                context.startActivity(intent)
+            }
+        )
     }
 }

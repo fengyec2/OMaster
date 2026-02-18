@@ -1,0 +1,238 @@
+<resources>
+    <!-- App Name -->
+    <string name="app_name">OMaster</string>
+    <string name="app_slogan">Master Mode Color Grading Library</string>
+
+    <!-- Common Buttons -->
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="back">Back</string>
+    <string name="refresh">Refresh</string>
+    <string name="update">Update</string>
+    <string name="retry">Retry</string>
+    <string name="loading">Loading…</string>
+    <string name="checking">Checking…</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_about">About</string>
+
+    <!-- Home Tabs -->
+    <string name="tab_all">All</string>
+    <string name="tab_favorites">Favorites</string>
+    <string name="tab_my">My</string>
+
+    <!-- Home Actions -->
+    <string name="create_preset">Create Preset</string>
+    <string name="delete_preset_title">Confirm Delete</string>
+    <string name="delete_preset_message">Are you sure you want to delete this preset? This action cannot be undone.</string>
+
+    <!-- Empty States -->
+    <string name="empty_no_presets">No presets available</string>
+    <string name="empty_no_favorites">No favorite presets</string>
+    <string name="empty_no_custom">No custom presets</string>
+    <string name="empty_no_data">No data available</string>
+    <string name="empty_hint_add_presets">Please add data to assets/presets.json</string>
+    <string name="empty_hint_favorite">Tap the heart icon to favorite presets</string>
+    <string name="empty_hint_create">Tap the bottom right button to create a preset</string>
+    <string name="load_more_hint">More coming soon · Stay tuned</string>
+
+    <!-- Preset Card -->
+    <string name="preset_favorite">Favorite</string>
+    <string name="preset_favorited">Favorited</string>
+    <string name="preset_delete">Delete</string>
+    <string name="preset_new">NEW</string>
+
+    <!-- Detail Page -->
+    <string name="detail_title">Preset Details</string>
+    <string name="detail_load_failed">Failed to load preset data</string>
+    <string name="floating_window">Floating Window</string>
+
+    <!-- Professional Parameters -->
+    <string name="param_iso">ISO</string>
+    <string name="param_shutter">Shutter</string>
+    <string name="param_exposure">Exposure Comp.</string>
+    <string name="param_color_temp">Color Temp</string>
+    <string name="param_white_balance">White Balance</string>
+    <string name="param_tone">Tone</string>
+    <string name="param_tone_style">Tone Style</string>
+    <string name="param_pro_adjust">Pro Parameters (Adjust based on environment)</string>
+
+    <!-- Color Grading Parameters -->
+    <string name="section_color_grading">Color Grading</string>
+    <string name="param_filter">Filter</string>
+    <string name="param_soft_light">Soft Light</string>
+    <string name="param_tone_curve">Tone Curve</string>
+    <string name="param_saturation">Saturation</string>
+    <string name="param_warm_cool">Warm/Cool</string>
+    <string name="param_cyan_magenta">Cyan/Magenta</string>
+    <string name="param_sharpness">Sharpness</string>
+    <string name="param_vignette">Vignette</string>
+
+    <!-- Shooting Modes -->
+    <string name="mode_pro">Pro Mode</string>
+    <string name="mode_auto">Auto Mode</string>
+
+    <!-- Create/Edit Preset -->
+    <string name="create_preset_title">Create Preset</string>
+    <string name="edit_preset_title">Edit Preset</string>
+    <string name="save_preset">Save Preset</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="save_failed">Save failed, please try again</string>
+
+    <!-- Cover Image -->
+    <string name="cover_image">Cover Image</string>
+    <string name="change_image">Tap to change image</string>
+    <string name="select_image">Select Cover Image</string>
+    <string name="image_ratio_hint">Recommended 16:9 aspect ratio</string>
+
+    <!-- Preset Name -->
+    <string name="preset_name">Preset Name</string>
+    <string name="preset_name_hint">Give your preset a name</string>
+
+    <!-- Parameter Sections -->
+    <string name="section_basic">Basic</string>
+    <string name="section_pro">Pro</string>
+    <string name="section_color">Color</string>
+    <string name="section_other">Other</string>
+    <string name="shooting_mode">Shooting Mode</string>
+    <string name="filter_style">Filter Style</string>
+    <string name="filter_intensity">Filter Intensity</string>
+    <string name="soft_light_effect">Soft Light Effect</string>
+
+    <!-- Filter Options -->
+    <string name="filter_standard">Standard</string>
+    <string name="filter_neon">Neon</string>
+    <string name="filter_fresh">Fresh</string>
+    <string name="filter_vintage">Vintage</string>
+    <string name="filter_clear">Clear</string>
+    <string name="filter_vivid">Vivid</string>
+    <string name="filter_fairy">Fairy</string>
+    <string name="filter_humanities">Humanities</string>
+    <string name="filter_natural">Natural</string>
+    <string name="filter_delicious">Delicious</string>
+    <string name="filter_cool">Cool</string>
+    <string name="filter_warm">Warm</string>
+    <string name="filter_rich">Rich</string>
+    <string name="filter_advanced_gray">Advanced Gray</string>
+    <string name="filter_bw">B&amp;W</string>
+    <string name="filter_mono">Mono</string>
+    <string name="filter_cyberpunk">Cyberpunk</string>
+
+    <!-- Soft Light Options -->
+    <string name="soft_none">None</string>
+    <string name="soft_gentle">Gentle</string>
+    <string name="soft_dreamy">Dreamy</string>
+    <string name="soft_hazy">Hazy</string>
+
+    <!-- Vignette Options -->
+    <string name="vignette_on">On</string>
+    <string name="vignette_off">Off</string>
+
+    <!-- About Page -->
+    <string name="about_title">About</string>
+    <string name="version_current">Current Version: v%1$s</string>
+    <string name="version_check">Tap to check for updates</string>
+    <string name="version_checking">Checking for updates…</string>
+    <string name="version_new_found">New version found v%1$s</string>
+    <string name="version_latest">Already up to date</string>
+    <string name="version_check_failed">Check failed</string>
+    <string name="version_download">Download</string>
+    <string name="version_download_btn">Update</string>
+    <string name="version_is_latest">Up to date</string>
+    <string name="version_retry">Tap to retry</string>
+    <string name="last_check">Last checked: %1$s</string>
+    <string name="time_just_now">Just now</string>
+    <string name="time_minutes_ago">%1$d min ago</string>
+    <string name="time_hours_ago">%1$d hr ago</string>
+    <string name="time_days_ago">%1$d days ago</string>
+
+    <!-- Feature Intro -->
+    <string name="feature_title">Features</string>
+    <string name="feature_desc_1">OMaster is a color grading parameter management tool designed for OPPO/OnePlus/Realme mobile photography enthusiasts.</string>
+    <string name="feature_desc_2">You can view, favorite, and reproduce Master Mode photography color grading parameters, including exposure, contrast, saturation, color temperature, and more.</string>
+
+    <!-- Credits -->
+    <string name="credits_title">Credits</string>
+    <string name="developer">Developer</string>
+    <string name="developer_name">Silas</string>
+    <string name="material_provider">Material Provider</string>
+
+    <!-- Footer -->
+    <string name="footer_local">Pure local operation, data stored locally</string>
+    <string name="privacy_policy">User Agreement &amp; Privacy Policy</string>
+
+    <!-- Privacy Policy Page -->
+    <string name="privacy_title">User Agreement &amp; Privacy Policy</string>
+    <string name="welcome_title">Welcome to OMaster</string>
+    <string name="welcome_desc">OMaster is a color grading parameter management tool designed for OPPO/OnePlus/Realme mobile photography enthusiasts. Here, you can view, favorite, and reproduce Master Mode photography color grading parameters.</string>
+    <string name="features_title">Features</string>
+    <string name="features_list">• View Master Mode color grading parameters\n• Support multiple preset styles\n• Pure local operation, data stored locally\n• No internet required</string>
+    <string name="data_collection_title">Data Collection</string>
+    <string name="data_collection_desc">To provide better service, we use Umeng Analytics SDK to collect app usage data.</string>
+    <string name="sdk_info_title">Umeng SDK Info</string>
+    <string name="sdk_name_label">SDK Name</string>
+    <string name="sdk_name">Umeng SDK</string>
+    <string name="service_type_label">Service Type</string>
+    <string name="service_type">Analytics</string>
+    <string name="collect_info_label">Personal Info Collected</string>
+    <string name="collect_info">Device info (MAC/Android ID/IDFA/GUID/IP, etc.)</string>
+    <string name="privacy_link_label">Privacy Policy Link:</string>
+    <string name="user_rights_title">User Rights</string>
+    <string name="user_rights_desc">You have the right to access, correct, and delete your personal information. To exercise these rights, please contact us through the in-app contact information.</string>
+    <string name="contact_title">Contact Us</string>
+    <string name="contact_info">If you have any questions about this privacy policy, please contact:\nDeveloper: Silas\nEmail: iboy66lee@qq.com</string>
+    <string name="last_updated">Last Updated: %1$s</string>
+
+    <!-- Welcome Dialog -->
+    <string name="welcome_dialog_title">Welcome to OMaster</string>
+    <string name="welcome_version">Master Mode Color Grading Library v1.0</string>
+    <string name="feature_1_title">Pro Parameters</string>
+    <string name="feature_1_desc">View professional photography color grading parameters for Master Mode</string>
+    <string name="feature_2_title">Multiple Styles</string>
+    <string name="feature_2_desc">Support multiple preset styles to meet different shooting needs</string>
+    <string name="feature_3_title">Local Storage</string>
+    <string name="feature_3_desc">Pure local operation, data stored locally</string>
+    <string name="agree_prefix">I have read and agree to</string>
+    <string name="umeng_notice">• We use Umeng SDK for analytics\n• Collect device info to optimize app experience</string>
+    <string name="privacy_hint">Tap User Agreement &amp; Privacy Policy to view details</string>
+    <string name="disagree">Disagree</string>
+    <string name="agree_and_start">Agree &amp; Start</string>
+
+    <!-- Floating Window Guide Dialog -->
+    <string name="floating_guide_title">Enable Floating Window</string>
+    <string name="floating_guide_desc">To conveniently view parameters while shooting, OMaster needs floating window permission</string>
+    <string name="permission_trouble">If you encounter permission issues:</string>
+    <string name="permission_step_1">Go to Settings → Apps</string>
+    <string name="permission_step_2">Find OMaster app</string>
+    <string name="permission_step_3">Tap ⋮ menu in top right</string>
+    <string name="permission_step_4">Select "Remove all authorization restrictions"</string>
+    <string name="permission_tip">Tip: After removing restrictions, ensure only "Floating Window" permission is granted</string>
+    <string name="go_to_settings">Go to Settings</string>
+    <string name="later">Later</string>
+
+    <!-- Floating Window Service -->
+    <string name="floating_preset">Preset</string>
+    <string name="floating_original">Original</string>
+    <string name="floating_basic_params">Basic Params</string>
+    <string name="floating_filter_icon">◈</string>
+    <string name="floating_filter_label">Filter</string>
+    <string name="floating_soft_icon">✦</string>
+    <string name="floating_soft_label">Soft</string>
+    <string name="floating_tone_icon">◐</string>
+    <string name="floating_tone_label">Tone</string>
+    <string name="floating_saturation_icon">◉</string>
+    <string name="floating_saturation_label">Sat</string>
+    <string name="floating_warm_icon">◑</string>
+    <string name="floating_warm_label">Warm</string>
+    <string name="floating_cyan_icon">◒</string>
+    <string name="floating_cyan_label">Cyan</string>
+    <string name="floating_sharpness_icon">◆</string>
+    <string name="floating_sharpness_label">Sharp</string>
+    <string name="floating_vignette_icon">◍</string>
+    <string name="floating_vignette_label">Vignette</string>
+
+</resources>
