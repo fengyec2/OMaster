@@ -74,6 +74,11 @@ dependencies {
     // Kotlin Serialization - 用于导航参数序列化
     implementation(libs.kotlinx.serialization.json)
 
+    // Ktor HTTP client for fetching remote presets
+    implementation("io.ktor:ktor-client-core:2.3.0")
+    implementation("io.ktor:ktor-client-cio:2.3.0")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.0")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.0")
     // Coil - 图片加载库，用于加载本地 assets 图片
     implementation(libs.coil.compose)
 
