@@ -1,19 +1,5 @@
 Changelog
 
-## 🐛 Bug 修复
-
-- Fix gradlew executable permission
-- Update Java version from 11 to 17 in beta-release workflow
-- Update ProGuard rules to ignore warnings for ManagementFactory and SLF4J
-- Update beta-release workflow to improve git-cliff installation and changelog generation
-- Replace manual git-cliff installation with orhun/git-cliff-action for changelog generation
-- Refactor beta-release workflow for improved release management and validation
-
-## 🔧 构建系统
-
-- 添加自动化配置
-- 更新 CI 配置
-
 ## 🚀 新增功能与优化
 
 - 添加远程预设更新功能和配置管理
@@ -24,10 +10,22 @@ Changelog
 
 - Remove redundant colors property from OutlinedTextField in AboutScreen
 - Improve JSON fetching logic in PresetRemoteManager to handle text/plain responses
+- Fix gradlew executable permission
+- Update Java version from 11 to 17 in beta-release workflow
+- Update ProGuard rules to ignore warnings for ManagementFactory and SLF4J
+- Update beta-release workflow to improve git-cliff installation and changelog generation
+- Replace manual git-cliff installation with orhun/git-cliff-action for changelog generation
+- Refactor beta-release workflow for improved release management and validation
+
+## 📚 文档更新
+
+- 更新 CHANGELOG.md 为 v1.2.0
 
 ## 🔧 构建系统
 
 - 使用 Gradle Daemon toolchain 自动管理项目所需的 JDK 版本
+- 添加自动化配置
+- 更新 CI 配置
 
 ## Chore
 
