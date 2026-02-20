@@ -30,6 +30,7 @@ import kotlinx.serialization.Serializable
  * @param sharpness 锐度，数字 0-100
  * @param vignette 暗角开关，"开" 或 "关"
  * @param isNew 是否为新预设，用于显示 NEW 标签和置顶（手动控制）
+ * @param shootingTips 拍摄建议，包含环境及场景建议
 */
 @Serializable
 data class MasterPreset(
@@ -56,7 +57,8 @@ data class MasterPreset(
     val vignette: String,
     val isFavorite: Boolean = false,
     val isCustom: Boolean = false,
-    val isNew: Boolean = false  // 新增：是否为新预设（手动在JSON中标记）
+    val isNew: Boolean = false,  // 新增：是否为新预设（手动在JSON中标记）
+    val shootingTips: String? = null  // 新增：拍摄建议
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         id = parcel.readString(),
@@ -82,7 +84,8 @@ data class MasterPreset(
         vignette = parcel.readString() ?: "关",
         isFavorite = parcel.readByte() != 0.toByte(),
         isCustom = parcel.readByte() != 0.toByte(),
-        isNew = parcel.readByte() != 0.toByte()
+        isNew = parcel.readByte() != 0.toByte(),
+        shootingTips = parcel.readString()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -110,6 +113,7 @@ data class MasterPreset(
         parcel.writeByte(if (isFavorite) 1 else 0)
         parcel.writeByte(if (isCustom) 1 else 0)
         parcel.writeByte(if (isNew) 1 else 0)
+        parcel.writeString(shootingTips)
     }
 
     override fun describeContents(): Int = 0

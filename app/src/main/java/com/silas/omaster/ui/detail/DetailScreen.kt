@@ -50,6 +50,7 @@ import com.silas.omaster.ui.components.ModeBadge
 import com.silas.omaster.ui.components.OMasterTopAppBar
 import com.silas.omaster.ui.components.ParameterCard
 import com.silas.omaster.ui.components.SectionTitle
+import com.silas.omaster.ui.components.ShootingTipsCard
 import com.silas.omaster.ui.service.FloatingWindowController
 import com.silas.omaster.ui.service.FloatingWindowService
 import com.silas.omaster.ui.theme.HasselbladOrange
@@ -193,6 +194,12 @@ fun DetailScreen(
 
                         // 通用参数
                         CommonParameters(it, it.isProMode)
+
+                        // 拍摄建议
+                        it.shootingTips?.let { tips ->
+                            Spacer(modifier = Modifier.height(24.dp))
+                            ShootingTipsCard(tips = tips)
+                        }
                     }
                 }
             }

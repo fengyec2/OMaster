@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -316,6 +318,63 @@ fun ParameterCard(
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
+        }
+    }
+}
+
+/**
+ * 拍摄建议卡片组件
+ */
+@Composable
+fun ShootingTipsCard(
+    tips: String,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = DarkGray.copy(alpha = 0.8f)
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            // 标题行
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Lightbulb,
+                    contentDescription = null,
+                    tint = HasselbladOrange,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "拍摄建议",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = HasselbladOrange
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // 建议内容
+            tips.split("\n").forEach { line ->
+                if (line.isNotBlank()) {
+                    Text(
+                        text = line.trim(),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White.copy(alpha = 0.9f),
+                        lineHeight = 22.sp
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
         }
     }
 }
