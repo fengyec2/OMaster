@@ -347,6 +347,22 @@ fun ShootingTipsCard(
     tips: String,
     modifier: Modifier = Modifier
 ) {
+    DescriptionCard(
+        title = stringResource(R.string.shooting_tips),
+        content = tips,
+        modifier = modifier
+    )
+}
+
+/**
+ * 通用描述卡片组件
+ */
+@Composable
+fun DescriptionCard(
+    title: String,
+    content: String,
+    modifier: Modifier = Modifier
+) {
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -371,7 +387,7 @@ fun ShootingTipsCard(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = stringResource(R.string.shooting_tips),
+                    text = title,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = HasselbladOrange
@@ -380,8 +396,8 @@ fun ShootingTipsCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // 建议内容
-            tips.split("\n").forEach { line ->
+            // 内容
+            content.split("\n").forEach { line ->
                 if (line.isNotBlank()) {
                     Text(
                         text = line.trim(),

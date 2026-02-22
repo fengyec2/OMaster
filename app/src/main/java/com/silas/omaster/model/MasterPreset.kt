@@ -10,6 +10,34 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
+data class PresetDescription(
+    val title: String,
+    val content: String
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readString() ?: ""
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(title)
+        parcel.writeString(content)
+    }
+
+    override fun describeContents(): Int = 0
+
+    companion object CREATOR : Parcelable.Creator<PresetDescription> {
+        override fun createFromParcel(parcel: Parcel): PresetDescription {
+            return PresetDescription(parcel)
+        }
+
+        override fun newArray(size: Int): Array<PresetDescription?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+@Serializable
 data class PresetItem(
     val label: String,
     val value: String,
@@ -98,6 +126,7 @@ data class PresetSection(
  * @param sharpness 锐度，数字 0-100
  * @param vignette 暗角开关，"开" 或 "关"
  * @param isNew 是否为新预设，用于显示 NEW 标签和置顶（手动控制）
+ * @param description 描述信息，包含标题和内容，用于替代 shootingTips
  * @param shootingTips 拍摄建议，包含环境及场景建议（已废弃，仅用于兼容旧版本自定义预设）
  * @param sections 动态参数分组列表，用于替代硬编码的参数显示
  */
@@ -127,6 +156,7 @@ data class MasterPreset(
     val isFavorite: Boolean = false,
     val isCustom: Boolean = false,
     val isNew: Boolean = false,
+    val description: PresetDescription? = null,
     val shootingTips: String? = null,
     val sections: List<PresetSection>? = null,
     val tags: List<String> = emptyList()
@@ -156,6 +186,7 @@ data class MasterPreset(
         isFavorite = parcel.readByte() != 0.toByte(),
         isCustom = parcel.readByte() != 0.toByte(),
         isNew = parcel.readByte() != 0.toByte(),
+        description = parcel.readParcelable(PresetDescription::class.java.classLoader),
         shootingTips = parcel.readString(),
         sections = parcel.createTypedArrayList(PresetSection.CREATOR),
         tags = parcel.createStringArrayList() ?: emptyList()
@@ -186,6 +217,7 @@ data class MasterPreset(
         parcel.writeByte(if (isFavorite) 1 else 0)
         parcel.writeByte(if (isCustom) 1 else 0)
         parcel.writeByte(if (isNew) 1 else 0)
+        parcel.writeParcelable(description, flags)
         parcel.writeString(shootingTips)
         parcel.writeTypedList(sections)
         parcel.writeStringList(tags)
@@ -193,24 +225,6 @@ data class MasterPreset(
 
     fun getDisplaySections(context: Context): List<PresetSection> {
         if (!sections.isNullOrEmpty()) {
-            // 检查 sections 中是否包含 shootingTips（兼容旧版自定义预设）
-            val hasTips = sections.any { section ->
-                section.items.any { it.label == "@string/shooting_tips" }
-            }
-
-            // 如果没有包含且 shootingTips 字段有值，则追加
-            if (!hasTips && !shootingTips.isNullOrEmpty()) {
-                val tipsItem = PresetItem(
-                    label = "@string/shooting_tips",
-                    value = shootingTips,
-                    span = 2
-                )
-                // 创建新列表以避免修改不可变列表
-                val newSections = sections.toMutableList()
-                newSections.add(PresetSection(items = listOf(tipsItem)))
-                return newSections
-            }
-
             return sections
         }
 
@@ -320,17 +334,6 @@ data class MasterPreset(
 
         if (colorItems.isNotEmpty()) {
             generatedSections.add(PresetSection(context.getString(R.string.section_color_grading), colorItems))
-        }
-
-        // 3. 拍摄建议 (兼容旧版)
-        if (!shootingTips.isNullOrEmpty()) {
-            generatedSections.add(PresetSection(items = listOf(
-                PresetItem(
-                    label = "@string/shooting_tips",
-                    value = shootingTips,
-                    span = 2
-                )
-            )))
         }
 
         return generatedSections
