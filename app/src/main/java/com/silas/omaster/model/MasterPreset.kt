@@ -225,7 +225,17 @@ data class MasterPreset(
 
     fun getDisplaySections(context: Context): List<PresetSection> {
         if (!sections.isNullOrEmpty()) {
-            return sections
+            return sections.map { section ->
+                section.copy(
+                    title = section.title?.let { PresetI18n.resolveString(context, it) },
+                    items = section.items.map { item ->
+                        item.copy(
+                            label = PresetI18n.resolveString(context, item.label),
+                            value = PresetI18n.resolveString(context, item.value)
+                        )
+                    }
+                )
+            }
         }
 
         // 兼容旧版硬编码逻辑，动态生成 sections

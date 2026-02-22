@@ -198,7 +198,8 @@ object PresetI18n {
     @Composable
     fun getLocalizedPresetName(name: String): String {
         val resId = getPresetNameResId(name)
-        return if (resId != null) stringResource(resId) else name
+        if (resId != null) return stringResource(resId)
+        return resolveStringComposable(name)
     }
 
     /**
@@ -234,7 +235,8 @@ object PresetI18n {
      */
     fun getLocalizedPresetName(context: android.content.Context, name: String): String {
         val resId = getPresetNameResId(name)
-        return if (resId != null) context.getString(resId) else name
+        if (resId != null) return context.getString(resId)
+        return resolveString(context, name)
     }
     
     /**
