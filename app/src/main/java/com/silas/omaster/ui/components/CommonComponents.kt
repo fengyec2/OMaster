@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import coil.request.CachePolicy
 import com.silas.omaster.R
 import com.silas.omaster.model.MasterPreset
 import com.silas.omaster.ui.animation.AnimationSpecs
@@ -260,6 +261,8 @@ fun PresetImage(
 
     // 判断图片路径类型
     val imageUri = when {
+        // 网络图片：以 http 或 https 开头
+        preset.coverPath.startsWith("http") -> preset.coverPath
         // 自定义预设：路径以 presets/ 开头，使用内部存储
         preset.isCustom || preset.coverPath.startsWith("presets/") -> {
             File(context.filesDir, preset.coverPath).toUri().toString()
@@ -272,6 +275,7 @@ fun PresetImage(
         model = ImageRequest.Builder(context)
             .data(imageUri)
             .crossfade(AnimationSpecs.FastTween.durationMillis) // 使用快速动画规格
+            .diskCachePolicy(CachePolicy.ENABLED) // 确保开启磁盘缓存
             .build(),
         contentDescription = preset.name,
         contentScale = contentScale,

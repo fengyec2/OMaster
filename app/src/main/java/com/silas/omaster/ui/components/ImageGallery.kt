@@ -121,6 +121,8 @@ fun ImageGallery(
                 // 判断图片路径类型
                 val imagePath = images[page]
                 val imageUri = when {
+                    // 网络图片：以 http 或 https 开头
+                    imagePath.startsWith("http") -> imagePath
                     // 内部存储路径：以 presets/ 开头
                     imagePath.startsWith("presets/") -> {
                         File(context.filesDir, imagePath).toUri().toString()
