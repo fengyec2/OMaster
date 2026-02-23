@@ -43,7 +43,7 @@
 ## ✨ 核心功能
 
 ### 🎨 丰富的预设库
-- **19+ 款专业预设** - 涵盖胶片、复古、清新、黑白、美食等多种风格
+- **23+ 款专业预设** - 涵盖胶片、复古、清新、黑白、美食、夜景等多种风格
 - **Pro & Auto 双模式** - 支持专业模式和自动模式参数
 - **新预设置顶标记** - 新增预设显示 NEW 标签并置顶展示
 
@@ -172,6 +172,20 @@ OMaster 支持的大师模式参数包括：
 
 ### 预设数据格式
 
+|      外层键      |      描述      |      值      |
+| ------------- | ------------- | ------------- |
+| coverPath | App 首页封面图片 | 相对路径或 URL |
+| galleryImages | 单个预设下轮播图片 | 相对路径或 URL |
+| mode | 相机模式 | 只接受 auto 和 pro（即将废弃） |
+| isNew | 是否为新配置 | true 置顶，非必须键 |
+
+|      内层键      |      描述      |      值      |
+| ------------- | ------------- | ------------- |
+| title | 预设配置的组名称 | 支持 @string 解析 |
+| label | 组下单个预设配置的名称 | 支持 @string 解析 |
+| span | 单个预设配置卡片宽度 | 1: 半宽，2: 全宽 |
+
+
 ```json
 {
   "presets": [
@@ -281,7 +295,8 @@ OMaster 支持的大师模式参数包括：
   - [@派瑞特凯](https://xhslink.com/m/AkrgUI0kgg1)
   - [@ONESTEP™](https://xhslink.com/m/4LZ8zRdNCSv)
   - [@盒子叔](https://xhslink.com/m/4mje9mimNXJ)
-  - **[@Aurora](https://xhslink.com/m/2Ebow4iyVOE)** ⭐ 新增
+  - [@Aurora](https://xhslink.com/m/2Ebow4iyVOE)
+  - **[@屋顶橙子味](https://xhslink.com/m/xxx)** ⭐ 新增
 
 ---
 
