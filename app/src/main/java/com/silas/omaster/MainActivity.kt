@@ -51,6 +51,8 @@ import kotlinx.serialization.Serializable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.silas.omaster.data.repository.PresetRepository
 
+import com.silas.omaster.ui.settings.SettingsScreen
+
 val LocalActivity = compositionLocalOf<Activity> { error("No Activity provided") }
 
 sealed class Screen {
@@ -68,6 +70,9 @@ sealed class Screen {
 
     @Serializable
     data class EditPreset(val presetId: String) : Screen()
+
+    @Serializable
+    data object Settings : Screen()
 
     @Serializable
     data object About : Screen()
@@ -203,7 +208,9 @@ fun MainApp(navController: NavHostController) {
         )
     }
 
-    val showBottomNav = currentRoute?.contains("Home") == true || currentRoute?.contains("About") == true
+    val showBottomNav = currentRoute?.contains("Home") == true || 
+                        currentRoute?.contains("About") == true || 
+                        currentRoute?.contains("Settings") == true
 
     var isHomeScrollingUp by remember { mutableStateOf(true) }
     
@@ -341,6 +348,10 @@ fun MainApp(navController: NavHostController) {
                 )
             }
 
+            composable<Screen.Settings> {
+                SettingsScreen()
+            }
+
             composable<Screen.About> {
                 AboutScreen(
                     onBack = {
@@ -361,18 +372,36 @@ fun MainApp(navController: NavHostController) {
                 currentRoute = when {
                     currentRoute?.contains("Home") == true -> "home"
                     currentRoute?.contains("About") == true -> "about"
+                    currentRoute?.contains("Settings") == true -> "settings"
                     else -> "home"
                 },
                 onNavigate = { route ->
                     when (route) {
                         "home" -> {
-                            if (currentRoute?.contains("About") == true) {
-                                navController.popBackStack()
+                            if (currentRoute?.contains("Home") != true) {
+                                navController.popBackStack(Screen.Home, false)
+                            }
+                        }
+                        "settings" -> {
+                            if (currentRoute?.contains("Settings") != true) {
+                                navController.navigate(Screen.Settings) {
+                                    popUpTo(Screen.Home) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         }
                         "about" -> {
-                            if (currentRoute?.contains("Home") == true) {
-                                navController.navigate(Screen.About)
+                            if (currentRoute?.contains("About") != true) {
+                                navController.navigate(Screen.About) {
+                                    popUpTo(Screen.Home) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         }
                     }
