@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
 import com.silas.omaster.R
 import com.silas.omaster.ui.theme.DarkGray
-import com.silas.omaster.ui.theme.HasselbladOrange
 import com.silas.omaster.ui.theme.PureBlack
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -142,7 +141,7 @@ fun WelcomeDialog(
                                     checked = agreedToPolicy,
                                     onCheckedChange = { agreedToPolicy = it },
                                     colors = CheckboxDefaults.colors(
-                                        checkedColor = HasselbladOrange,
+                                        checkedColor = MaterialTheme.colorScheme.primary,
                                         uncheckedColor = Color.White.copy(alpha = 0.5f)
                                     )
                                 )
@@ -158,7 +157,7 @@ fun WelcomeDialog(
                                 Text(
                                     text = stringResource(R.string.privacy_policy),
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = HasselbladOrange,
+                                    color = MaterialTheme.colorScheme.primary,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier
                                         .padding(start = 4.dp)
@@ -182,7 +181,7 @@ fun WelcomeDialog(
                     Text(
                         text = stringResource(R.string.privacy_hint),
                         style = MaterialTheme.typography.bodySmall,
-                        color = HasselbladOrange,
+                        color = MaterialTheme.colorScheme.primary,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -232,7 +231,7 @@ fun WelcomeDialog(
                         modifier = Modifier.weight(1f),
                         enabled = agreedToPolicy,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = HasselbladOrange,
+                            containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = Color.White,
                             disabledContainerColor = DarkGray,
                             disabledContentColor = Color.White.copy(alpha = 0.5f)

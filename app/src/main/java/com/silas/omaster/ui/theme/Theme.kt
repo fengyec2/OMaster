@@ -15,19 +15,18 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowInsetsControllerCompat
 
 /**
- * OMaster 深色主题配色方案
- * 采用纯黑背景 + 哈苏橙强调色的组合
+ * 生成深色主题配色方案
  */
-private val DarkColorScheme = darkColorScheme(
-    primary = HasselbladOrange,
+private fun generateDarkColorScheme(primaryColor: Color) = darkColorScheme(
+    primary = primaryColor,
     onPrimary = PureBlack,
-    primaryContainer = HasselbladOrangeDark,
+    primaryContainer = primaryColor.copy(alpha = 0.8f),
     onPrimaryContainer = OffWhite,
     secondary = LightGray,
     onSecondary = PureBlack,
     secondaryContainer = DarkGray,
     onSecondaryContainer = OffWhite,
-    tertiary = HasselbladOrangeLight,
+    tertiary = primaryColor.copy(alpha = 0.6f),
     onTertiary = PureBlack,
     tertiaryContainer = MediumGray,
     onTertiaryContainer = OffWhite,
@@ -45,18 +44,18 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 /**
- * 浅色主题配色方案（备用）
+ * 生成浅色主题配色方案（备用）
  */
-private val LightColorScheme = lightColorScheme(
-    primary = HasselbladOrange,
+private fun generateLightColorScheme(primaryColor: Color) = lightColorScheme(
+    primary = primaryColor,
     onPrimary = OffWhite,
-    primaryContainer = HasselbladOrangeLight,
+    primaryContainer = primaryColor.copy(alpha = 0.6f),
     onPrimaryContainer = PureBlack,
     secondary = DarkGray,
     onSecondary = OffWhite,
     secondaryContainer = LightGray,
     onSecondaryContainer = PureBlack,
-    tertiary = HasselbladOrangeDark,
+    tertiary = primaryColor.copy(alpha = 0.8f),
     onTertiary = OffWhite,
     tertiaryContainer = OffWhite,
     onTertiaryContainer = PureBlack,
@@ -78,12 +77,14 @@ private val LightColorScheme = lightColorScheme(
  *
  * @param darkTheme 是否使用深色主题，默认为 true（强制深色模式）
  * @param dynamicColor 是否使用动态颜色，默认为 false
+ * @param brandTheme 品牌主题，默认为哈苏
  * @param content 主题内容
  */
 @Composable
 fun OMasterTheme(
     darkTheme: Boolean = true, // 强制深色模式
     dynamicColor: Boolean = false, // 禁用动态颜色，使用品牌色
+    brandTheme: BrandTheme = BrandTheme.Hasselblad,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -91,8 +92,8 @@ fun OMasterTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> generateDarkColorScheme(brandTheme.primaryColor)
+        else -> generateLightColorScheme(brandTheme.primaryColor)
     }
 
     val view = LocalView.current

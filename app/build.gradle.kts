@@ -108,6 +108,7 @@ dependencies {
     // ⚠️ 替换友盟硬编码依赖
     implementation(libs.umeng.common)
     implementation(libs.umeng.asms)
+    implementation(libs.androidx.material3)
 
     // 测试依赖（已使用 catalog）
     testImplementation(libs.junit)

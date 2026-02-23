@@ -71,9 +71,7 @@ import com.silas.omaster.R
 import com.silas.omaster.ui.components.OMasterTopAppBar
 import com.silas.omaster.ui.theme.CardBorderLight
 import com.silas.omaster.ui.theme.DarkGray
-import com.silas.omaster.ui.theme.GradientOrangeEnd
-import com.silas.omaster.ui.theme.GradientOrangeStart
-import com.silas.omaster.ui.theme.HasselbladOrange
+import com.silas.omaster.ui.theme.NearBlack
 import com.silas.omaster.util.UpdateChecker
 import com.silas.omaster.util.VersionInfo
 import kotlinx.coroutines.delay
@@ -267,7 +265,7 @@ fun AboutScreen(
                             Icon(
                                 imageVector = Icons.Default.CloudDownload,
                                 contentDescription = null,
-                                tint = HasselbladOrange,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(20.dp)
                             )
                             Text(
@@ -337,8 +335,8 @@ fun AboutScreen(
                             }
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = HasselbladOrange.copy(alpha = 0.15f),
-                            contentColor = HasselbladOrange
+                            containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                            contentColor = MaterialTheme.colorScheme.primary
                         ),
                         shape = RoundedCornerShape(8.dp),
                         enabled = !isFetchingPresets,
@@ -348,7 +346,7 @@ fun AboutScreen(
                             CircularProgressIndicator(
                                 modifier = Modifier.size(16.dp),
                                 strokeWidth = 2.dp,
-                                color = HasselbladOrange
+                                color = MaterialTheme.colorScheme.primary
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(stringResource(R.string.updating))
@@ -415,7 +413,7 @@ private fun AppTitleSection(currentVersionName: String) {
     ) {
         Text(
             text = buildAnnotatedString {
-                withStyle(style = SpanStyle(color = HasselbladOrange)) {
+                withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
                     append("O")
                 }
                 withStyle(style = SpanStyle(color = Color.White)) {
@@ -439,7 +437,7 @@ private fun AppTitleSection(currentVersionName: String) {
         Box(
             modifier = Modifier
                 .background(
-                    color = HasselbladOrange.copy(alpha = 0.15f),
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
                     shape = RoundedCornerShape(12.dp)
                 )
                 .padding(horizontal = 12.dp, vertical = 4.dp)
@@ -447,7 +445,7 @@ private fun AppTitleSection(currentVersionName: String) {
             Text(
                 text = "v$currentVersionName",
                 style = MaterialTheme.typography.labelMedium,
-                color = HasselbladOrange,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Medium
             )
         }
@@ -472,7 +470,7 @@ private fun UpdateCard(
             .fillMaxWidth()
             .border(
                 width = if (hasUpdate) 1.5.dp else 1.dp,
-                color = if (hasUpdate) HasselbladOrange.copy(alpha = 0.5f) else CardBorderLight,
+                color = if (hasUpdate) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else CardBorderLight,
                 shape = RoundedCornerShape(16.dp)
             ),
         colors = CardDefaults.cardColors(
@@ -498,7 +496,7 @@ private fun UpdateCard(
                         modifier = Modifier
                             .size(36.dp)
                             .background(
-                                color = if (hasUpdate) HasselbladOrange.copy(alpha = 0.15f) else Color.White.copy(alpha = 0.05f),
+                                color = if (hasUpdate) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) else Color.White.copy(alpha = 0.05f),
                                 shape = RoundedCornerShape(10.dp)
                             ),
                         contentAlignment = Alignment.Center
@@ -506,7 +504,7 @@ private fun UpdateCard(
                         Icon(
                             imageVector = Icons.Default.Download,
                             contentDescription = null,
-                            tint = if (hasUpdate) HasselbladOrange else Color.White.copy(alpha = 0.6f),
+                            tint = if (hasUpdate) MaterialTheme.colorScheme.primary else Color.White.copy(alpha = 0.6f),
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -538,7 +536,7 @@ private fun UpdateCard(
                     Icon(
                         imageVector = Icons.Default.Refresh,
                         contentDescription = stringResource(R.string.refresh),
-                        tint = HasselbladOrange.copy(alpha = 0.7f),
+                        tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
                         modifier = Modifier
                             .size(20.dp)
                             .clickable { onCheckClick() }
@@ -558,7 +556,7 @@ private fun UpdateCard(
                         ) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(18.dp),
-                                color = HasselbladOrange,
+                                color = MaterialTheme.colorScheme.primary,
                                 strokeWidth = 2.dp
                             )
                             Text(
@@ -582,7 +580,7 @@ private fun UpdateCard(
                                     Box(
                                         modifier = Modifier
                                             .background(
-                                                color = HasselbladOrange.copy(alpha = 0.2f),
+                                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
                                                 shape = RoundedCornerShape(6.dp)
                                             )
                                             .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -590,7 +588,7 @@ private fun UpdateCard(
                                         Text(
                                             text = "v${updateInfo.versionName}",
                                             style = MaterialTheme.typography.labelMedium,
-                                            color = HasselbladOrange,
+                                            color = MaterialTheme.colorScheme.primary,
                                             fontWeight = FontWeight.SemiBold
                                         )
                                     }
@@ -598,7 +596,7 @@ private fun UpdateCard(
                                 Button(
                                     onClick = onDownloadClick,
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = HasselbladOrange
+                                        containerColor = MaterialTheme.colorScheme.primary
                                     ),
                                     shape = RoundedCornerShape(10.dp),
                                     contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp, vertical = 8.dp)
@@ -643,7 +641,7 @@ private fun UpdateCard(
                             Text(
                                 text = stringResource(R.string.version_retry),
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = HasselbladOrange
+                                color = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -698,7 +696,7 @@ private fun FeatureCard() {
                 Icon(
                     imageVector = Icons.Default.Info,
                     contentDescription = null,
-                    tint = HasselbladOrange,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp)
                 )
                 Text(
@@ -765,7 +763,7 @@ private fun CreditsCard(context: android.content.Context) {
                 Icon(
                     imageVector = Icons.Default.Favorite,
                     contentDescription = null,
-                    tint = HasselbladOrange,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp)
                 )
                 Text(
@@ -866,7 +864,7 @@ private fun ContributorItem(
             modifier = Modifier
                 .size(6.dp)
                 .background(
-                    HasselbladOrange.copy(alpha = 0.6f),
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
                     RoundedCornerShape(50)
                 )
         )
@@ -874,7 +872,7 @@ private fun ContributorItem(
         Text(
             text = name,
             style = MaterialTheme.typography.bodyMedium,
-            color = HasselbladOrange,
+            color = MaterialTheme.colorScheme.primary,
             textDecoration = TextDecoration.Underline
         )
     }
@@ -885,10 +883,10 @@ private fun DeveloperChip(name: String, url: String, context: android.content.Co
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(HasselbladOrange.copy(alpha = 0.15f))
+            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
             .border(
                 width = 1.dp,
-                color = HasselbladOrange.copy(alpha = 0.3f),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
                 shape = RoundedCornerShape(16.dp)
             )
             .clickable {
@@ -900,7 +898,7 @@ private fun DeveloperChip(name: String, url: String, context: android.content.Co
         Text(
             text = "@$name",
             style = MaterialTheme.typography.bodyMedium,
-            color = HasselbladOrange,
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Medium
         )
     }
@@ -921,7 +919,7 @@ private fun FooterSection(context: android.content.Context) {
         Text(
             text = stringResource(R.string.privacy_policy),
             style = MaterialTheme.typography.bodySmall,
-            color = HasselbladOrange.copy(alpha = 0.8f),
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
             textDecoration = TextDecoration.Underline,
             modifier = Modifier.clickable {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.umeng.com/page/policy"))

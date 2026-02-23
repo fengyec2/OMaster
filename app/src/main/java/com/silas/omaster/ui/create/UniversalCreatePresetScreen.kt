@@ -28,7 +28,6 @@ import coil.compose.AsyncImage
 import com.silas.omaster.R
 import com.silas.omaster.model.PresetItem
 import com.silas.omaster.model.PresetSection
-import com.silas.omaster.ui.theme.HasselbladOrange
 
 import java.io.File
 
@@ -76,7 +75,7 @@ fun UniversalCreatePresetScreen(
                         },
                         enabled = isSaveEnabled
                     ) {
-                        Text("保存", color = if (isSaveEnabled) HasselbladOrange else Color.Gray)
+                        Text("保存", color = if (isSaveEnabled) MaterialTheme.colorScheme.primary else Color.Gray)
                     }
                 }
             )
@@ -84,7 +83,7 @@ fun UniversalCreatePresetScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showAddSectionDialog = true },
-                containerColor = HasselbladOrange
+                containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Section")
             }

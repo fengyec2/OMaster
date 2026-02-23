@@ -19,7 +19,14 @@
 
     <!-- Bottom Navigation -->
     <string name="nav_home">Home</string>
+    <string name="nav_settings">Settings</string>
     <string name="nav_about">About</string>
+
+    <!-- 设置 -->
+    <string name="settings_title">Settings</string>
+    <string name="vibration_feedback">Vibration Feedback</string>
+    <string name="settings_theme_title">Theme Color</string>
+    <string name="settings_theme_dialog_title">Select Theme Color</string>
 
     <!-- Home Tabs -->
     <string name="tab_all">All</string>
@@ -96,6 +103,7 @@
     <string name="save_preset">Save Preset</string>
     <string name="save_changes">Save Changes</string>
     <string name="save_failed">Save failed, please try again</string>
+    <string name="feature_coming_soon">Feature coming soon, stay tuned</string>
 
     <!-- Cover Image -->
     <string name="cover_image">Cover Image</string>

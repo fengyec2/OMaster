@@ -26,6 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -45,7 +46,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.silas.omaster.R
-import com.silas.omaster.ui.theme.HasselbladOrange
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import com.silas.omaster.util.perform
@@ -68,6 +68,7 @@ fun PillNavBar(
 ) {
     val navItems = listOf(
         NavItem("home", stringResource(R.string.nav_home), Icons.Default.Home),
+        NavItem("settings", stringResource(R.string.nav_settings), Icons.Default.Settings),
         NavItem("about", stringResource(R.string.nav_about), Icons.Default.Info)
     )
 
@@ -102,7 +103,7 @@ fun PillNavBar(
                 // 磨砂玻璃背景层
                 Box(
                     modifier = Modifier
-                        .width(200.dp)
+                        .width(280.dp)
                         .height(64.dp)
                         .clip(RoundedCornerShape(32.dp))
                         .background(
@@ -118,7 +119,7 @@ fun PillNavBar(
                 // 顶部高光线条
                 Box(
                     modifier = Modifier
-                        .width(200.dp)
+                        .width(280.dp)
                         .height(64.dp)
                         .clip(RoundedCornerShape(32.dp))
                         .background(
@@ -135,7 +136,7 @@ fun PillNavBar(
                 // 边框
                 Box(
                     modifier = Modifier
-                        .width(200.dp)
+                        .width(280.dp)
                         .height(64.dp)
                         .clip(RoundedCornerShape(32.dp))
                         .background(
@@ -168,7 +169,7 @@ fun PillNavBar(
                 // 导航项
                 Row(
                     modifier = Modifier
-                        .width(200.dp)
+                        .width(280.dp)
                         .height(64.dp)
                         .padding(horizontal = 8.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
@@ -188,6 +189,7 @@ fun PillNavBar(
         }
     }
 }
+
 
 @Composable
 private fun NavItemButton(
@@ -209,12 +211,12 @@ private fun NavItemButton(
     )
 
     val backgroundColor = when {
-        selected -> HasselbladOrange.copy(alpha = 0.15f)
+        selected -> MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
         else -> Color.Transparent
     }
 
     val contentColor = when {
-        selected -> HasselbladOrange
+        selected -> MaterialTheme.colorScheme.primary
         else -> Color.White.copy(alpha = 0.5f)
     }
 

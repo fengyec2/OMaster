@@ -49,7 +49,6 @@ import com.silas.omaster.R
 import com.silas.omaster.model.MasterPreset
 import com.silas.omaster.ui.animation.AnimationSpecs
 import com.silas.omaster.ui.theme.DarkGray
-import com.silas.omaster.ui.theme.HasselbladOrange
 import com.silas.omaster.ui.theme.PureBlack
 import java.io.File
 
@@ -78,7 +77,7 @@ fun OMasterTopAppBar(
                     Text(
                         text = it,
                         style = MaterialTheme.typography.bodySmall,
-                        color = HasselbladOrange
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -290,7 +289,7 @@ fun PresetImage(
 fun SectionTitle(
     title: String,
     modifier: Modifier = Modifier,
-    color: Color = HasselbladOrange
+    color: Color = MaterialTheme.colorScheme.primary
 ) {
     Text(
         text = title,
@@ -386,7 +385,7 @@ fun DescriptionCard(
                 Icon(
                     imageVector = Icons.Filled.Lightbulb,
                     contentDescription = null,
-                    tint = HasselbladOrange,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -394,7 +393,7 @@ fun DescriptionCard(
                     text = title,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
-                    color = HasselbladOrange
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
 

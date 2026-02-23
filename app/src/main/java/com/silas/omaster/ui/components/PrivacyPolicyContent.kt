@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.silas.omaster.R
 import com.silas.omaster.ui.theme.DarkGray
-import com.silas.omaster.ui.theme.HasselbladOrange
 
 @Composable
 fun PrivacyPolicyContent(
@@ -35,7 +34,7 @@ fun PrivacyPolicyContent(
             text = stringResource(R.string.privacy_title),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = HasselbladOrange,
+            color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
@@ -76,7 +75,7 @@ fun PrivacyPolicyContent(
                     text = stringResource(R.string.sdk_info_title),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = HasselbladOrange
+                    color = MaterialTheme.colorScheme.primary
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -101,13 +100,13 @@ fun PrivacyPolicyContent(
                 Text(
                     text = stringResource(R.string.privacy_link_label),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = HasselbladOrange,
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = "https://www.umeng.com/page/policy",
                     style = MaterialTheme.typography.bodySmall,
-                    color = HasselbladOrange
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }

@@ -22,6 +22,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,7 +43,6 @@ import coil.request.ImageRequest
 import coil.request.CachePolicy
 import com.silas.omaster.ui.animation.AnimationSpecs
 import com.silas.omaster.ui.theme.DarkGray
-import com.silas.omaster.ui.theme.HasselbladOrange
 import com.silas.omaster.ui.theme.NearBlack
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -247,13 +247,13 @@ private fun GalleryIndicators(
         repeat(pageCount) { index ->
             val isSelected = index == currentPage
             Box(
-                modifier = Modifier
-                    .size(if (isSelected) 8.dp else 6.dp)
-                    .clip(CircleShape)
-                    .background(
-                        if (isSelected) HasselbladOrange else Color.White.copy(alpha = 0.5f)
-                    )
-            )
+                    modifier = Modifier
+                        .size(if (isSelected) 8.dp else 6.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (isSelected) MaterialTheme.colorScheme.primary else Color.White.copy(alpha = 0.5f)
+                        )
+                )
             if (index < pageCount - 1) {
                 Spacer(modifier = Modifier.width(8.dp))
             }

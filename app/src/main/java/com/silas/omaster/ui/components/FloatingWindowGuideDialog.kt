@@ -44,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.silas.omaster.R
 import com.silas.omaster.ui.theme.DarkGray
-import com.silas.omaster.ui.theme.HasselbladOrange
 import com.silas.omaster.ui.theme.NearBlack
 import kotlinx.coroutines.delay
 
@@ -110,7 +109,7 @@ fun FloatingWindowGuideDialog(
                         modifier = Modifier
                             .size(48.dp, 4.dp)
                             .clip(RoundedCornerShape(2.dp))
-                            .background(HasselbladOrange.copy(alpha = 0.5f))
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -123,8 +122,8 @@ fun FloatingWindowGuideDialog(
                             .background(
                                 brush = androidx.compose.ui.graphics.Brush.radialGradient(
                                     colors = listOf(
-                                        HasselbladOrange.copy(alpha = 0.3f),
-                                        HasselbladOrange.copy(alpha = 0.1f)
+                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                                     )
                                 )
                             ),
@@ -133,7 +132,7 @@ fun FloatingWindowGuideDialog(
                         Icon(
                             imageVector = Icons.Default.Info,
                             contentDescription = null,
-                            tint = HasselbladOrange,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(36.dp)
                         )
                     }
@@ -171,7 +170,7 @@ fun FloatingWindowGuideDialog(
                         ),
                         border = androidx.compose.foundation.BorderStroke(
                             width = 1.dp,
-                            color = HasselbladOrange.copy(alpha = 0.2f)
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
                         )
                     ) {
                         Column(
@@ -185,14 +184,14 @@ fun FloatingWindowGuideDialog(
                                     modifier = Modifier
                                         .size(8.dp)
                                         .clip(CircleShape)
-                                        .background(HasselbladOrange)
+                                        .background(MaterialTheme.colorScheme.primary)
                                 )
                                 Spacer(modifier = Modifier.padding(start = 8.dp))
                                 Text(
                                     text = stringResource(R.string.guide_fail_title),
                                     style = MaterialTheme.typography.bodyMedium,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = HasselbladOrange
+                                    color = MaterialTheme.colorScheme.primary
                                 )
                             }
 
@@ -244,9 +243,9 @@ fun FloatingWindowGuideDialog(
                                 .height(50.dp),
                             enabled = canClick,
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = HasselbladOrange,
+                                containerColor = MaterialTheme.colorScheme.primary,
                                 contentColor = Color.White,
-                                disabledContainerColor = HasselbladOrange.copy(alpha = 0.3f),
+                                disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
                                 disabledContentColor = Color.White.copy(alpha = 0.5f)
                             ),
                             shape = RoundedCornerShape(14.dp)
@@ -318,14 +317,14 @@ private fun GuideStep(
             modifier = Modifier
                 .size(26.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(HasselbladOrange.copy(alpha = 0.15f)),
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = number,
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = FontWeight.Bold,
-                color = HasselbladOrange
+                color = MaterialTheme.colorScheme.primary
             )
         }
 

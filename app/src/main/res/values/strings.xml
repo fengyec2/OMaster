@@ -19,7 +19,14 @@
 
     <!-- 底部导航 -->
     <string name="nav_home">主页</string>
+    <string name="nav_settings">设置</string>
     <string name="nav_about">关于</string>
+
+    <!-- 设置 -->
+    <string name="settings_title">设置</string>
+    <string name="vibration_feedback">震动反馈</string>
+    <string name="settings_theme_title">主题颜色</string>
+    <string name="settings_theme_dialog_title">选择主题颜色</string>
 
     <!-- 主页 Tab -->
     <string name="tab_all">全部</string>

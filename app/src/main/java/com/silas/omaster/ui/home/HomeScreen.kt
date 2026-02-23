@@ -64,7 +64,6 @@ import com.silas.omaster.ui.animation.ListItemPlacementSpec
 import com.silas.omaster.ui.animation.calculateStaggerDelay
 import com.silas.omaster.ui.components.PresetCard
 import com.silas.omaster.ui.service.FloatingWindowController
-import com.silas.omaster.ui.theme.HasselbladOrange
 import com.silas.omaster.ui.theme.PureBlack
 import com.silas.omaster.util.hapticClickable
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -163,7 +162,7 @@ fun HomeScreen(
             ScrollableTabRow(
                 selectedTabIndex = selectedTab,
                 containerColor = PureBlack,
-                contentColor = HasselbladOrange,
+                contentColor = MaterialTheme.colorScheme.primary,
                 edgePadding = 16.dp,
                 modifier = Modifier.height(44.dp),
                 indicator = { tabPositions ->
@@ -172,7 +171,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .tabIndicatorOffset(tabPositions[selectedTab])
                             .height(3.dp),
-                        color = HasselbladOrange
+                        color = MaterialTheme.colorScheme.primary
                     )
                 },
                 divider = {} // 移除默认分割线
@@ -202,7 +201,7 @@ fun HomeScreen(
                             ) {
                                 Text(
                                     text = title,
-                                    color = if (isSelected) HasselbladOrange else Color.White.copy(alpha = 0.6f),
+                                    color = if (isSelected) MaterialTheme.colorScheme.primary else Color.White.copy(alpha = 0.6f),
                                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                                 )
                                 // 计数徽章
@@ -210,7 +209,7 @@ fun HomeScreen(
                                     Text(
                                         text = count.toString(),
                                         fontSize = 10.sp,
-                                        color = if (isSelected) HasselbladOrange.copy(alpha = 0.8f) else Color.White.copy(alpha = 0.4f),
+                                        color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.8f) else Color.White.copy(alpha = 0.4f),
                                         modifier = Modifier.padding(top = 2.dp)
                                     )
                                 }
@@ -282,7 +281,7 @@ fun HomeScreen(
                     haptic.perform(HapticFeedbackType.Confirm)
                     onNavigateToCreate()
                 },
-                containerColor = HasselbladOrange,
+                containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Color.White,
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp),
                 elevation = androidx.compose.material3.FloatingActionButtonDefaults.elevation(
@@ -323,7 +322,7 @@ fun HomeScreen(
                         presetToDelete = null
                     }
                 ) {
-                    Text(stringResource(R.string.delete), color = HasselbladOrange)
+                    Text(stringResource(R.string.delete), color = MaterialTheme.colorScheme.primary)
                 }
             },
             dismissButton = {
@@ -505,7 +504,7 @@ private fun PresetGrid(
                 refreshing = refreshing,
                 state = pullRefreshState,
                 modifier = Modifier.align(Alignment.TopCenter),
-                contentColor = HasselbladOrange
+                contentColor = MaterialTheme.colorScheme.primary
             )
         }
     }
@@ -597,7 +596,7 @@ private fun EmptyState(tabIndex: Int) {
                 Text(
                     text = subMessage,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = HasselbladOrange.copy(alpha = 0.8f),
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
                     textAlign = TextAlign.Center
                 )
             }
@@ -629,7 +628,7 @@ private fun LoadingMoreTip() {
                         brush = androidx.compose.ui.graphics.Brush.horizontalGradient(
                             colors = listOf(
                                 Color.Transparent,
-                                HasselbladOrange.copy(alpha = 0.5f),
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                                 Color.Transparent
                             )
                         )
@@ -640,7 +639,7 @@ private fun LoadingMoreTip() {
             Text(
                 text = stringResource(R.string.load_more_hint),
                 style = MaterialTheme.typography.bodyMedium,
-                color = HasselbladOrange.copy(alpha = 0.8f),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
                 fontWeight = FontWeight.Medium,
                 letterSpacing = 2.sp
             )
@@ -654,7 +653,7 @@ private fun LoadingMoreTip() {
                         brush = androidx.compose.ui.graphics.Brush.horizontalGradient(
                             colors = listOf(
                                 Color.Transparent,
-                                HasselbladOrange.copy(alpha = 0.5f),
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                                 Color.Transparent
                             )
                         )
