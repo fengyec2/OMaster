@@ -27,7 +27,6 @@ import com.silas.omaster.model.MasterPreset
 import com.silas.omaster.ui.components.PresetCard
 import com.silas.omaster.ui.home.HomeViewModel
 import com.silas.omaster.ui.home.HomeViewModelFactory
-import com.silas.omaster.ui.theme.HasselbladOrange
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

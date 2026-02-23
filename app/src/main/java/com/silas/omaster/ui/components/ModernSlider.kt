@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
@@ -26,7 +27,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.silas.omaster.ui.theme.DarkGray
-import com.silas.omaster.ui.theme.HasselbladOrange
 import com.silas.omaster.util.perform
 
 /**
@@ -64,7 +64,7 @@ fun ModernSlider(
             ) {
                 Text(
                     text = "${value.toInt()}",
-                    color = HasselbladOrange,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
@@ -83,8 +83,8 @@ fun ModernSlider(
             },
             valueRange = range,
             colors = SliderDefaults.colors(
-                thumbColor = HasselbladOrange,
-                activeTrackColor = HasselbladOrange,
+                thumbColor = MaterialTheme.colorScheme.primary,
+                activeTrackColor = MaterialTheme.colorScheme.primary,
                 inactiveTrackColor = DarkGray.copy(alpha = 0.5f),
                 activeTickColor = Color.Transparent,
                 inactiveTickColor = Color.Transparent
@@ -125,7 +125,7 @@ fun ModernSliderWithStep(
             ) {
                 Text(
                     text = "${value.toInt()}",
-                    color = HasselbladOrange,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
@@ -139,8 +139,8 @@ fun ModernSliderWithStep(
             valueRange = range,
             steps = steps,
             colors = SliderDefaults.colors(
-                thumbColor = HasselbladOrange,
-                activeTrackColor = HasselbladOrange,
+                thumbColor = MaterialTheme.colorScheme.primary,
+                activeTrackColor = MaterialTheme.colorScheme.primary,
                 inactiveTrackColor = DarkGray.copy(alpha = 0.5f),
                 activeTickColor = Color.Transparent,
                 inactiveTickColor = Color.Transparent

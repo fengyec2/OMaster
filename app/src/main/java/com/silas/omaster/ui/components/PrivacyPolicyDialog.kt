@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.silas.omaster.R
-import com.silas.omaster.ui.theme.HasselbladOrange
 import com.silas.omaster.ui.theme.NearBlack
 
 @Composable
@@ -68,7 +67,7 @@ fun PrivacyPolicyDialog(
                         .fillMaxWidth()
                         .padding(16.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = HasselbladOrange,
+                        containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = Color.White
                     ),
                     shape = RoundedCornerShape(12.dp)

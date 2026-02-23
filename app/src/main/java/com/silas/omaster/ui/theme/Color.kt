@@ -11,6 +11,18 @@ val HasselbladOrangeDark = Color(0xFFE55A00)
 val HasselbladOrangeLight = Color(0xFFFF8533)
 
 /**
+ * 品牌主题色
+ */
+val ZeissBlue = Color(0xFF005A9C)
+val LeicaRed = Color(0xFFCC0000)
+val RicohGreen = Color(0xFF00A95C)
+val FujifilmGreen = Color(0xFF009B3A)
+val CanonRed = Color(0xFFCC0000)
+val NikonYellow = Color(0xFFFFC20E)
+val SonyOrange = Color(0xFFF15A24)
+val PhaseOneGrey = Color(0xFF5A5A5A)
+
+/**
  * 纯黑背景系列
  * 用于深色模式的主背景
  */

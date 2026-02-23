@@ -40,9 +40,6 @@ import com.silas.omaster.model.MasterPreset
 import com.silas.omaster.ui.theme.CardBorderHighlight
 import com.silas.omaster.ui.theme.CardBorderLight
 import com.silas.omaster.ui.theme.DarkGray
-import com.silas.omaster.ui.theme.GradientOrangeEnd
-import com.silas.omaster.ui.theme.GradientOrangeStart
-import com.silas.omaster.ui.theme.HasselbladOrange
 import com.silas.omaster.util.PresetI18n
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -104,38 +101,38 @@ fun PresetCard(
 
                 if (showFavoriteButton) {
                     IconButton(
-                        onClick = {
-                            haptic.perform(HapticFeedbackType.ToggleOn)
-                            onFavoriteClick()
-                        },
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(8.dp)
-                            .size(36.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(28.dp)
-                                .background(
-                                    color = if (preset.isFavorite) 
-                                        HasselbladOrange.copy(alpha = 0.2f) 
-                                    else 
-                                        Color.Black.copy(alpha = 0.3f),
-                                    shape = RoundedCornerShape(14.dp)
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = if (preset.isFavorite)
-                                    Icons.Filled.Favorite
-                                else
-                                    Icons.Outlined.FavoriteBorder,
-                                contentDescription = if (preset.isFavorite) stringResource(R.string.preset_favorited) else stringResource(R.string.preset_favorite),
-                                tint = if (preset.isFavorite) HasselbladOrange else Color.White,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        }
-                    }
+            onClick = {
+                haptic.perform(HapticFeedbackType.ToggleOn)
+                onFavoriteClick()
+            },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(8.dp)
+                .size(36.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(28.dp)
+                    .background(
+                        color = if (preset.isFavorite) 
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) 
+                        else 
+                            Color.Black.copy(alpha = 0.3f),
+                        shape = RoundedCornerShape(14.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = if (preset.isFavorite)
+                        Icons.Filled.Favorite
+                    else
+                        Icons.Outlined.FavoriteBorder,
+                    contentDescription = if (preset.isFavorite) stringResource(R.string.preset_favorited) else stringResource(R.string.preset_favorite),
+                    tint = if (preset.isFavorite) MaterialTheme.colorScheme.primary else Color.White,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+        }
                 }
 
                 if (showDeleteButton && preset.isCustom) {
@@ -175,7 +172,10 @@ fun PresetCard(
                             .padding(8.dp)
                             .background(
                                 brush = Brush.horizontalGradient(
-                                    colors = listOf(GradientOrangeStart, GradientOrangeEnd)
+                                    colors = listOf(
+                                        MaterialTheme.colorScheme.primary,
+                                        MaterialTheme.colorScheme.tertiary
+                                    )
                                 ),
                                 shape = RoundedCornerShape(4.dp)
                             )

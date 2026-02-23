@@ -51,7 +51,10 @@ import kotlinx.serialization.Serializable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.silas.omaster.data.repository.PresetRepository
 
+import androidx.compose.runtime.collectAsState
+import com.silas.omaster.data.local.SettingsManager
 import com.silas.omaster.ui.settings.SettingsScreen
+
 
 val LocalActivity = compositionLocalOf<Activity> { error("No Activity provided") }
 
@@ -95,7 +98,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CompositionLocalProvider(LocalActivity provides this) {
-                OMasterTheme {
+                val settingsManager = remember { SettingsManager.getInstance(applicationContext) }
+                val currentTheme by settingsManager.themeFlow.collectAsState()
+
+                OMasterTheme(brandTheme = currentTheme) {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background

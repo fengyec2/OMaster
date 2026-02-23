@@ -33,7 +33,6 @@ import com.silas.omaster.ui.components.OMasterTopAppBar
 import com.silas.omaster.ui.components.PolicyItem
 import com.silas.omaster.ui.components.PolicySection
 import com.silas.omaster.ui.theme.DarkGray
-import com.silas.omaster.ui.theme.HasselbladOrange
 
 @Composable
 fun PrivacyPolicyScreen(
@@ -95,7 +94,7 @@ fun PrivacyPolicyScreen(
                         text = stringResource(R.string.sdk_info_title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = HasselbladOrange
+                        color = MaterialTheme.colorScheme.primary
                     )
 
                     PolicyItem(
@@ -122,7 +121,7 @@ fun PrivacyPolicyScreen(
                         Text(
                             text = "https://www.umeng.com/page/policy",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = HasselbladOrange,
+                            color = MaterialTheme.colorScheme.primary,
                             textDecoration = TextDecoration.Underline,
                             modifier = Modifier.clickable {
                                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.umeng.com/page/policy"))

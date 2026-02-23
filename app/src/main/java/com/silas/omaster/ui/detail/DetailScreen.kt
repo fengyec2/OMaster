@@ -58,7 +58,6 @@ import com.silas.omaster.ui.service.FloatingWindowController
 import com.silas.omaster.ui.service.FloatingWindowService
 import androidx.compose.ui.res.stringResource
 import com.silas.omaster.R
-import com.silas.omaster.ui.theme.HasselbladOrange
 import com.silas.omaster.util.PresetI18n
 import com.silas.omaster.util.formatSigned
 import com.silas.omaster.util.hapticClickable
@@ -147,7 +146,7 @@ fun DetailScreen(
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.OpenInNew,
                         contentDescription = stringResource(R.string.floating_window),
-                        tint = HasselbladOrange
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
 
@@ -180,7 +179,7 @@ fun DetailScreen(
                         else
                             Icons.Outlined.FavoriteBorder,
                         contentDescription = if (isFavorite) stringResource(R.string.preset_favorited) else stringResource(R.string.preset_favorite),
-                        tint = if (isFavorite) HasselbladOrange else Color.White
+                        tint = if (isFavorite) MaterialTheme.colorScheme.primary else Color.White
                     )
                 }
             },

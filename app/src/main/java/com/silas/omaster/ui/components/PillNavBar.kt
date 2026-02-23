@@ -46,7 +46,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.silas.omaster.R
-import com.silas.omaster.ui.theme.HasselbladOrange
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import com.silas.omaster.util.perform
@@ -212,12 +211,12 @@ private fun NavItemButton(
     )
 
     val backgroundColor = when {
-        selected -> HasselbladOrange.copy(alpha = 0.15f)
+        selected -> MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
         else -> Color.Transparent
     }
 
     val contentColor = when {
-        selected -> HasselbladOrange
+        selected -> MaterialTheme.colorScheme.primary
         else -> Color.White.copy(alpha = 0.5f)
     }
 
