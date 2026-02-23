@@ -42,12 +42,22 @@ object PresetRemoteManager {
     }
 
     suspend fun fetchAndSave(context: Context, url: String): Boolean {
-        val presets = fetchPresets(url) ?: return false
+        Log.d("PresetRemoteManager", "Starting fetch from $url")
         return try {
+            val response: HttpResponse = client.get(url)
+            val text: String = response.body()
+            
+            // 验证 JSON 是否有效
+            try {
+                Json.decodeFromString(PresetList.serializer(), text)
+            } catch (e: Exception) {
+                Log.e("PresetRemoteManager", "Invalid JSON received", e)
+                return false
+            }
+
             withContext(Dispatchers.IO) {
                 val file = File(context.filesDir, "presets_remote.json")
-                val jsonText = Json.encodeToString(PresetList.serializer(), presets)
-                file.writeText(jsonText)
+                file.writeText(text)
                 Log.d("PresetRemoteManager", "Saved remote presets to ${file.absolutePath}")
                 // Invalidate JsonUtil cache so subsequent loads read the new remote file
                 try {

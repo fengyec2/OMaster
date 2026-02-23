@@ -89,6 +89,16 @@ object JsonUtil {
             }
         } catch (e: Exception) {
             android.util.Log.e("JsonUtil", "Failed to load presets from remote file", e)
+            // 删除损坏的文件
+            try {
+                val remoteFile = java.io.File(context.filesDir, "presets_remote.json")
+                if (remoteFile.exists()) {
+                    remoteFile.delete()
+                    android.util.Log.d("JsonUtil", "Deleted corrupted remote presets file")
+                }
+            } catch (deleteEx: Exception) {
+                android.util.Log.e("JsonUtil", "Failed to delete corrupted file", deleteEx)
+            }
         }
 
         // Fall back to bundled assets
