@@ -103,6 +103,7 @@
     <string name="save_preset">保存预设</string>
     <string name="save_changes">保存修改</string>
     <string name="save_failed">保存失败，请重试</string>
+    <string name="feature_coming_soon">功能即将开放，敬请期待</string>
 
     <!-- 封面图片 -->
     <string name="cover_image">封面图片</string>

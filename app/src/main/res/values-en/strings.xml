@@ -103,6 +103,7 @@
     <string name="save_preset">Save Preset</string>
     <string name="save_changes">Save Changes</string>
     <string name="save_failed">Save failed, please try again</string>
+    <string name="feature_coming_soon">Feature coming soon, stay tuned</string>
 
     <!-- Cover Image -->
     <string name="cover_image">Cover Image</string>
