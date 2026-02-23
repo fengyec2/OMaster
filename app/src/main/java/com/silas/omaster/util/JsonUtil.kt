@@ -38,6 +38,13 @@ object JsonUtil {
     private var cachedPresets: List<MasterPreset>? = null
 
     /**
+     * 当前加载的预设版本
+     * 默认为 1（旧版本格式）
+     */
+    var currentPresetsVersion: Int = 1
+        private set
+
+    /**
      * 【内置预设加载方法】
      * 从 assets 目录加载 presets.json 文件
      * 
@@ -71,6 +78,7 @@ object JsonUtil {
                             android.util.Log.e("JsonUtil", "Failed to parse remote presets: result is null")
                             return emptyList()
                         }
+                        currentPresetsVersion = presetList.version
                         val presets = presetList.presets ?: emptyList()
                         val processedPresets = presets.mapIndexed { index, preset ->
                             if (preset.id == null) {
@@ -113,6 +121,7 @@ object JsonUtil {
                         android.util.Log.e("JsonUtil", "Failed to parse presets: result is null")
                         return emptyList()
                     }
+                    currentPresetsVersion = presetList.version
 
                     val presets = presetList.presets ?: emptyList()
                     val processedPresets = presets.mapIndexed { index, preset ->
@@ -188,7 +197,7 @@ object JsonUtil {
      * @return JSON 格式的字符串
      */
     fun presetsToJson(presets: List<MasterPreset>): String {
-        return gson.toJson(PresetList(presets))
+        return gson.toJson(PresetList(version = currentPresetsVersion, presets = presets))
     }
     /**
      * Clear in-memory cache so subsequent calls will re-read remote or asset files.
@@ -199,4 +208,19 @@ object JsonUtil {
         android.util.Log.d("JsonUtil", "Cache invalidated")
     }
 
+    /**
+     * 删除远程预设文件（用于数据迁移）
+     */
+    fun deleteRemotePresets(context: Context) {
+        try {
+            val remoteFile = java.io.File(context.filesDir, "presets_remote.json")
+            if (remoteFile.exists()) {
+                remoteFile.delete()
+                android.util.Log.d("JsonUtil", "Deleted remote presets file for migration")
+            }
+            invalidateCache()
+        } catch (e: Exception) {
+            android.util.Log.e("JsonUtil", "Failed to delete remote presets file", e)
+        }
+    }
 }

@@ -381,5 +381,6 @@ data class MasterPreset(
  */
 @Serializable
 data class PresetList(
+    val version: Int = 1,
     val presets: List<MasterPreset> = emptyList()
 )

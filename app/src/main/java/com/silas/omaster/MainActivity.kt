@@ -13,6 +13,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -42,6 +45,7 @@ import com.silas.omaster.ui.detail.PrivacyPolicyScreen
 import com.silas.omaster.ui.home.HomeScreen
 import com.silas.omaster.ui.service.FloatingWindowController
 import com.silas.omaster.ui.theme.OMasterTheme
+import com.silas.omaster.util.JsonUtil
 import com.silas.omaster.util.VersionInfo
 import kotlinx.serialization.Serializable
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -158,6 +162,46 @@ fun WelcomeFlow(
 fun MainApp(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val repository = remember { PresetRepository.getInstance(context) }
+    var showMigrationDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        if (JsonUtil.currentPresetsVersion != 2) {
+            showMigrationDialog = true
+        }
+    }
+
+    if (showMigrationDialog) {
+        AlertDialog(
+            onDismissRequest = { /* Force user to decide */ },
+            title = { Text("数据结构更新") },
+            text = { Text("检测到预设数据版本过旧，需要迁移数据以支持新功能。\n\n点击“迁移数据”将重置内置预设（您的自定义预设和收藏不会丢失）。") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        JsonUtil.deleteRemotePresets(context)
+                        repository.reloadDefaultPresets()
+                        showMigrationDialog = false
+                    }
+                ) {
+                    Text("迁移数据")
+                }
+            },
+            dismissButton = {
+                // Optional: Allow user to cancel and exit app?
+                // Or maybe just hide dialog and let them use potentially broken app?
+                // Given the request "check if version field exists and value is 2, otherwise pop up prompt",
+                // usually implies mandatory action.
+                // But for safety/UX, maybe allow cancel?
+                // If cancel, showMigrationDialog = false, but app might crash later if structure mismatch.
+                // Let's stick to mandatory for now or just allow dismiss.
+                // I'll leave dismissButton empty to force "Migrate" or back button (which onDismissRequest handles if we implemented logic).
+                // Actually, onDismissRequest handles back button.
+            }
+        )
+    }
 
     val showBottomNav = currentRoute?.contains("Home") == true || currentRoute?.contains("About") == true
 
