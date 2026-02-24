@@ -44,6 +44,28 @@
     <string name="settings_theme_title">主题颜色</string>
     <string name="settings_theme_dialog_title">选择主题颜色</string>
 
+    <!-- 品牌名称 -->
+    <string name="brand_hasselblad">哈苏</string>
+    <string name="brand_zeiss">蔡司</string>
+    <string name="brand_leica">徕卡</string>
+    <string name="brand_ricoh">理光</string>
+    <string name="brand_fujifilm">富士</string>
+    <string name="brand_canon">佳能</string>
+    <string name="brand_nikon">尼康</string>
+    <string name="brand_sony">索尼</string>
+    <string name="brand_phaseone">飞思</string>
+
+    <!-- 品牌颜色名称 -->
+    <string name="color_hasselblad_orange">哈苏橙</string>
+    <string name="color_zeiss_blue">蔡司蓝</string>
+    <string name="color_leica_red">徕卡红</string>
+    <string name="color_ricoh_green">理光绿</string>
+    <string name="color_fujifilm_green">富士绿</string>
+    <string name="color_canon_red">佳能红</string>
+    <string name="color_nikon_yellow">尼康黄</string>
+    <string name="color_sony_orange">索尼橙</string>
+    <string name="color_phaseone_grey">飞思灰</string>
+
     <!-- 主页 Tab -->
     <string name="tab_all">全部</string>
     <string name="tab_favorites">收藏</string>

@@ -44,6 +44,28 @@
     <string name="settings_theme_title">Theme Color</string>
     <string name="settings_theme_dialog_title">Select Theme Color</string>
 
+    <!-- Brand Names -->
+    <string name="brand_hasselblad">Hasselblad</string>
+    <string name="brand_zeiss">ZEISS</string>
+    <string name="brand_leica">Leica</string>
+    <string name="brand_ricoh">Ricoh</string>
+    <string name="brand_fujifilm">Fujifilm</string>
+    <string name="brand_canon">Canon</string>
+    <string name="brand_nikon">Nikon</string>
+    <string name="brand_sony">Sony</string>
+    <string name="brand_phaseone">Phase One</string>
+
+    <!-- Brand Color Names -->
+    <string name="color_hasselblad_orange">Hasselblad Orange</string>
+    <string name="color_zeiss_blue">ZEISS Blue</string>
+    <string name="color_leica_red">Leica Red</string>
+    <string name="color_ricoh_green">Ricoh Green</string>
+    <string name="color_fujifilm_green">Fujifilm Green</string>
+    <string name="color_canon_red">Canon Red</string>
+    <string name="color_nikon_yellow">Nikon Yellow</string>
+    <string name="color_sony_orange">Sony Orange</string>
+    <string name="color_phaseone_grey">Phase One Grey</string>
+
     <!-- Home Tabs -->
     <string name="tab_all">All</string>
     <string name="tab_favorites">Favorites</string>

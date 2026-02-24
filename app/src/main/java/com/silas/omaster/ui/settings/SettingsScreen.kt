@@ -143,7 +143,7 @@ fun SettingsScreen() {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = currentTheme.brandName,
+                    text = stringResource(currentTheme.brandNameResId),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
@@ -207,12 +207,12 @@ fun ThemeSelectionDialog(
                         
                         Column {
                             Text(
-                                text = theme.brandName,
+                                text = stringResource(theme.brandNameResId),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
-                                text = theme.colorName,
+                                text = stringResource(theme.colorNameResId),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -223,7 +223,7 @@ fun ThemeSelectionDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("取消")
+                Text(stringResource(R.string.cancel))
             }
         },
         containerColor = MaterialTheme.colorScheme.surface,
