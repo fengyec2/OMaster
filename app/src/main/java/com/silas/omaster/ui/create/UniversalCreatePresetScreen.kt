@@ -124,8 +124,18 @@ fun UniversalCreatePresetScreen(
                                     modifier = Modifier.fillMaxSize()
                                 )
                             } else if (uiState.originalCoverPath != null) {
+                                val context = LocalContext.current
+                                val imageModel = remember(uiState.originalCoverPath) {
+                                      val path = uiState.originalCoverPath ?: ""
+                                      when {
+                                          path.startsWith("http") -> path
+                                          path.startsWith("/") -> File(path) // Absolute path
+                                          path.startsWith("presets/") -> File(context.filesDir, path)
+                                          else -> "file:///android_asset/$path"
+                                      }
+                                  }
                                 AsyncImage(
-                                    model = File(uiState.originalCoverPath),
+                                    model = imageModel,
                                     contentDescription = stringResource(R.string.cover_image),
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier.fillMaxSize()
