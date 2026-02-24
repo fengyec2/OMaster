@@ -324,4 +324,40 @@
     <string name="floating_vignette_icon">◍</string>
     <string name="floating_vignette_label">Vignette</string>
 
+    <!-- Xposed Tool -->
+    <string name="xposed_tool_entry">Xposed Tool</string>
+    <string name="xposed_tool_title">Xposed Tool</string>
+    <string name="xposed_env_status">Environment Status</string>
+    <string name="xposed_root_granted">Granted</string>
+    <string name="xposed_root_denied">Denied</string>
+    <string name="xposed_root_unavailable">Unavailable</string>
+    <string name="xposed_module_active">Active (%1$d filters)</string>
+    <string name="xposed_module_inactive">Inactive or data not captured</string>
+    <string name="xposed_hint_open_camera">Please ensure:\n1. Activate this module in LSPosed and select Camera\n2. Open Camera app once to trigger Hook capture\n3. Return here and tap refresh</string>
+    <string name="xposed_last_capture">Last capture: %1$s</string>
+    <string name="xposed_select_preset">Select Preset</string>
+    <string name="xposed_preset_hint">Tap to select a preset to write</string>
+    <string name="xposed_target_filter">Target Filter</string>
+    <string name="xposed_filter_hint">Tap to select a target filter slot</string>
+    <string name="xposed_params_preview">Params Preview</string>
+    <string name="xposed_filter_table_title">Filter Index Table</string>
+    <string name="xposed_col_name">Name</string>
+    <string name="xposed_col_lut">LUT File</string>
+    <string name="xposed_write_btn">Write Params to Camera</string>
+    <string name="xposed_stopping_camera">Stopping camera…</string>
+    <string name="xposed_backing_up">Backing up…</string>
+    <string name="xposed_copying">Copying files…</string>
+    <string name="xposed_writing">Writing params…</string>
+    <string name="xposed_restoring">Restoring files…</string>
+    <string name="xposed_write_success">Write successful</string>
+    <string name="xposed_write_retry">Write failed, tap to retry</string>
+    <string name="xposed_write_success_hint">Open camera to see the effect. Params written to selected filter slot.</string>
+    <string name="xposed_restore_backup">Restore from backup</string>
+    <string name="xposed_write_dialog_title">Write Params to Camera</string>
+    <string name="xposed_current_preset">Current preset: %1$s</string>
+    <string name="xposed_usage_title">How to Use</string>
+    <string name="xposed_usage_steps">1. Activate this module in LSPosed, select Camera as scope\n2. Open Camera app once to trigger Hook capture\n3. Return here to view the filter index table\n4. Go to Home → select preset → Detail page → tap tune icon to write</string>
+    <string name="xposed_kill_camera">Restart Camera</string>
+    <string name="xposed_kill_camera_hint">Force kill camera process to apply written params</string>
+
 </resources>

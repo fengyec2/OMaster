@@ -19,6 +19,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OMaster">
 
+        <!-- Xposed 模块声明 -->
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true" />
+        <meta-data
+            android:name="xposeddescription"
+            android:value="OMaster - OPPO 相机大师模式滤镜参数管理" />
+        <meta-data
+            android:name="xposedminversion"
+            android:value="82" />
+        <meta-data
+            android:name="xposedscope"
+            android:resource="@array/xposed_scope" />
+
         <service
             android:name=".ui.service.FloatingWindowService"
             android:exported="false" />

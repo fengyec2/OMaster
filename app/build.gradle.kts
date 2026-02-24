@@ -21,7 +21,7 @@ android {
         // 正式版: 1.0, 1.0.1, 1.1.0, 2.0.0
         // 测试版: 1.0.0-beta1, 1.0.0-beta2
         versionCode = 9
-        versionName = "1.3.0"
+        versionName = "1.3.0-root"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -104,6 +104,15 @@ dependencies {
     implementation(libs.gson)
 
     // Room 数据库已移除，使用 SharedPreferences 替代
+
+    // Xposed API（compileOnly，不打包进 APK，由框架提供）
+    compileOnly(libs.xposed.api)
+
+    // Root 权限管理（libsu by topjohnwu）
+    implementation(libs.libsu.core)
+
+    // MMKV 读写（腾讯高性能 KV 存储）
+    implementation(libs.mmkv)
 
     // ⚠️ 替换友盟硬编码依赖
     implementation(libs.umeng.common)

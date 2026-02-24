@@ -54,6 +54,7 @@ import com.silas.omaster.data.repository.PresetRepository
 import androidx.compose.runtime.collectAsState
 import com.silas.omaster.data.local.SettingsManager
 import com.silas.omaster.ui.settings.SettingsScreen
+import com.silas.omaster.ui.xposed.XposedToolScreen
 
 
 val LocalActivity = compositionLocalOf<Activity> { error("No Activity provided") }
@@ -82,6 +83,9 @@ sealed class Screen {
 
     @Serializable
     data object PrivacyPolicy : Screen()
+
+    @Serializable
+    data object XposedTool : Screen()
 }
 
 class MainActivity : ComponentActivity() {
@@ -355,7 +359,19 @@ fun MainApp(navController: NavHostController) {
             }
 
             composable<Screen.Settings> {
-                SettingsScreen()
+                SettingsScreen(
+                    onNavigateToXposedTool = {
+                        navController.navigate(Screen.XposedTool)
+                    }
+                )
+            }
+
+            composable<Screen.XposedTool> {
+                XposedToolScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    }
+                )
             }
 
             composable<Screen.About> {

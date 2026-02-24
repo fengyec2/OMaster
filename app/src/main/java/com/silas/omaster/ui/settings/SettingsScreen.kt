@@ -18,9 +18,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -49,7 +53,9 @@ import com.silas.omaster.ui.theme.PureBlack
 import com.silas.omaster.util.HapticSettings
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(
+    onNavigateToXposedTool: () -> Unit = {}
+) {
     val context = LocalContext.current
     val settingsManager = remember { SettingsManager.getInstance(context) }
     var vibrationEnabled by remember { mutableStateOf(settingsManager.isVibrationEnabled) }
@@ -77,69 +83,97 @@ fun SettingsScreen() {
             modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
         )
 
-        // Vibration Setting
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    val newValue = !vibrationEnabled
-                    vibrationEnabled = newValue
-                    settingsManager.isVibrationEnabled = newValue
-                    HapticSettings.enabled = newValue
-                }
-                .padding(16.dp)
-                .height(56.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            Text(
-                text = stringResource(R.string.vibration_feedback),
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
-            )
-            Switch(
-                checked = vibrationEnabled,
-                onCheckedChange = { enabled ->
-                    vibrationEnabled = enabled
-                    settingsManager.isVibrationEnabled = enabled
-                    HapticSettings.enabled = enabled
-                },
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = MaterialTheme.colorScheme.primary,
-                    checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-                )
-            )
-        }
-
-        // Theme Setting
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { showThemeDialog = true }
-                .padding(16.dp)
-                .height(56.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "主题颜色", // TODO: Extract to strings.xml
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
-            )
-            
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                // Color Dot
-                Box(
-                    modifier = Modifier
-                        .size(16.dp)
-                        .clip(CircleShape)
-                        .background(currentTheme.primaryColor)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
+            // Vibration Setting
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        val newValue = !vibrationEnabled
+                        vibrationEnabled = newValue
+                        settingsManager.isVibrationEnabled = newValue
+                        HapticSettings.enabled = newValue
+                    }
+                    .padding(16.dp)
+                    .height(56.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
-                    text = currentTheme.brandName,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
+                    text = stringResource(R.string.vibration_feedback),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.White
+                )
+                Switch(
+                    checked = vibrationEnabled,
+                    onCheckedChange = { enabled ->
+                        vibrationEnabled = enabled
+                        settingsManager.isVibrationEnabled = enabled
+                        HapticSettings.enabled = enabled
+                    },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = MaterialTheme.colorScheme.primary,
+                        checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                    )
+                )
+            }
+
+            // Theme Setting
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showThemeDialog = true }
+                    .padding(16.dp)
+                    .height(56.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "主题颜色", // TODO: Extract to strings.xml
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.White
+                )
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    // Color Dot
+                    Box(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .clip(CircleShape)
+                            .background(currentTheme.primaryColor)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = currentTheme.brandName,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray
+                    )
+                }
+            }
+
+            // Xposed 工具入口
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onNavigateToXposedTool() }
+                    .padding(16.dp)
+                    .height(56.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.xposed_tool_entry),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.White
+                )
+                Icon(
+                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = Color.Gray
                 )
             }
         }

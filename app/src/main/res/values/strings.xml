@@ -324,4 +324,40 @@
     <string name="floating_vignette_icon">◍</string>
     <string name="floating_vignette_label">暗角</string>
 
+    <!-- Xposed 工具 -->
+    <string name="xposed_tool_entry">Xposed 工具</string>
+    <string name="xposed_tool_title">Xposed 工具</string>
+    <string name="xposed_env_status">环境状态</string>
+    <string name="xposed_root_granted">已授权</string>
+    <string name="xposed_root_denied">已拒绝</string>
+    <string name="xposed_root_unavailable">不可用</string>
+    <string name="xposed_module_active">已激活（%1$d 个滤镜）</string>
+    <string name="xposed_module_inactive">未激活或数据未捕获</string>
+    <string name="xposed_hint_open_camera">请确保:\n1. 在 LSPosed 中激活本模块并勾选相机\n2. 打开相机 APP 一次触发 Hook 捕获\n3. 返回此页面点击右上角刷新</string>
+    <string name="xposed_last_capture">最后捕获: %1$s</string>
+    <string name="xposed_select_preset">选择预设</string>
+    <string name="xposed_preset_hint">点击选择要写入的预设</string>
+    <string name="xposed_target_filter">目标滤镜</string>
+    <string name="xposed_filter_hint">点击选择目标滤镜槽位</string>
+    <string name="xposed_params_preview">参数预览</string>
+    <string name="xposed_filter_table_title">滤镜索引对照表</string>
+    <string name="xposed_col_name">名称</string>
+    <string name="xposed_col_lut">LUT 文件</string>
+    <string name="xposed_write_btn">写入参数到相机</string>
+    <string name="xposed_stopping_camera">正在停止相机…</string>
+    <string name="xposed_backing_up">正在备份…</string>
+    <string name="xposed_copying">正在拷贝文件…</string>
+    <string name="xposed_writing">正在写入参数…</string>
+    <string name="xposed_restoring">正在写回文件…</string>
+    <string name="xposed_write_success">写入成功</string>
+    <string name="xposed_write_retry">写入失败，点击重试</string>
+    <string name="xposed_write_success_hint">打开相机即可看到效果，参数已写入对应滤镜槽位</string>
+    <string name="xposed_restore_backup">从备份恢复</string>
+    <string name="xposed_write_dialog_title">写入参数到相机</string>
+    <string name="xposed_current_preset">当前预设: %1$s</string>
+    <string name="xposed_usage_title">使用说明</string>
+    <string name="xposed_usage_steps">1. 在 LSPosed 中激活本模块，作用域勾选「相机」\n2. 打开相机 APP 一次，触发 Hook 捕获滤镜列表\n3. 返回本页查看滤镜对照表\n4. 在主页选择预设 → 进入详情页 → 点击调参图标写入相机</string>
+    <string name="xposed_kill_camera">重启相机</string>
+    <string name="xposed_kill_camera_hint">强制杀死相机进程，使写入的参数生效</string>
+
 </resources>

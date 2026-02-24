@@ -18,6 +18,10 @@ ktor = "3.4.0"
 umeng-common = "9.8.9"
 umeng-asms = "1.8.7.2"
 material3 = "1.4.0"
+# Xposed + Root + MMKV
+xposed-api = "82"
+libsu = "6.0.0"
+mmkv = "2.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -54,6 +58,11 @@ ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serializatio
 umeng-common = { group = "com.umeng.umsdk", name = "common", version.ref = "umeng-common" }
 umeng-asms = { group = "com.umeng.umsdk", name = "asms", version.ref = "umeng-asms" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+
+# Xposed + Root + MMKV
+xposed-api = { group = "de.robv.android.xposed", name = "api", version.ref = "xposed-api" }
+libsu-core = { group = "com.github.topjohnwu.libsu", name = "core", version.ref = "libsu" }
+mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

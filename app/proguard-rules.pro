@@ -73,3 +73,17 @@
 
 # 忽略 SLF4J 静态绑定器缺失警告
 -dontwarn org.slf4j.impl.StaticLoggerBinder
+
+# ===== Xposed Hook 模块 =====
+# 保留 Hook 入口类（Xposed 通过反射加载）
+-keep class com.silas.omaster.xposed.CameraHook { *; }
+-keep class de.robv.android.xposed.** { *; }
+-dontwarn de.robv.android.xposed.**
+
+# ===== MMKV =====
+-keep class com.tencent.mmkv.** { *; }
+-dontwarn com.tencent.mmkv.**
+
+# ===== libsu (Root 权限管理) =====
+-keep class com.topjohnwu.superuser.** { *; }
+-dontwarn com.topjohnwu.superuser.**

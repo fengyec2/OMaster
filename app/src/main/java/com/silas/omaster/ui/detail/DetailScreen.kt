@@ -61,6 +61,8 @@ import com.silas.omaster.R
 import com.silas.omaster.util.PresetI18n
 import com.silas.omaster.util.formatSigned
 import com.silas.omaster.util.hapticClickable
+import com.silas.omaster.ui.xposed.WriteFilterDialog
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import com.silas.omaster.util.perform
@@ -109,6 +111,9 @@ fun DetailScreen(
     var showFloatingWindowGuide by remember { mutableStateOf(false) }
     val guideManager = remember { FloatingWindowGuideManager.getInstance(context) }
 
+    // Xposed 写入对话框状态
+    var showWriteDialog by remember { mutableStateOf(false) }
+
     // 悬浮窗控制器（全局单例，已在 MainActivity 中注册）
     val floatingWindowController = remember { FloatingWindowController.getInstance(context) }
 
@@ -124,6 +129,20 @@ fun DetailScreen(
                 onBack()
             },
             actions = {
+                // 写入相机按钮
+                IconButton(
+                    onClick = {
+                        haptic.perform(HapticFeedbackType.Confirm)
+                        showWriteDialog = true
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Tune,
+                        contentDescription = stringResource(R.string.xposed_write_dialog_title),
+                        tint = Color.White
+                    )
+                }
+
                 // 悬浮窗按钮
                 IconButton(
                     onClick = {
@@ -293,6 +312,14 @@ fun DetailScreen(
                     handleFloatingWindowClick(context, p)
                 }
             }
+        )
+    }
+
+    // Xposed 写入对话框
+    if (showWriteDialog && preset != null) {
+        WriteFilterDialog(
+            preset = preset!!,
+            onDismiss = { showWriteDialog = false }
         )
     }
 }
