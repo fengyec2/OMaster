@@ -60,15 +60,25 @@ fun SubscriptionScreen(
             scope.launch {
                 refreshing = true
                 var successCount = 0
+                var upToDateCount = 0
                 val enabledSubs = subscriptions.filter { it.isEnabled }
                 for (sub in enabledSubs) {
-                    if (PresetRemoteManager.fetchAndSave(context, sub.url).isSuccess) {
+                    val result = PresetRemoteManager.fetchAndSave(context, sub.url)
+                    if (result.isSuccess) {
                         successCount++
+                    } else if (result.exceptionOrNull()?.message == "无需更新") {
+                        upToDateCount++
                     }
                 }
                 if (enabledSubs.isNotEmpty()) {
                     PresetRepository.getInstance(context).reloadDefaultPresets()
-                    Toast.makeText(context, context.getString(R.string.sub_update_status, successCount, enabledSubs.size), Toast.LENGTH_SHORT).show()
+                    val message = when {
+                        successCount > 0 && upToDateCount > 0 -> "成功更新 ${successCount} 个，${upToDateCount} 个已是最新"
+                        successCount > 0 -> "成功更新 ${successCount} 个订阅"
+                        upToDateCount > 0 -> "所有订阅均已是最新"
+                        else -> "更新失败，请检查网络"
+                    }
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 }
                 refreshing = false
             }
@@ -138,7 +148,8 @@ fun SubscriptionScreen(
                 onConfirm = { url ->
                     showAddDialog = false
                     scope.launch {
-                        val result = PresetRemoteManager.fetchAndSave(context, url)
+                        // 添加新订阅时强制更新 (forceUpdate = true)，以确保能正确导入并验证
+                        val result = PresetRemoteManager.fetchAndSave(context, url, forceUpdate = true)
                         result.onSuccess { presetList ->
                             subManager.addSubscription(
                                 url = url,

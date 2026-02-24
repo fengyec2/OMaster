@@ -41,7 +41,7 @@ object PresetRemoteManager {
         }
     }
 
-    suspend fun fetchAndSave(context: Context, url: String): Result<PresetList> {
+    suspend fun fetchAndSave(context: Context, url: String, forceUpdate: Boolean = false): Result<PresetList> {
         Log.d("PresetRemoteManager", "Starting fetch from $url")
         return try {
             val response: HttpResponse = client.get(url)
@@ -64,8 +64,17 @@ object PresetRemoteManager {
                 return Result.failure(Exception(errorMsg))
             }
 
+            val subManager = com.silas.omaster.data.local.SubscriptionManager.getInstance(context)
+            
+            // 检查版本号是否相同
+            if (!forceUpdate) {
+                val currentSub = subManager.subscriptionsFlow.value.find { it.url == url }
+                if (currentSub != null && currentSub.build == presetList.build) {
+                    return Result.failure(Exception("无需更新"))
+                }
+            }
+
             withContext(Dispatchers.IO) {
-                val subManager = com.silas.omaster.data.local.SubscriptionManager.getInstance(context)
                 val fileName = subManager.getFileNameForUrl(url)
                 val file = File(context.filesDir, fileName)
                 file.writeText(text)
