@@ -37,6 +37,8 @@ class SubscriptionManager private constructor(context: Context) {
             val defaultSub = Subscription(
                 url = UpdateConfigManager.DEFAULT_PRESET_URL,
                 name = "官方内置预设",
+                author = "@OMaster",
+                build = 1,
                 isEnabled = true
             )
             _subscriptionsFlow.value = listOf(defaultSub)
@@ -50,9 +52,9 @@ class SubscriptionManager private constructor(context: Context) {
         prefs.edit().putString(KEY_SUBSCRIPTIONS, jsonStr).apply()
     }
 
-    fun addSubscription(url: String, name: String = "") {
+    fun addSubscription(url: String, name: String = "", author: String = "", build: Int = 1) {
         if (_subscriptionsFlow.value.any { it.url == url }) return
-        val newSub = Subscription(url = url, name = name)
+        val newSub = Subscription(url = url, name = name, author = author, build = build)
         _subscriptionsFlow.value = _subscriptionsFlow.value + newSub
         saveSubscriptions()
     }
@@ -75,9 +77,17 @@ class SubscriptionManager private constructor(context: Context) {
         saveSubscriptions()
     }
 
-    fun updateSubscriptionStatus(url: String, presetCount: Int, lastUpdateTime: Long) {
+    fun updateSubscriptionStatus(url: String, presetCount: Int, lastUpdateTime: Long, name: String? = null, author: String? = null, build: Int? = null) {
         _subscriptionsFlow.value = _subscriptionsFlow.value.map {
-            if (it.url == url) it.copy(presetCount = presetCount, lastUpdateTime = lastUpdateTime) else it
+            if (it.url == url) {
+                it.copy(
+                    presetCount = presetCount,
+                    lastUpdateTime = lastUpdateTime,
+                    name = name ?: it.name,
+                    author = author ?: it.author,
+                    build = build ?: it.build
+                )
+            } else it
         }
         saveSubscriptions()
     }

@@ -41,7 +41,7 @@ object PresetRemoteManager {
         }
     }
 
-    suspend fun fetchAndSave(context: Context, url: String): Boolean {
+    suspend fun fetchAndSave(context: Context, url: String): Result<PresetList> {
         Log.d("PresetRemoteManager", "Starting fetch from $url")
         return try {
             val response: HttpResponse = client.get(url)
@@ -52,7 +52,16 @@ object PresetRemoteManager {
                 Json.decodeFromString(PresetList.serializer(), text)
             } catch (e: Exception) {
                 Log.e("PresetRemoteManager", "Invalid JSON received", e)
-                return false
+                return Result.failure(Exception("JSON 格式错误"))
+            }
+
+            // 验证必填字段
+            val missingFields = mutableListOf<String>()
+            if (presetList.name.isNullOrBlank()) missingFields.add("name (订阅名称)")
+            if (presetList.author.isNullOrBlank()) missingFields.add("author (作者)")            
+            if (missingFields.isNotEmpty()) {
+                val errorMsg = "缺少必要字段: ${missingFields.joinToString(", ")}"
+                return Result.failure(Exception(errorMsg))
             }
 
             withContext(Dispatchers.IO) {
@@ -66,7 +75,10 @@ object PresetRemoteManager {
                 subManager.updateSubscriptionStatus(
                     url = url,
                     presetCount = presetList.presets.size,
-                    lastUpdateTime = System.currentTimeMillis()
+                    lastUpdateTime = System.currentTimeMillis(),
+                    name = presetList.name,
+                    author = presetList.author,
+                    build = presetList.build
                 )
 
                 // Invalidate JsonUtil cache so subsequent loads read the new remote file
@@ -76,10 +88,10 @@ object PresetRemoteManager {
                     Log.w("PresetRemoteManager", "Failed to invalidate JsonUtil cache", e)
                 }
             }
-            true
+            Result.success(presetList)
         } catch (e: Exception) {
             Log.e("PresetRemoteManager", "Failed to save presets", e)
-            false
+            Result.failure(e)
         }
     }
 }

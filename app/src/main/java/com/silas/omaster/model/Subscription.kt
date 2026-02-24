@@ -6,6 +6,8 @@ import kotlinx.serialization.Serializable
 data class Subscription(
     val url: String,
     val name: String = "",
+    val author: String = "",
+    val build: Int = 1,
     val isEnabled: Boolean = true,
     val presetCount: Int = 0,
     val lastUpdateTime: Long = 0

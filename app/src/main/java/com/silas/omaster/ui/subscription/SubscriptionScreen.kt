@@ -52,6 +52,7 @@ fun SubscriptionScreen(
     
     var refreshing by remember { mutableStateOf(false) }
     var showAddDialog by remember { mutableStateOf(false) }
+    var errorMsg by remember { mutableStateOf<String?>(null) }
     
     val pullRefreshState = rememberPullRefreshState(
         refreshing = refreshing,
@@ -61,7 +62,7 @@ fun SubscriptionScreen(
                 var successCount = 0
                 val enabledSubs = subscriptions.filter { it.isEnabled }
                 for (sub in enabledSubs) {
-                    if (PresetRemoteManager.fetchAndSave(context, sub.url)) {
+                    if (PresetRemoteManager.fetchAndSave(context, sub.url).isSuccess) {
                         successCount++
                     }
                 }
@@ -134,13 +135,44 @@ fun SubscriptionScreen(
         if (showAddDialog) {
             AddSubscriptionDialog(
                 onDismiss = { showAddDialog = false },
-                onConfirm = { url, name ->
-                    subManager.addSubscription(url, name)
+                onConfirm = { url ->
                     showAddDialog = false
-                    // Optionally fetch immediately
                     scope.launch {
-                        PresetRemoteManager.fetchAndSave(context, url)
-                        PresetRepository.getInstance(context).reloadDefaultPresets()
+                        val result = PresetRemoteManager.fetchAndSave(context, url)
+                        result.onSuccess { presetList ->
+                            subManager.addSubscription(
+                                url = url,
+                                name = presetList.name ?: "",
+                                author = presetList.author ?: "",
+                                build = presetList.build
+                            )
+                            // 再次更新状态，确保 presetCount 等信息正确（因为 fetchAndSave 时可能还没 add）
+                            subManager.updateSubscriptionStatus(
+                                url = url,
+                                presetCount = presetList.presets.size,
+                                lastUpdateTime = System.currentTimeMillis(),
+                                name = presetList.name,
+                                author = presetList.author,
+                                build = presetList.build
+                            )
+                            PresetRepository.getInstance(context).reloadDefaultPresets()
+                            Toast.makeText(context, "订阅添加成功", Toast.LENGTH_SHORT).show()
+                        }.onFailure { error ->
+                            errorMsg = error.message ?: "导入失败"
+                        }
+                    }
+                }
+            )
+        }
+
+        if (errorMsg != null) {
+            AlertDialog(
+                onDismissRequest = { errorMsg = null },
+                title = { Text("导入失败") },
+                text = { Text(errorMsg ?: "未知错误") },
+                confirmButton = {
+                    TextButton(onClick = { errorMsg = null }) {
+                        Text("确定")
                     }
                 }
             )
@@ -183,9 +215,16 @@ fun SubscriptionItem(
                         overflow = TextOverflow.Ellipsis
                     )
                     Text(
-                        text = sub.url,
+                        text = "作者: ${sub.author} | Build: ${sub.build}",
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.Gray,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = sub.url,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray.copy(alpha = 0.6f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -256,22 +295,15 @@ fun SubscriptionItem(
 @Composable
 fun AddSubscriptionDialog(
     onDismiss: () -> Unit,
-    onConfirm: (String, String) -> Unit
+    onConfirm: (String) -> Unit
 ) {
     var url by remember { mutableStateOf("") }
-    var name by remember { mutableStateOf("") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.sub_add)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text(stringResource(R.string.sub_name_label)) },
-                    modifier = Modifier.fillMaxWidth()
-                )
                 OutlinedTextField(
                     value = url,
                     onValueChange = { url = it },
@@ -283,7 +315,7 @@ fun AddSubscriptionDialog(
         },
         confirmButton = {
             Button(
-                onClick = { if (url.isNotEmpty()) onConfirm(url, name) },
+                onClick = { if (url.isNotEmpty()) onConfirm(url) },
                 enabled = url.isNotEmpty()
             ) {
                 Text(stringResource(R.string.confirm))
