@@ -39,9 +39,9 @@ object JsonUtil {
 
     /**
      * 当前加载的预设版本
-     * 默认为 1（旧版本格式）
+     * 默认为 2 (当前版本)
      */
-    var currentPresetsVersion: Int = 1
+    var currentPresetsVersion: Int = 2
         private set
 
     /**
@@ -63,6 +63,17 @@ object JsonUtil {
         cachedPresets?.let {
             android.util.Log.d("JsonUtil", "Returning cached presets, count: ${it.size}")
             return it
+        }
+
+        // 特殊逻辑：检查是否存在旧版的远程更新文件（presets_remote.json）
+        // 如果存在，说明用户是从旧版本升级上来的，需要提示迁移
+        val oldRemoteFile = java.io.File(context.filesDir, "presets_remote.json")
+        if (oldRemoteFile.exists()) {
+            android.util.Log.d("JsonUtil", "Old remote presets file detected, triggering migration")
+            currentPresetsVersion = 1
+        } else {
+            // 如果不存在旧文件，默认设为当前最新版本
+            currentPresetsVersion = 2
         }
 
         val allPresets = mutableListOf<MasterPreset>()
@@ -114,6 +125,7 @@ object JsonUtil {
                                 // 这里为了简单，如果加载了下载的默认订阅，我们就清空之前加载的 assets
                                 if (sub.url == UpdateConfigManager.DEFAULT_PRESET_URL) {
                                     allPresets.clear() 
+                                    currentPresetsVersion = presetList.version
                                 }
                                 allPresets.addAll(processed)
                             }
