@@ -1,5 +1,6 @@
 package com.silas.omaster.ui.service
 
+import android.animation.ValueAnimator
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -10,11 +11,14 @@ import android.graphics.Shader
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.IBinder
+import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.silas.omaster.R
@@ -266,6 +270,9 @@ class FloatingWindowService : Service() {
             floatingView = rootLayout
             wm.addView(floatingView, params)
             setupDrag(wm)
+            
+            // 初始显示时自动贴边
+            floatingView?.post { snapToEdge(wm) }
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -313,6 +320,9 @@ class FloatingWindowService : Service() {
             floatingView = miniButton
             wm.addView(floatingView, params)
             setupDrag(wm)
+            
+            // 初始显示时自动贴边
+            floatingView?.post { snapToEdge(wm) }
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -441,7 +451,7 @@ class FloatingWindowService : Service() {
     }
 
     /**
-     * 创建收起视图 - 品牌色渐变悬浮球
+     * 创建收起视图 - 圆形应用图标
      */
     private fun createCollapsedView(
         name: String,
@@ -452,36 +462,48 @@ class FloatingWindowService : Service() {
         return FrameLayout(this).apply {
             layoutParams = FrameLayout.LayoutParams(size, size)
 
-            // 外发光效果
+            // 外发光效果 - 品牌色外溢
             val glowView = View(context).apply {
                 layoutParams = FrameLayout.LayoutParams(size, size)
                 background = createGlowBackground()
             }
 
-            // 主按钮 - 渐变背景
-            val button = LinearLayout(context).apply {
-                orientation = LinearLayout.VERTICAL
-                gravity = Gravity.CENTER
+            // 主按钮容器 - 圆形边框
+            val button = FrameLayout(context).apply {
                 layoutParams = FrameLayout.LayoutParams(
                     dpToPx(48),
                     dpToPx(48)
                 ).apply {
                     gravity = Gravity.CENTER
                 }
-                background = createGradientCircleBackground()
+                
+                // 圆形黑色底色（防止图标透明部分看到背景）
+                background = GradientDrawable().apply {
+                    shape = GradientDrawable.OVAL
+                    setColor(Color.BLACK)
+                    setStroke(dpToPx(1), Color.parseColor("#1A000000")) // 极淡的描边增加立体感
+                }
 
-                // 展开图标
-                addView(TextView(context).apply {
-                    text = "▲"
-                    textSize = 18f
-                    setTextColor(Color.WHITE)
-                    gravity = Gravity.CENTER
-                })
+                // 应用图标
+                val iconView = ImageView(context).apply {
+                    layoutParams = FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT
+                    ).apply {
+                        val margin = dpToPx(1) // 留一点边距，显示底色的圆边
+                        setMargins(margin, margin, margin, margin)
+                    }
+                    setImageResource(R.mipmap.ic_launcher_round)
+                    scaleType = ImageView.ScaleType.FIT_CENTER
+                }
+                
+                addView(iconView)
             }
 
             addView(glowView)
             addView(button)
 
+            // 整个容器可点击
             setOnClickListener { onExpand() }
         }
     }
@@ -817,19 +839,66 @@ class FloatingWindowService : Service() {
                         if (Math.abs(dx) > clickThreshold || Math.abs(dy) > clickThreshold) {
                             isClick = false
                         }
+                        
+                        val metrics = DisplayMetrics()
+                        wm.defaultDisplay.getMetrics(metrics)
+                        
                         params?.x = initialX + dx.toInt()
-                        params?.y = initialY + dy.toInt()
+                        
+                        // 垂直方向限制，防止超出屏幕
+                        val newY = initialY + dy.toInt()
+                        val maxY = metrics.heightPixels - (floatingView?.height ?: 0)
+                        params?.y = newY.coerceIn(0, maxY)
+                        
                         floatingView?.let { view ->
                             params?.let { p ->
                                 wm.updateViewLayout(view, p)
                             }
                         }
                     }
-                    MotionEvent.ACTION_UP -> {}
+                    MotionEvent.ACTION_UP -> {
+                        if (!isClick) {
+                            // 实现贴边收纳逻辑
+                            snapToEdge(wm)
+                        }
+                    }
                 }
                 return false
             }
         })
+    }
+
+    /**
+     * 将悬浮窗平滑移动至屏幕边缘
+     */
+    private fun snapToEdge(wm: WindowManager) {
+        val view = floatingView ?: return
+        val p = params ?: return
+        
+        val metrics = DisplayMetrics()
+        wm.defaultDisplay.getMetrics(metrics)
+        val screenWidth = metrics.widthPixels
+        val viewWidth = view.width
+
+        // 计算目标位置：左边(0)或右边(screenWidth - viewWidth)
+        // 如果是收起状态，可以进一步实现“半收纳”效果，即只露出一半图标
+        val targetX = if (p.x + viewWidth / 2 < screenWidth / 2) {
+            if (!isExpanded) -viewWidth / 2 else 0
+        } else {
+            if (!isExpanded) screenWidth - viewWidth / 2 else screenWidth - viewWidth
+        }
+
+        // 使用动画平滑移动
+        val animator = ValueAnimator.ofInt(p.x, targetX)
+        animator.duration = 300
+        animator.interpolator = DecelerateInterpolator()
+        animator.addUpdateListener { animation ->
+            if (floatingView != null) {
+                p.x = animation.animatedValue as Int
+                wm.updateViewLayout(view, p)
+            }
+        }
+        animator.start()
     }
 
     private fun removeWindow() {
