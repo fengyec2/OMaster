@@ -210,7 +210,8 @@ OMaster 支持的大师模式参数包括但不限于：
   - [@派瑞特凯](https://xhslink.com/m/AkrgUI0kgg1)
   - [@ONESTEP™](https://xhslink.com/m/4LZ8zRdNCSv)
   - [@盒子叔](https://xhslink.com/m/4mje9mimNXJ)
-  - **[@Aurora](https://xhslink.com/m/2Ebow4iyVOE)** ⭐ 新增
+  - [@Aurora](https://xhslink.com/m/2Ebow4iyVOE)
+  - **[@屋顶橙子味](https://v.douyin.com/YkVXPX9kZgY/)** ⭐ 新增
 
 ---
 
