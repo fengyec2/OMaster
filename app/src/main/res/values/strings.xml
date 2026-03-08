@@ -31,6 +31,8 @@
     <string name="sub_empty">暂无订阅</string>
     <string name="sub_delete_confirm_title">确认删除</string>
     <string name="sub_delete_confirm_msg">确定要删除这个订阅吗？对应的预设也将不再显示。</string>
+    <string name="sub_details">订阅详情</string>
+    <string name="sub_edit_title">编辑订阅</string>
     <string name="sub_update_status">更新完成: %1$d/%2$d</string>
     <string name="sub_preset_count">预设数量: %1$d</string>
     <string name="sub_last_update">更新于: %1$s</string>

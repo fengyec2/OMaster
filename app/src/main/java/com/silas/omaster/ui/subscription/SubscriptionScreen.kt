@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun SubscriptionScreen(
     onBack: () -> Unit,
@@ -52,7 +52,12 @@ fun SubscriptionScreen(
     
     var refreshing by remember { mutableStateOf(false) }
     var showAddDialog by remember { mutableStateOf(false) }
+    var showEditDialog by remember { mutableStateOf<Subscription?>(null) }
+    var selectedSubscription by remember { mutableStateOf<Subscription?>(null) }
     var errorMsg by remember { mutableStateOf<String?>(null) }
+    
+    val sheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember { mutableStateOf(false) }
     
     val pullRefreshState = rememberPullRefreshState(
         refreshing = refreshing,
@@ -111,7 +116,10 @@ fun SubscriptionScreen(
                             SubscriptionItem(
                                 sub = sub,
                                 onToggle = { subManager.toggleSubscription(sub.url) },
-                                onDelete = { subManager.removeSubscription(sub.url) }
+                                onClick = {
+                                    selectedSubscription = sub
+                                    showBottomSheet = true
+                                }
                             )
                         }
                         item {
@@ -140,6 +148,22 @@ fun SubscriptionScreen(
                 .size(64.dp)
         ) {
             Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.sub_add), modifier = Modifier.size(32.dp))
+        }
+
+        if (showBottomSheet && selectedSubscription != null) {
+            SubscriptionDetailBottomSheet(
+                sub = selectedSubscription!!,
+                onDismiss = { showBottomSheet = false },
+                sheetState = sheetState,
+                onEdit = {
+                    showEditDialog = selectedSubscription
+                    showBottomSheet = false
+                },
+                onDelete = {
+                    subManager.removeSubscription(selectedSubscription!!.url)
+                    showBottomSheet = false
+                }
+            )
         }
 
         if (showAddDialog) {
@@ -176,10 +200,39 @@ fun SubscriptionScreen(
             )
         }
 
+        if (showEditDialog != null) {
+            EditSubscriptionDialog(
+                sub = showEditDialog!!,
+                onDismiss = { showEditDialog = null },
+                onConfirm = { oldUrl, newUrl ->
+                    showEditDialog = null
+                    scope.launch {
+                        subManager.updateSubscriptionUrl(oldUrl, newUrl)
+                        // 更新 URL 后需要重新拉取
+                        val result = PresetRemoteManager.fetchAndSave(context, newUrl, forceUpdate = true)
+                        result.onSuccess { presetList ->
+                            subManager.updateSubscriptionStatus(
+                                url = newUrl,
+                                presetCount = presetList.presets.size,
+                                lastUpdateTime = System.currentTimeMillis(),
+                                name = presetList.name,
+                                author = presetList.author,
+                                build = presetList.build
+                            )
+                            PresetRepository.getInstance(context).reloadDefaultPresets()
+                            Toast.makeText(context, "订阅更新成功", Toast.LENGTH_SHORT).show()
+                        }.onFailure { error ->
+                            errorMsg = error.message ?: "更新失败"
+                        }
+                    }
+                }
+            )
+        }
+
         if (errorMsg != null) {
             AlertDialog(
                 onDismissRequest = { errorMsg = null },
-                title = { Text("导入失败") },
+                title = { Text("操作失败") },
                 text = { Text(errorMsg ?: "未知错误") },
                 confirmButton = {
                     TextButton(onClick = { errorMsg = null }) {
@@ -195,13 +248,13 @@ fun SubscriptionScreen(
 fun SubscriptionItem(
     sub: Subscription,
     onToggle: () -> Unit,
-    onDelete: () -> Unit
+    onClick: () -> Unit
 ) {
-    var showDeleteConfirm by remember { mutableStateOf(false) }
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .clickable { onClick() }
             .border(
                 width = 1.dp,
                 color = if (sub.isEnabled) MaterialTheme.colorScheme.primary.copy(alpha = 0.3f) else CardBorderLight,
@@ -241,19 +294,14 @@ fun SubscriptionItem(
                     )
                 }
                 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Switch(
-                        checked = sub.isEnabled,
-                        onCheckedChange = { onToggle() },
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = MaterialTheme.colorScheme.primary,
-                            checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-                        )
+                Switch(
+                    checked = sub.isEnabled,
+                    onCheckedChange = { onToggle() },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = MaterialTheme.colorScheme.primary,
+                        checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
                     )
-                    IconButton(onClick = { showDeleteConfirm = true }) {
-                        Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(R.string.delete), tint = Color.Gray)
-                    }
-                }
+                )
             }
             
             Spacer(modifier = Modifier.height(8.dp))
@@ -280,6 +328,92 @@ fun SubscriptionItem(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SubscriptionDetailBottomSheet(
+    sub: Subscription,
+    onDismiss: () -> Unit,
+    sheetState: SheetState,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit
+) {
+    var showDeleteConfirm by remember { mutableStateOf(false) }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = DarkGray,
+        contentColor = Color.White,
+        scrimColor = Color.Black.copy(alpha = 0.5f),
+        dragHandle = { BottomSheetDefaults.DragHandle(color = Color.Gray) }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(bottom = 48.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.sub_details),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
+
+            // Info Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = PureBlack.copy(alpha = 0.5f)),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    DetailRow(label = "名称", value = if (sub.name.isNotEmpty()) sub.name else "未命名")
+                    DetailRow(label = "作者", value = sub.author)
+                    DetailRow(label = "Build", value = sub.build.toString())
+                    DetailRow(label = "预设数量", value = sub.presetCount.toString())
+                    
+                    if (sub.lastUpdateTime > 0) {
+                        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                        DetailRow(label = "最后更新", value = sdf.format(Date(sub.lastUpdateTime)))
+                    }
+                    
+                    DetailRow(label = "链接", value = sub.url, isLink = true)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Actions
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Button(
+                    onClick = onEdit,
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(stringResource(R.string.edit))
+                }
+
+                Button(
+                    onClick = { showDeleteConfirm = true },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.2f)),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(stringResource(R.string.delete), color = MaterialTheme.colorScheme.error)
+                }
+            }
+        }
+    }
 
     if (showDeleteConfirm) {
         AlertDialog(
@@ -301,6 +435,58 @@ fun SubscriptionItem(
             }
         )
     }
+}
+
+@Composable
+fun DetailRow(label: String, value: String, isLink: Boolean = false) {
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(text = label, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            color = if (isLink) MaterialTheme.colorScheme.primary else Color.White,
+            maxLines = if (isLink) 2 else 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+fun EditSubscriptionDialog(
+    sub: Subscription,
+    onDismiss: () -> Unit,
+    onConfirm: (String, String) -> Unit
+) {
+    var url by remember { mutableStateOf(sub.url) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.sub_edit_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = url,
+                    onValueChange = { url = it },
+                    label = { Text(stringResource(R.string.sub_url_label)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { if (url.isNotEmpty()) onConfirm(sub.url, url) },
+                enabled = url.isNotEmpty()
+            ) {
+                Text(stringResource(R.string.confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
 }
 
 @Composable
