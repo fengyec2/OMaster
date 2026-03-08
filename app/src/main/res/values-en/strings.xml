@@ -31,6 +31,8 @@
     <string name="sub_empty">No subscriptions available</string>
     <string name="sub_delete_confirm_title">Confirm Delete</string>
     <string name="sub_delete_confirm_msg">Confirm deletion? Associated presets will also be removed.</string>
+    <string name="sub_details">Details</string>
+    <string name="sub_edit_title">Edit</string>
     <string name="sub_update_status">Updates complete: %1$d/%2$d</string>
     <string name="sub_preset_count">Presets: %1$d</string>
     <string name="sub_last_update">Updated: %1$s</string>
@@ -40,9 +42,12 @@
     <string name="settings_title">Settings</string>
     <string name="settings_section_general">General</string>
     <string name="settings_section_appearance">Appearance</string>
+    <string name="settings_section_floating_window">Floating Window</string>
     <string name="vibration_feedback">Vibration Feedback</string>
+    <string name="default_start_tab">Default Start Tab</string>
     <string name="settings_theme_title">Theme Color</string>
     <string name="settings_theme_dialog_title">Select Theme Color</string>
+    <string name="floating_window_opacity">Floating Window Opacity</string>
 
     <!-- Brand Names -->
     <string name="brand_hasselblad">Hasselblad</string>

@@ -106,6 +106,21 @@ class SubscriptionManager private constructor(context: Context) {
         saveSubscriptions()
     }
 
+    fun updateSubscriptionUrl(oldUrl: String, newUrl: String) {
+        if (oldUrl == newUrl) return
+        _subscriptionsFlow.value = _subscriptionsFlow.value.map {
+            if (it.url == oldUrl) it.copy(url = newUrl) else it
+        }
+        saveSubscriptions()
+        
+        // 删除旧文件，新文件将在下次更新时创建
+        val oldFileName = getFileNameForUrl(oldUrl)
+        val oldFile = File(appContext.filesDir, oldFileName)
+        if (oldFile.exists()) {
+            oldFile.delete()
+        }
+    }
+
     fun getFileNameForUrl(url: String): String {
         // Use a hash of the URL to create a unique filename
         val hash = url.hashCode().toString(16)
