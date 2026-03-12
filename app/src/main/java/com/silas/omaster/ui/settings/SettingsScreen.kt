@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Brush
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.DashboardCustomize
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.icons.filled.Vibration
@@ -72,6 +73,7 @@ import com.silas.omaster.ui.theme.BrandTheme
 import com.silas.omaster.ui.theme.DarkGray
 import com.silas.omaster.ui.theme.PureBlack
 import com.silas.omaster.util.HapticSettings
+import com.silas.omaster.util.ImageCacheManager
 import com.silas.omaster.util.perform
 
 @Composable
@@ -87,6 +89,8 @@ fun SettingsScreen() {
     var updateChannel by remember { mutableStateOf(settingsManager.updateChannel) }
     var showChannelDialog by remember { mutableStateOf(false) }
     var analyticsEnabled by remember { mutableStateOf(settingsManager.isAnalyticsEnabled) }
+    var cacheSize by remember { mutableStateOf(ImageCacheManager.getCacheSize(context)) }
+    var showClearCacheDialog by remember { mutableStateOf(false) }
     val haptic = LocalHapticFeedback.current
 
     if (showThemeDialog) {
@@ -300,6 +304,61 @@ fun SettingsScreen() {
                         haptic.perform(HapticFeedbackType.ToggleOff)
                     }
                 }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Cache Section
+        SettingsSectionCard {
+            SettingsSectionTitle(title = "存储")
+
+            SettingsClickableItem(
+                icon = Icons.Default.Delete,
+                title = stringResource(R.string.clear_cache),
+                subtitle = if (cacheSize > 0) {
+                    stringResource(R.string.cache_size_format, cacheSize)
+                } else {
+                    stringResource(R.string.clear_cache_desc)
+                },
+                onClick = { showClearCacheDialog = true }
+            )
+        }
+
+        // Clear Cache Confirmation Dialog
+        if (showClearCacheDialog) {
+            AlertDialog(
+                onDismissRequest = { showClearCacheDialog = false },
+                title = { Text(stringResource(R.string.clear_cache)) },
+                text = {
+                    Text(
+                        if (cacheSize > 0) {
+                            "当前缓存大小为 %.2f MB，清理后将释放存储空间，下次浏览时需要重新下载图片。".format(cacheSize)
+                        } else {
+                            "当前没有缓存图片"
+                        }
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            ImageCacheManager.clearCache(context)
+                            cacheSize = 0.0
+                            showClearCacheDialog = false
+                            haptic.perform(HapticFeedbackType.Confirm)
+                        },
+                        enabled = cacheSize > 0
+                    ) {
+                        Text("清理")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showClearCacheDialog = false }) {
+                        Text(stringResource(R.string.cancel))
+                    }
+                },
+                containerColor = DarkGray,
+                textContentColor = Color.White
             )
         }
 

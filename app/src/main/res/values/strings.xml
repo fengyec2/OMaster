@@ -51,6 +51,10 @@
     <string name="floating_window_opacity">悬浮窗透明度</string>
     <string name="analytics_enabled">使用友盟统计</string>
     <string name="analytics_restart_hint">重启应用后生效</string>
+    <string name="clear_cache">清理图片缓存</string>
+    <string name="clear_cache_desc">释放存储空间，下次浏览时重新下载</string>
+    <string name="cache_size_format">缓存大小: %.2f MB</string>
+    <string name="cache_cleared">缓存已清理</string>
 
     <!-- 品牌名称 -->
     <string name="brand_hasselblad">哈苏</string>

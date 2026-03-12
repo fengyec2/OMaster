@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,9 +19,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +32,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,6 +56,9 @@ import coil.request.CachePolicy
 import com.silas.omaster.R
 import com.silas.omaster.model.MasterPreset
 import com.silas.omaster.ui.animation.AnimationSpecs
+import com.silas.omaster.util.DownloadResult
+import com.silas.omaster.util.ImageCacheManager
+import com.silas.omaster.util.ImageDownloadCallback
 import com.silas.omaster.ui.theme.DarkGray
 import com.silas.omaster.ui.theme.PureBlack
 import java.io.File
@@ -247,41 +258,98 @@ fun ModeBadge(
 
 /**
  * 预设图片组件
- * 支持 assets 和内部存储两种路径
- * 优化：使用更短的 crossfade 动画时长
+ * 支持 assets、内部存储和网络图片（带本地缓存）
+ * 优化：使用更短的 crossfade 动画时长，优先加载本地缓存，带下载状态
  */
 @Composable
 fun PresetImage(
     preset: MasterPreset,
     modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.Crop
+    contentScale: ContentScale = ContentScale.Crop,
+    showDownloadIndicator: Boolean = true
 ) {
     val context = LocalContext.current
+    var downloadState by remember { mutableStateOf<DownloadState>(DownloadState.Idle) }
 
-    // 判断图片路径类型
-    val imageUri = when {
-        // 网络图片：以 http 或 https 开头
-        preset.coverPath.startsWith("http") -> preset.coverPath
-        // 绝对路径
-        preset.coverPath.startsWith("/") -> File(preset.coverPath).toUri().toString()
-        // 自定义预设：路径以 presets/ 开头，使用内部存储
-        preset.isCustom || preset.coverPath.startsWith("presets/") -> {
-            File(context.filesDir, preset.coverPath).toUri().toString()
+    // 使用 ImageCacheManager 获取加载路径（优先本地缓存）
+    val imageUri = ImageCacheManager.getImageLoadPath(context, preset.coverPath)
+
+    // 如果是网络图片且未缓存，后台下载
+    LaunchedEffect(preset.coverPath) {
+        if (preset.coverPath.startsWith("http") &&
+            !ImageCacheManager.isImageCached(context, preset.coverPath)) {
+
+            downloadState = DownloadState.Downloading
+
+            val result = ImageCacheManager.downloadAndCacheImage(
+                context, preset.coverPath,
+                callback = object : ImageDownloadCallback {
+                    override fun onStart(url: String) {}
+                    override fun onProgress(url: String, bytesDownloaded: Long, totalBytes: Long) {}
+                    override fun onSuccess(url: String, file: File) {
+                        downloadState = DownloadState.Success
+                    }
+                    override fun onError(url: String, error: Throwable, retryCount: Int) {
+                        downloadState = DownloadState.Error(error.message ?: "下载失败")
+                    }
+                    override fun onRetry(url: String, attempt: Int) {}
+                }
+            )
+
+            downloadState = when (result) {
+                is DownloadResult.Success -> DownloadState.Success
+                is DownloadResult.Error -> DownloadState.Error("下载失败")
+            }
         }
-        // 默认预设：使用 assets
-        else -> "file:///android_asset/${preset.coverPath}"
     }
 
-    AsyncImage(
-        model = ImageRequest.Builder(context)
-            .data(imageUri)
-            .crossfade(AnimationSpecs.FastTween.durationMillis) // 使用快速动画规格
-            .diskCachePolicy(CachePolicy.ENABLED) // 确保开启磁盘缓存
-            .build(),
-        contentDescription = preset.name,
-        contentScale = contentScale,
-        modifier = modifier
-    )
+    Box(modifier = modifier) {
+        AsyncImage(
+            model = ImageRequest.Builder(context)
+                .data(imageUri)
+                .crossfade(AnimationSpecs.FastTween.durationMillis)
+                .diskCachePolicy(CachePolicy.ENABLED)
+                .memoryCachePolicy(CachePolicy.ENABLED)
+                .build(),
+            contentDescription = preset.name,
+            contentScale = contentScale,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        // 显示加载状态
+        if (showDownloadIndicator && downloadState is DownloadState.Downloading) {
+            LoadingIndicator()
+        }
+    }
+}
+
+/**
+ * 简单加载指示器 - Material 3 风格
+ */
+@Composable
+fun LoadingIndicator(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.size(32.dp),
+            color = MaterialTheme.colorScheme.primary,
+            strokeWidth = 3.dp
+        )
+    }
+}
+
+/**
+ * 下载状态
+ */
+private sealed class DownloadState {
+    object Idle : DownloadState()
+    object Downloading : DownloadState()
+    object Success : DownloadState()
+    data class Error(val message: String) : DownloadState()
 }
 
 /**
