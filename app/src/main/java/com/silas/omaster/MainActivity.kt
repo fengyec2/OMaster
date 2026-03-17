@@ -47,6 +47,8 @@ import com.silas.omaster.ui.service.FloatingWindowController
 import com.silas.omaster.ui.theme.OMasterTheme
 import com.silas.omaster.util.JsonUtil
 import com.silas.omaster.util.VersionInfo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.silas.omaster.data.repository.PresetRepository
@@ -181,7 +183,15 @@ fun MainApp(navController: NavHostController) {
     val repository = remember { PresetRepository.getInstance(context) }
     var showMigrationDialog by remember { mutableStateOf(false) }
 
+    // 检查是否需要数据迁移
     LaunchedEffect(Unit) {
+        // 先触发 loadPresets 来正确检测版本
+        // 使用 IO 线程避免阻塞 UI
+        withContext(Dispatchers.IO) {
+            JsonUtil.loadPresets(context)
+        }
+        
+        // 现在 currentPresetsVersion 已经被正确设置
         if (JsonUtil.currentPresetsVersion != 2) {
             showMigrationDialog = true
         }

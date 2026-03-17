@@ -44,6 +44,27 @@ object JsonUtil {
     var currentPresetsVersion: Int = 2
         private set
 
+    private const val PREFS_NAME = "json_util_prefs"
+    private const val KEY_MIGRATION_DONE = "migration_done"
+
+    /**
+     * 检查是否已经完成数据迁移
+     */
+    private fun isMigrationDone(context: Context): Boolean {
+        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getBoolean(KEY_MIGRATION_DONE, false)
+    }
+
+    /**
+     * 标记数据迁移已完成
+     */
+    private fun setMigrationDone(context: Context) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(KEY_MIGRATION_DONE, true)
+            .apply()
+    }
+
     /**
      * 【内置预设加载方法】
      * 从 assets 目录加载 presets.json 文件
@@ -66,13 +87,13 @@ object JsonUtil {
         }
 
         // 特殊逻辑：检查是否存在旧版的远程更新文件（presets_remote.json）
-        // 如果存在，说明用户是从旧版本升级上来的，需要提示迁移
+        // 如果存在且未完成迁移，说明用户是从旧版本升级上来的，需要提示迁移
         val oldRemoteFile = java.io.File(context.filesDir, "presets_remote.json")
-        if (oldRemoteFile.exists()) {
+        if (oldRemoteFile.exists() && !isMigrationDone(context)) {
             android.util.Log.d("JsonUtil", "Old remote presets file detected, triggering migration")
             currentPresetsVersion = 1
         } else {
-            // 如果不存在旧文件，默认设为当前最新版本
+            // 如果不存在旧文件或已完成迁移，默认设为当前最新版本
             currentPresetsVersion = 2
         }
 
@@ -97,9 +118,8 @@ object JsonUtil {
                                 val presetList: PresetList? = gson.fromJson(reader, presetListType)
                                 if (presetList != null) {
                                     val processed = processPresets(presetList.presets ?: emptyList(), sub.url)
-                                    if (sub.url == UpdateConfigManager.DEFAULT_PRESET_URL) {
-                                        currentPresetsVersion = presetList.version
-                                    }
+                                    // 注意：不再从订阅文件读取 version 覆盖 currentPresetsVersion
+                                    // currentPresetsVersion 只用于检测 presets_remote.json 旧文件迁移
                                     allPresets.addAll(processed)
                                 }
                             }
@@ -231,6 +251,9 @@ object JsonUtil {
                 remoteFile.delete()
                 android.util.Log.d("JsonUtil", "Deleted remote presets file for migration")
             }
+            // 标记迁移已完成，防止重复弹窗
+            setMigrationDone(context)
+            android.util.Log.d("JsonUtil", "Migration marked as done")
             invalidateCache()
         } catch (e: Exception) {
             android.util.Log.e("JsonUtil", "Failed to delete remote presets file", e)
