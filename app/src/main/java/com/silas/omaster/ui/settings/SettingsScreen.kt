@@ -137,13 +137,17 @@ fun SettingsScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(PureBlack)
-            .verticalScroll(scrollState)
     ) {
         OMasterTopAppBar(
             title = stringResource(R.string.settings_title),
             modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
         )
 
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+        ) {
         // General Section
         SettingsSectionCard {
             SettingsSectionTitle(title = stringResource(R.string.settings_section_general))
@@ -363,6 +367,7 @@ fun SettingsScreen() {
         }
 
         Spacer(modifier = Modifier.height(32.dp))
+        }
     }
 }
 
