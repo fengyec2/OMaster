@@ -26,6 +26,7 @@ import com.silas.omaster.data.local.FloatingWindowMode
 import com.silas.omaster.data.local.SettingsManager
 import com.silas.omaster.model.PresetItem
 import com.silas.omaster.model.PresetSection
+import com.silas.omaster.util.IconFont
 import com.silas.omaster.util.PresetI18n
 import com.silas.omaster.util.formatSigned
 
@@ -589,7 +590,7 @@ class FloatingWindowService : Service() {
                 setBackgroundColor(Color.parseColor("#20FFFFFF"))
             })
 
-            // 第二行：图标
+            // 第二行：图标（使用 Iconfont）
             val iconsRow = LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL
                 layoutParams = LinearLayout.LayoutParams(
@@ -599,19 +600,8 @@ class FloatingWindowService : Service() {
                 )
                 gravity = Gravity.CENTER_VERTICAL
 
-                val icons = listOf(
-                    getString(R.string.floating_filter_icon),
-                    getString(R.string.floating_soft_icon),
-                    getString(R.string.floating_tone_icon),
-                    getString(R.string.floating_saturation_icon),
-                    getString(R.string.floating_warm_icon),
-                    getString(R.string.floating_cyan_icon),
-                    getString(R.string.floating_sharpness_icon),
-                    getString(R.string.floating_vignette_icon)
-                )
-
-                icons.forEach { icon ->
-                    addView(createCompactIconCell(icon))
+                IconFont.ICONS.forEach { iconCode ->
+                    addView(createCompactIconCell(iconCode))
                 }
             }
             addView(iconsRow)
@@ -664,16 +654,18 @@ class FloatingWindowService : Service() {
     }
 
     /**
-     * 创建紧凑图标单元格
+     * 创建紧凑图标单元格（使用 Iconfont）
      */
-    private fun createCompactIconCell(icon: String): TextView {
+    private fun createCompactIconCell(iconCode: String): TextView {
         return TextView(this).apply {
-            text = icon
-            textSize = 14f
+            text = iconCode
+            textSize = 16f
             setTextColor(primaryColor)
             gravity = Gravity.CENTER
             layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
             setPadding(0, dpToPx(4), 0, dpToPx(4))
+            // 使用 Iconfont 字体
+            typeface = IconFont.getTypeface(this@FloatingWindowService)
         }
     }
 
@@ -791,18 +783,18 @@ class FloatingWindowService : Service() {
     }
     
     /**
-     * 根据标签获取对应图标
+     * 根据标签获取对应图标（使用 Iconfont）
      */
     private fun getIconForLabel(label: String): String {
         return when {
-            label.contains("滤镜") || label.contains("Filter") -> getString(R.string.floating_filter_icon)
-            label.contains("柔光") || label.contains("Soft") -> getString(R.string.floating_soft_icon)
-            label.contains("影调") || label.contains("Tone") -> getString(R.string.floating_tone_icon)
-            label.contains("饱和") || label.contains("Saturation") -> getString(R.string.floating_saturation_icon)
-            label.contains("冷暖") || label.contains("Warm") -> getString(R.string.floating_warm_icon)
-            label.contains("青品") || label.contains("Cyan") -> getString(R.string.floating_cyan_icon)
-            label.contains("锐度") || label.contains("Sharpness") -> getString(R.string.floating_sharpness_icon)
-            label.contains("暗角") || label.contains("Vignette") -> getString(R.string.floating_vignette_icon)
+            label.contains("滤镜") || label.contains("Filter") -> IconFont.FILTER
+            label.contains("柔光") || label.contains("Soft") -> IconFont.SOFT_LIGHT
+            label.contains("影调") || label.contains("Tone") -> IconFont.TONE
+            label.contains("饱和") || label.contains("Saturation") -> IconFont.SATURATION
+            label.contains("冷暖") || label.contains("Warm") -> IconFont.WARM_COOL
+            label.contains("青品") || label.contains("Cyan") -> IconFont.CYAN
+            label.contains("锐度") || label.contains("Sharpness") -> IconFont.SHARPNESS
+            label.contains("暗角") || label.contains("Vignette") -> IconFont.VIGNETTE
             label.contains("白平衡") || label.contains("WB") -> "🌡️"
             label.contains("曝光") || label.contains("EV") -> "☀️"
             label.contains("ISO") -> "📸"
@@ -1003,11 +995,12 @@ class FloatingWindowService : Service() {
                 setMargins(0, 0, 0, dpToPx(8))
             }
 
-            // 图标
+            // 图标（使用 Iconfont）
             addView(TextView(context).apply {
                 text = icon
-                textSize = 16f
+                textSize = 18f
                 setTextColor(primaryColor)
+                typeface = IconFont.getTypeface(this@FloatingWindowService)
             })
 
             addView(createSpacing(dpToPx(8)))
@@ -1054,10 +1047,12 @@ class FloatingWindowService : Service() {
                 setMargins(0, 0, dpToPx(4), 0)
             }
 
+            // 图标（使用 Iconfont）
             addView(TextView(context).apply {
                 text = icon
-                textSize = 12f
+                textSize = 14f
                 setTextColor(primaryColor)
+                typeface = IconFont.getTypeface(this@FloatingWindowService)
             })
 
             addView(createSpacing(dpToPx(4)))
