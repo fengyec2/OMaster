@@ -81,6 +81,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.sp
+import android.widget.Toast
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -94,7 +95,7 @@ fun HomeScreen(
     val context = LocalContext.current
     val repository = remember { PresetRepository.getInstance(context) }
     val viewModel: HomeViewModel = viewModel(
-        factory = HomeViewModelFactory(repository)
+        factory = HomeViewModelFactory(repository, context)
     )
     val haptic = LocalHapticFeedback.current
     val scope = rememberCoroutineScope()
@@ -367,16 +368,30 @@ private fun PresetGrid(
     onScrollStateChanged: (Boolean) -> Unit = {},
     showLoadingTip: Boolean = true,
     showTopHint: Boolean = false,
-    onRefresh: (onComplete: () -> Unit) -> Unit = {}
+    onRefresh: (onComplete: (HomeViewModel.RefreshResult) -> Unit) -> Unit = {}
 ) {
     val listState = rememberLazyStaggeredGridState()
     val haptic = LocalHapticFeedback.current
+    val context = LocalContext.current
 
     // Pull-to-refresh state
     var refreshing by remember { mutableStateOf(false) }
     val pullRefreshState = rememberPullRefreshState(refreshing, onRefresh = {
         refreshing = true
-        onRefresh { refreshing = false }
+        onRefresh { result ->
+            refreshing = false
+            // 显示刷新结果 Toast
+            val message = when (result) {
+                is HomeViewModel.RefreshResult.Success -> "成功更新 ${result.count} 个订阅"
+                is HomeViewModel.RefreshResult.PartialUpdate -> "成功更新 ${result.updated} 个，${result.upToDate} 个已是最新"
+                is HomeViewModel.RefreshResult.UpToDate -> "所有订阅均已是最新"
+                is HomeViewModel.RefreshResult.Failed -> "更新失败，请检查网络"
+                is HomeViewModel.RefreshResult.NoSubscriptions -> ""
+            }
+            if (message.isNotEmpty()) {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
+        }
     })
 
     // Remove the problematic LaunchedEffect
