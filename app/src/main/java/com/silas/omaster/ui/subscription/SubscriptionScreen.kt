@@ -37,6 +37,7 @@ import com.silas.omaster.ui.components.OMasterTopAppBar
 import com.silas.omaster.ui.theme.CardBorderLight
 import com.silas.omaster.ui.theme.DarkGray
 import com.silas.omaster.ui.theme.PureBlack
+import com.silas.omaster.util.Logger
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -107,15 +108,25 @@ fun SubscriptionScreen(
                             scope.launch {
                                 if (refreshing) return@launch
                                 refreshing = true
+                                Logger.i("SubscriptionScreen", "开始手动刷新订阅，共 ${subscriptions.size} 个订阅")
                                 var successCount = 0
                                 var upToDateCount = 0
+                                var failCount = 0
                                 val enabledSubs = subscriptions.filter { it.isEnabled }
+                                Logger.d("SubscriptionScreen", "启用的订阅: ${enabledSubs.size} 个")
                                 for (sub in enabledSubs) {
+                                    Logger.d("SubscriptionScreen", "正在更新: ${sub.name} (${sub.url})")
                                     val result = PresetRemoteManager.fetchAndSave(context, sub.url)
                                     if (result.isSuccess) {
                                         successCount++
+                                        Logger.i("SubscriptionScreen", "更新成功: ${sub.name}")
                                     } else if (result.exceptionOrNull()?.message == "无需更新") {
                                         upToDateCount++
+                                        Logger.d("SubscriptionScreen", "已是最新: ${sub.name}")
+                                    } else {
+                                        failCount++
+                                        val error = result.exceptionOrNull()?.message ?: "未知错误"
+                                        Logger.w("SubscriptionScreen", "更新失败: ${sub.name}, 错误: $error")
                                     }
                                 }
                                 if (enabledSubs.isNotEmpty()) {
@@ -126,7 +137,10 @@ fun SubscriptionScreen(
                                         upToDateCount > 0 -> "所有订阅均已是最新"
                                         else -> "更新失败，请检查网络"
                                     }
+                                    Logger.i("SubscriptionScreen", "刷新完成: 成功=$successCount, 最新=$upToDateCount, 失败=$failCount")
                                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Logger.d("SubscriptionScreen", "没有启用的订阅，跳过刷新")
                                 }
                                 refreshing = false
                             }

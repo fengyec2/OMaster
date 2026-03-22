@@ -76,10 +76,13 @@ import com.silas.omaster.ui.theme.DarkGray
 import com.silas.omaster.ui.theme.PureBlack
 import com.silas.omaster.util.HapticSettings
 import com.silas.omaster.util.ImageCacheManager
+import com.silas.omaster.util.LogExporter
+import com.silas.omaster.util.Logger
 import com.silas.omaster.util.perform
 import android.content.Intent
 import android.widget.Toast
 import com.silas.omaster.MainActivity
+import androidx.compose.material.icons.filled.BugReport
 
 @Composable
 fun SettingsScreen() {
@@ -100,6 +103,8 @@ fun SettingsScreen() {
     var showFloatingModeDialog by remember { mutableStateOf(false) }
     var appLanguage by remember { mutableStateOf(settingsManager.appLanguage) }
     var showLanguageDialog by remember { mutableStateOf(false) }
+    var logSize by remember { mutableStateOf(LogExporter.getFormattedLogSize()) }
+    var showClearLogDialog by remember { mutableStateOf(false) }
     val haptic = LocalHapticFeedback.current
 
     if (showThemeDialog) {
@@ -403,6 +408,23 @@ fun SettingsScreen() {
                 },
                 onClick = { showClearCacheDialog = true }
             )
+
+            HorizontalDivider(color = Color.White.copy(alpha = 0.1f))
+
+            // Export Logs
+            SettingsClickableItem(
+                icon = Icons.Default.BugReport,
+                title = "导出日志",
+                subtitle = "日志大小: $logSize",
+                onClick = {
+                    haptic.perform(HapticFeedbackType.Confirm)
+                    LogExporter.exportAndShare(context) { success ->
+                        if (success) {
+                            logSize = LogExporter.getFormattedLogSize()
+                        }
+                    }
+                }
+            )
         }
 
         // Clear Cache Confirmation Dialog
@@ -434,6 +456,37 @@ fun SettingsScreen() {
                 },
                 dismissButton = {
                     TextButton(onClick = { showClearCacheDialog = false }) {
+                        Text(stringResource(R.string.cancel))
+                    }
+                },
+                containerColor = DarkGray,
+                textContentColor = Color.White
+            )
+        }
+
+        // Clear Log Confirmation Dialog
+        if (showClearLogDialog) {
+            AlertDialog(
+                onDismissRequest = { showClearLogDialog = false },
+                title = { Text("清空日志") },
+                text = {
+                    Text("确定要清空所有日志文件吗？此操作不可恢复。")
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            Logger.clearLogs()
+                            logSize = LogExporter.getFormattedLogSize()
+                            showClearLogDialog = false
+                            haptic.perform(HapticFeedbackType.Confirm)
+                            Toast.makeText(context, "日志已清空", Toast.LENGTH_SHORT).show()
+                        }
+                    ) {
+                        Text("清空", color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showClearLogDialog = false }) {
                         Text(stringResource(R.string.cancel))
                     }
                 },

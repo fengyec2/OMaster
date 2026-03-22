@@ -27,6 +27,7 @@ import com.silas.omaster.data.local.SettingsManager
 import com.silas.omaster.model.PresetItem
 import com.silas.omaster.model.PresetSection
 import com.silas.omaster.util.IconFont
+import com.silas.omaster.util.Logger
 import com.silas.omaster.util.PresetI18n
 import com.silas.omaster.util.formatSigned
 
@@ -89,13 +90,14 @@ class FloatingWindowService : Service() {
         private var instance: FloatingWindowService? = null
 
         fun show(context: Context, preset: com.silas.omaster.model.MasterPreset, presetIndex: Int = 0, presetIds: List<String> = emptyList()) {
+            Logger.i("FloatingWindowService", "显示悬浮窗: ${preset.name}, 索引: $presetIndex, 总数: ${presetIds.size}")
             val intent = Intent(context, FloatingWindowService::class.java).apply {
                 putExtra(EXTRA_ACTION, ACTION_SHOW)
                 putExtra(EXTRA_NAME, preset.name)
                 // 获取动态生成的 sections
                 val sections = preset.getDisplaySections(context)
                 putParcelableArrayListExtra(EXTRA_SECTIONS, ArrayList(sections))
-                
+
                 putExtra(EXTRA_PRESET_ID, preset.id ?: "")
                 putExtra(EXTRA_PRESET_INDEX, presetIndex)
                 putStringArrayListExtra(EXTRA_PRESET_LIST, ArrayList(presetIds))
@@ -108,12 +110,13 @@ class FloatingWindowService : Service() {
          * 更新悬浮窗内容（不重启服务，避免闪动）
          */
         fun update(context: Context, preset: com.silas.omaster.model.MasterPreset, presetIndex: Int = 0, presetIds: List<String> = emptyList()) {
+            Logger.d("FloatingWindowService", "更新悬浮窗: ${preset.name}, 索引: $presetIndex")
             val intent = Intent(context, FloatingWindowService::class.java).apply {
                 putExtra(EXTRA_ACTION, ACTION_UPDATE)
                 putExtra(EXTRA_NAME, preset.name)
                 val sections = preset.getDisplaySections(context)
                 putParcelableArrayListExtra(EXTRA_SECTIONS, ArrayList(sections))
-                
+
                 putExtra(EXTRA_PRESET_ID, preset.id ?: "")
                 putExtra(EXTRA_PRESET_INDEX, presetIndex)
                 putStringArrayListExtra(EXTRA_PRESET_LIST, ArrayList(presetIds))
@@ -123,6 +126,7 @@ class FloatingWindowService : Service() {
         }
 
         fun hide(context: Context) {
+            Logger.i("FloatingWindowService", "隐藏悬浮窗")
             context.stopService(Intent(context, FloatingWindowService::class.java))
         }
 
