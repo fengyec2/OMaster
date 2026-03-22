@@ -23,6 +23,15 @@ enum class FloatingWindowMode {
     COMPACT     // 新版紧凑参数条
 }
 
+/**
+ * 应用语言枚举
+ */
+enum class AppLanguage {
+    SYSTEM,     // 跟随系统
+    CHINESE,    // 简体中文
+    ENGLISH     // English
+}
+
 class SettingsManager private constructor(context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
 
@@ -97,6 +106,20 @@ class SettingsManager private constructor(context: Context) {
             prefs.edit().putString(KEY_FLOATING_WINDOW_MODE, value.name).apply()
         }
 
+    // 应用语言设置（默认跟随系统）
+    var appLanguage: AppLanguage
+        get() {
+            val value = prefs.getString(KEY_APP_LANGUAGE, AppLanguage.SYSTEM.name)
+            return try {
+                AppLanguage.valueOf(value ?: AppLanguage.SYSTEM.name)
+            } catch (e: Exception) {
+                AppLanguage.SYSTEM
+            }
+        }
+        set(value) {
+            prefs.edit().putString(KEY_APP_LANGUAGE, value.name).apply()
+        }
+
     companion object {
         private const val KEY_VIBRATION_ENABLED = "vibration_enabled"
         private const val KEY_THEME_ID = "theme_id"
@@ -105,6 +128,7 @@ class SettingsManager private constructor(context: Context) {
         private const val KEY_UPDATE_CHANNEL = "update_channel"
         private const val KEY_ANALYTICS_ENABLED = "analytics_enabled"
         private const val KEY_FLOATING_WINDOW_MODE = "floating_window_mode"
+        private const val KEY_APP_LANGUAGE = "app_language"
 
         @Volatile
         private var instance: SettingsManager? = null

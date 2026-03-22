@@ -1,6 +1,7 @@
 package com.silas.omaster
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -46,6 +47,7 @@ import com.silas.omaster.ui.home.HomeScreen
 import com.silas.omaster.ui.service.FloatingWindowController
 import com.silas.omaster.ui.theme.OMasterTheme
 import com.silas.omaster.util.JsonUtil
+import com.silas.omaster.util.LanguageUtil
 import com.silas.omaster.util.VersionInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -92,6 +94,12 @@ sealed class Screen {
 class MainActivity : ComponentActivity() {
 
     private lateinit var floatingWindowController: FloatingWindowController
+
+    override fun attachBaseContext(newBase: Context?) {
+        // 在 Activity 创建前应用语言设置
+        val context = newBase?.let { LanguageUtil.applyLanguage(it) }
+        super.attachBaseContext(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

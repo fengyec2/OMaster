@@ -66,6 +66,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.silas.omaster.R
+import com.silas.omaster.data.local.AppLanguage
 import com.silas.omaster.data.local.FloatingWindowMode
 import com.silas.omaster.data.local.SettingsManager
 import com.silas.omaster.data.local.UpdateChannel
@@ -76,6 +77,9 @@ import com.silas.omaster.ui.theme.PureBlack
 import com.silas.omaster.util.HapticSettings
 import com.silas.omaster.util.ImageCacheManager
 import com.silas.omaster.util.perform
+import android.content.Intent
+import android.widget.Toast
+import com.silas.omaster.MainActivity
 
 @Composable
 fun SettingsScreen() {
@@ -94,6 +98,8 @@ fun SettingsScreen() {
     var showClearCacheDialog by remember { mutableStateOf(false) }
     var floatingWindowMode by remember { mutableStateOf(settingsManager.floatingWindowMode) }
     var showFloatingModeDialog by remember { mutableStateOf(false) }
+    var appLanguage by remember { mutableStateOf(settingsManager.appLanguage) }
+    var showLanguageDialog by remember { mutableStateOf(false) }
     val haptic = LocalHapticFeedback.current
 
     if (showThemeDialog) {
@@ -147,6 +153,33 @@ fun SettingsScreen() {
         )
     }
 
+    if (showLanguageDialog) {
+        LanguageSelectionDialog(
+            currentLanguage = appLanguage,
+            onLanguageSelected = { language ->
+                haptic.perform(HapticFeedbackType.Confirm)
+                // 如果语言没有变化，直接关闭对话框
+                if (language == appLanguage) {
+                    showLanguageDialog = false
+                    return@LanguageSelectionDialog
+                }
+                settingsManager.appLanguage = language
+                appLanguage = language
+                showLanguageDialog = false
+                // 提示用户并重启应用
+                Toast.makeText(context, "语言已切换，正在重启应用...", Toast.LENGTH_SHORT).show()
+                // 延迟一点让用户看到 Toast
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    val intent = Intent(context, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    context.startActivity(intent)
+                    Runtime.getRuntime().exit(0)
+                }, 800)
+            },
+            onDismiss = { showLanguageDialog = false }
+        )
+    }
+
     val scrollState = rememberScrollState()
 
     Column(
@@ -191,6 +224,20 @@ fun SettingsScreen() {
                 title = stringResource(R.string.default_start_tab),
                 subtitle = getTabName(defaultStartTab),
                 onClick = { showTabDialog = true }
+            )
+
+            HorizontalDivider(color = Color.White.copy(alpha = 0.1f))
+
+            // Language Setting
+            SettingsClickableItem(
+                icon = Icons.Default.Cloud,
+                title = "语言",
+                subtitle = when (appLanguage) {
+                    AppLanguage.SYSTEM -> "跟随系统"
+                    AppLanguage.CHINESE -> "简体中文"
+                    AppLanguage.ENGLISH -> "English"
+                },
+                onClick = { showLanguageDialog = true }
             )
         }
 
@@ -700,6 +747,69 @@ fun UpdateChannelDialog(
                                     UpdateChannel.GITEE -> "国内访问速度快"
                                     UpdateChannel.GITHUB -> "国际访问，国内可能需要代理"
                                 },
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.Gray
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        },
+        containerColor = DarkGray,
+        textContentColor = Color.White
+    )
+}
+
+@Composable
+fun LanguageSelectionDialog(
+    currentLanguage: AppLanguage,
+    onLanguageSelected: (AppLanguage) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val languages = listOf(
+        AppLanguage.SYSTEM to "跟随系统" to "使用系统默认语言",
+        AppLanguage.CHINESE to "简体中文" to "Simplified Chinese",
+        AppLanguage.ENGLISH to "English" to "英文"
+    )
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = "选择语言")
+        },
+        text = {
+            LazyColumn {
+                items(languages) { (pair, desc) ->
+                    val (language, name) = pair
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onLanguageSelected(language) }
+                            .padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (language == currentLanguage),
+                            onClick = { onLanguageSelected(language) },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = MaterialTheme.colorScheme.primary,
+                                unselectedColor = Color.Gray
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Column {
+                            Text(
+                                text = name,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.White
+                            )
+                            Text(
+                                text = desc,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = Color.Gray
                             )
