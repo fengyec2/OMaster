@@ -29,7 +29,7 @@ class SubscriptionManager private constructor(context: Context) {
             try {
                 val list = json.decodeFromString<SubscriptionList>(jsonStr)
                 var updated = false
-                val migratedSubscriptions = list.subscriptions.map { sub ->
+                var migratedSubscriptions = list.subscriptions.map { sub ->
                     // 迁移逻辑：如果订阅名称是“官方内置预设”但 URL 不是最新的，则更新它
                     if (sub.name == "官方内置预设" && sub.url != UpdateConfigManager.DEFAULT_PRESET_URL) {
                         updated = true
@@ -38,6 +38,25 @@ class SubscriptionManager private constructor(context: Context) {
                         sub
                     }
                 }
+                // 迁移：检查是否需要添加 Realme 订阅（老用户升级）
+                val hasRealmeSub = migratedSubscriptions.any { 
+                    it.url == UpdateConfigManager.REALME_PRESET_URL 
+                }
+                if (!hasRealmeSub) {
+                    val realmeSub = Subscription(
+                        url = UpdateConfigManager.REALME_PRESET_URL,
+                        name = "Realme GR预设",
+                        author = "@OMaster",
+                        build = 1,
+                        isEnabled = false,  // 默认关闭
+                        presetCount = 0,
+                        lastUpdateTime = 0
+                    )
+                    migratedSubscriptions = migratedSubscriptions + realmeSub
+                    updated = true
+                    android.util.Log.d("SubscriptionManager", "Added Realme subscription for existing user")
+                }
+                
                 _subscriptionsFlow.value = migratedSubscriptions
                 if (updated) {
                     saveSubscriptions()
@@ -48,11 +67,12 @@ class SubscriptionManager private constructor(context: Context) {
                 _subscriptionsFlow.value = emptyList()
             }
         } else {
-            // First time, add the default subscription
+            // First time, add the default subscriptions
             // 与云端 presets.json 保持一致：version 3, build 4
             // 从 assets 读取预设数量
             val presetCount = loadPresetCountFromAssets()
-            val defaultSub = Subscription(
+            
+            val oppoSub = Subscription(
                 url = UpdateConfigManager.DEFAULT_PRESET_URL,
                 name = "OPPO / 一加 大师预设",
                 author = "@OMaster",
@@ -61,8 +81,20 @@ class SubscriptionManager private constructor(context: Context) {
                 presetCount = presetCount,
                 lastUpdateTime = System.currentTimeMillis()
             )
-            _subscriptionsFlow.value = listOf(defaultSub)
+            
+            val realmeSub = Subscription(
+                url = UpdateConfigManager.REALME_PRESET_URL,
+                name = "Realme GR预设",
+                author = "@OMaster",
+                build = 1,
+                isEnabled = false,  // 默认关闭
+                presetCount = 0,
+                lastUpdateTime = 0
+            )
+            
+            _subscriptionsFlow.value = listOf(oppoSub, realmeSub)
             saveSubscriptions()
+            android.util.Log.d("SubscriptionManager", "Created default subscriptions for new user")
         }
     }
 

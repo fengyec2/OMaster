@@ -143,6 +143,13 @@
     <string name="param_sharpness">锐度</string>
     <string name="param_vignette">暗角</string>
 
+    <!-- Realme 特有参数 -->
+    <string name="param_contrast">对比度</string>
+    <string name="param_contrast_highlight">对比度（亮部）</string>
+    <string name="param_contrast_shadow">对比度（暗部）</string>
+    <string name="param_clarity">清晰</string>
+    <string name="param_grain">颗粒强度</string>
+
     <!-- 拍摄模式 -->
     <string name="mode_pro">Pro 模式</string>
     <string name="mode_auto">Auto 模式</string>
