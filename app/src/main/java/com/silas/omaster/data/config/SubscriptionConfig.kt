@@ -44,7 +44,7 @@ internal class SubscriptionConfig(private val context: Context) {
                 val list = json.decodeFromString<SubscriptionList>(jsonStr)
                 _subscriptionsFlow.value = list.subscriptions
             } catch (e: Exception) {
-                android.util.Log.e("SubscriptionConfig", "Failed to load subscriptions", e)
+                android.util.Log.e(ConfigLog.TAG, "[Subscription] Failed to load subscriptions", e)
                 _subscriptionsFlow.value = emptyList()
             }
         } else {

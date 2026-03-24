@@ -10,19 +10,17 @@ import com.silas.omaster.data.local.UpdateChannel
  */
 object ConfigMigration {
 
-    private const val TAG = "ConfigMigration"
-
     /**
      * 执行数据迁移
      * @return true 表示执行了迁移，false 表示无需迁移
      */
     fun migrate(context: Context, targetPrefs: SharedPreferences): Boolean {
         if (targetPrefs.getBoolean(KEY_MIGRATION_DONE, false)) {
-            android.util.Log.d(TAG, "Migration already done, skipping")
+            android.util.Log.d(ConfigLog.TAG, "[Migration] Already done, skipping")
             return false
         }
 
-        android.util.Log.d(TAG, "Starting config migration...")
+        android.util.Log.d(ConfigLog.TAG, "[Migration] Starting config migration...")
 
         val editor = targetPrefs.edit()
         var hasData = false
@@ -30,7 +28,7 @@ object ConfigMigration {
         // 1. 迁移 SettingsManager 数据
         val settingsPrefs = context.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
         if (settingsPrefs.all.isNotEmpty()) {
-            android.util.Log.d(TAG, "Migrating SettingsManager data...")
+            android.util.Log.d(ConfigLog.TAG, "[Migration] Migrating SettingsManager data...")
 
             // 主题
             settingsPrefs.getString("theme_id", null)?.let {
@@ -88,7 +86,7 @@ object ConfigMigration {
         // 2. 迁移 UpdateConfigManager 数据
         val updatePrefs = context.getSharedPreferences("omaster_update_prefs", Context.MODE_PRIVATE)
         if (updatePrefs.all.isNotEmpty()) {
-            android.util.Log.d(TAG, "Migrating UpdateConfigManager data...")
+            android.util.Log.d(ConfigLog.TAG, "[Migration] Migrating UpdateConfigManager data...")
 
             updatePrefs.getString("preset_update_url", null)?.let { url ->
                 // 推断更新渠道
@@ -105,7 +103,7 @@ object ConfigMigration {
         editor.putBoolean(KEY_MIGRATION_DONE, true)
         editor.apply()
 
-        android.util.Log.d(TAG, "Migration completed. Has data: $hasData")
+        android.util.Log.d(ConfigLog.TAG, "[Migration] Completed. Has data: $hasData")
         return hasData
     }
 
@@ -113,7 +111,7 @@ object ConfigMigration {
      * 清理旧版数据（可选，建议在确认迁移成功后调用）
      */
     fun cleanupLegacyData(context: Context) {
-        android.util.Log.d(TAG, "Cleaning up legacy data...")
+        android.util.Log.d(ConfigLog.TAG, "[Migration] Cleaning up legacy data...")
 
         // 删除旧版 SharedPreferences
         context.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
@@ -121,7 +119,7 @@ object ConfigMigration {
         context.getSharedPreferences("omaster_update_prefs", Context.MODE_PRIVATE)
             .edit().clear().apply()
 
-        android.util.Log.d(TAG, "Legacy data cleaned up")
+        android.util.Log.d(ConfigLog.TAG, "[Migration] Legacy data cleaned up")
     }
 
     private const val KEY_MIGRATION_DONE = "config_migration_done"

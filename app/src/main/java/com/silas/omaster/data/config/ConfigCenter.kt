@@ -15,6 +15,13 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
 /**
+ * 配置日志标签常量
+ */
+internal object ConfigLog {
+    const val TAG = "OMasterConfig"
+}
+
+/**
  * 配置管理中心
  * 统一所有配置的访问入口，解决配置分散问题
  *
