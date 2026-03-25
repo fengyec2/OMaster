@@ -40,9 +40,7 @@ import com.silas.omaster.model.MasterPreset
 import com.silas.omaster.ui.theme.CardBorderHighlight
 import com.silas.omaster.ui.theme.CardBorderLight
 import com.silas.omaster.ui.theme.DarkGray
-import com.silas.omaster.ui.theme.GlassBackground
-import com.silas.omaster.ui.theme.GlassBorder
-import com.silas.omaster.ui.theme.GlassBorderHighlight
+import com.silas.omaster.ui.theme.GlassColors
 import com.silas.omaster.util.PresetI18n
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -63,30 +61,9 @@ fun PresetCard(
     val isPressed by interactionSource.collectIsPressedAsState()
     val haptic = LocalHapticFeedback.current
 
-    // 卡片玻璃质感边框
-    val isPressedFloat = if (isPressed) 1f else 0f
-
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .border(
-                width = if (isPressed) 1.5.dp else 1.dp,
-                brush = Brush.radialGradient(
-                    colors = if (isPressed)
-                        listOf(
-                            GlassBorderHighlight.copy(alpha = 0.6f),
-                            GlassBorderHighlight.copy(alpha = 0.2f)
-                        )
-                    else
-                        listOf(
-                            GlassBorder.copy(alpha = 0.4f),
-                            GlassBorder.copy(alpha = 0.1f)
-                        ),
-                    center = androidx.compose.ui.geometry.Offset(0.5f, 0.5f),
-                    radius = Float.POSITIVE_INFINITY
-                ),
-                shape = RoundedCornerShape(16.dp)
-            )
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -101,6 +78,20 @@ fun PresetCard(
         )
     ) {
         Box {
+            // Glass 效果层
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .border(
+                        width = if (isPressed) 1.5.dp else 1.dp,
+                        color = if (isPressed)
+                            GlassColors.BorderHighlight
+                        else
+                            GlassColors.BorderOuter,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+            )
+
             // 图片区域
             Box(
                 modifier = Modifier
@@ -114,134 +105,87 @@ fun PresetCard(
                 )
 
                 if (showFavoriteButton) {
-                    IconButton(
-                        onClick = {
-                            haptic.perform(HapticFeedbackType.ToggleOn)
-                            onFavoriteClick()
-                        },
+                    // 简化的 Glass 风格收藏按钮
+                    Box(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
                             .padding(8.dp)
                             .size(36.dp)
+                            .background(
+                                color = if (preset.isFavorite)
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                                else
+                                    Color.White.copy(alpha = 0.12f),
+                                shape = RoundedCornerShape(18.dp)
+                            )
+                            .border(
+                                width = 0.5.dp,
+                                color = if (preset.isFavorite)
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+                                else
+                                    GlassColors.BorderOuter,
+                                shape = RoundedCornerShape(18.dp)
+                            )
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = {
+                                    haptic.perform(HapticFeedbackType.ToggleOn)
+                                    onFavoriteClick()
+                                }
+                            ),
+                        contentAlignment = Alignment.Center
                     ) {
-                        // 光晕层
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .background(
-                                    brush = Brush.radialGradient(
-                                        colors = if (preset.isFavorite)
-                                            listOf(
-                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
-                                                Color.Transparent
-                                            )
-                                        else
-                                            listOf(
-                                                Color.White.copy(alpha = 0.08f),
-                                                Color.Transparent
-                                            )
-                                    ),
-                                    shape = RoundedCornerShape(20.dp)
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            // 按钮主体
-                            Box(
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .background(
-                                        brush = Brush.radialGradient(
-                                            colors = if (preset.isFavorite)
-                                                listOf(
-                                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-                                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-                                                )
-                                            else
-                                                listOf(
-                                                    Color.White.copy(alpha = 0.2f),
-                                                    Color.White.copy(alpha = 0.08f)
-                                                )
-                                        ),
-                                        shape = RoundedCornerShape(16.dp)
-                                    )
-                                    .border(
-                                        width = 0.5.dp,
-                                        color = if (preset.isFavorite)
-                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-                                        else
-                                            Color.White.copy(alpha = 0.25f),
-                                        shape = RoundedCornerShape(16.dp)
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = if (preset.isFavorite)
-                                        Icons.Filled.Favorite
-                                    else
-                                        Icons.Outlined.FavoriteBorder,
-                                    contentDescription = if (preset.isFavorite) stringResource(R.string.preset_favorited) else stringResource(R.string.preset_favorite),
-                                    tint = if (preset.isFavorite) MaterialTheme.colorScheme.primary else Color.White.copy(alpha = 0.95f),
-                                    modifier = Modifier.size(18.dp)
-                                )
-                            }
-                        }
+                        Icon(
+                            imageVector = if (preset.isFavorite)
+                                Icons.Filled.Favorite
+                            else
+                                Icons.Outlined.FavoriteBorder,
+                            contentDescription = if (preset.isFavorite)
+                                stringResource(R.string.preset_favorited)
+                            else
+                                stringResource(R.string.preset_favorite),
+                            tint = if (preset.isFavorite)
+                                MaterialTheme.colorScheme.primary
+                            else
+                                Color.White.copy(alpha = 0.9f),
+                            modifier = Modifier.size(18.dp)
+                        )
                     }
                 }
 
                 if (showDeleteButton && preset.isCustom) {
-                    IconButton(
-                        onClick = {
-                            haptic.perform(HapticFeedbackType.Confirm)
-                            onDeleteClick()
-                        },
+                    // 简化的 Glass 风格删除按钮
+                    Box(
                         modifier = Modifier
                             .align(Alignment.TopStart)
                             .padding(8.dp)
                             .size(36.dp)
+                            .background(
+                                color = Color.Red.copy(alpha = 0.15f),
+                                shape = RoundedCornerShape(18.dp)
+                            )
+                            .border(
+                                width = 0.5.dp,
+                                color = Color.Red.copy(alpha = 0.4f),
+                                shape = RoundedCornerShape(18.dp)
+                            )
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = {
+                                    haptic.perform(HapticFeedbackType.Confirm)
+                                    onDeleteClick()
+                                }
+                            ),
+                        contentAlignment = Alignment.Center
                     ) {
-                        // 光晕层
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .background(
-                                    brush = Brush.radialGradient(
-                                        colors = listOf(
-                                            Color.Red.copy(alpha = 0.12f),
-                                            Color.Transparent
-                                        )
-                                    ),
-                                    shape = RoundedCornerShape(20.dp)
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            // 按钮主体
-                            Box(
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .background(
-                                        brush = Brush.radialGradient(
-                                            colors = listOf(
-                                                Color.Red.copy(alpha = 0.25f),
-                                                Color.Red.copy(alpha = 0.1f)
-                                            )
-                                        ),
-                                        shape = RoundedCornerShape(16.dp)
-                                    )
-                                    .border(
-                                        width = 0.5.dp,
-                                        color = Color.Red.copy(alpha = 0.4f),
-                                        shape = RoundedCornerShape(16.dp)
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Delete,
-                                    contentDescription = stringResource(R.string.preset_delete),
-                                    tint = Color.Red.copy(alpha = 0.95f),
-                                    modifier = Modifier.size(18.dp)
-                                )
-                            }
-                        }
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = stringResource(R.string.preset_delete),
+                            tint = Color.Red.copy(alpha = 0.9f),
+                            modifier = Modifier.size(18.dp)
+                        )
                     }
                 }
 
@@ -286,8 +230,8 @@ fun PresetCard(
                         brush = Brush.verticalGradient(
                             colors = listOf(
                                 Color.Transparent,
-                                GlassBackground.copy(alpha = 0.7f),
-                                GlassBackground.copy(alpha = 0.95f)
+                                GlassColors.Base.copy(alpha = 0.7f),
+                                GlassColors.Base.copy(alpha = 0.95f)
                             ),
                             startY = 0f,
                             endY = Float.POSITIVE_INFINITY
@@ -298,7 +242,7 @@ fun PresetCard(
                 Text(
                     text = PresetI18n.getLocalizedPresetName(preset.name),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White,
+                    color = Color.White.copy(alpha = 0.95f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
