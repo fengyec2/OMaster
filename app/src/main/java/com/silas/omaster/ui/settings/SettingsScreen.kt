@@ -344,6 +344,11 @@ fun SettingsScreen() {
                         color = Color.Gray
                     )
                     Text(
+                        text = "推荐56%",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                    )
+                    Text(
                         text = "70%",
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.Gray
