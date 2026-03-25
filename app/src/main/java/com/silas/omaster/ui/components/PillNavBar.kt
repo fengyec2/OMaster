@@ -8,6 +8,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -168,22 +169,53 @@ fun PillNavBar(
                 }
 
                 // 导航项
-                Row(
+                Box(
                     modifier = Modifier
                         .width(260.dp)
                         .height(64.dp)
-                        .padding(horizontal = 8.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(horizontal = 8.dp, vertical = 8.dp)
                 ) {
-                    navItems.forEach { item ->
-                        val selected = currentRoute == item.route
+                    // 滑动选中胶囊背景
+                    val selectedIndex = navItems.indexOfFirst { it.route == currentRoute }
+                    val itemWidth = 244f / 3f // (260dp - 16dp padding) / 3 items
+                    val capsuleOffset by animateFloatAsState(
+                        targetValue = selectedIndex * itemWidth,
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessLow
+                        ),
+                        label = "capsuleOffset"
+                    )
 
-                        NavItemButton(
-                            item = item,
-                            selected = selected,
-                            onClick = { onNavigate(item.route) }
+                    // 选中胶囊背景
+                    if (selectedIndex >= 0) {
+                        Box(
+                            modifier = Modifier
+                                .width(80.dp)
+                                .height(48.dp)
+                                .offset(x = capsuleOffset.dp)
+                                .clip(RoundedCornerShape(24.dp))
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
                         )
+                    }
+
+                    // 导航按钮
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(64.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        navItems.forEach { item ->
+                            val selected = currentRoute == item.route
+
+                            NavItemButton(
+                                item = item,
+                                selected = selected,
+                                onClick = { onNavigate(item.route) }
+                            )
+                        }
                     }
                 }
             }
@@ -211,11 +243,6 @@ private fun NavItemButton(
         label = "scale"
     )
 
-    val backgroundColor = when {
-        selected -> MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
-        else -> Color.Transparent
-    }
-
     val contentColor = when {
         selected -> MaterialTheme.colorScheme.primary
         else -> Color.White.copy(alpha = 0.5f)
@@ -236,7 +263,6 @@ private fun NavItemButton(
             .height(48.dp)
             .scale(scale)
             .clip(RoundedCornerShape(24.dp))
-            .background(backgroundColor)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
