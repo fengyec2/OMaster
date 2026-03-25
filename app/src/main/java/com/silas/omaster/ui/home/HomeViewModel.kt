@@ -179,6 +179,8 @@ class HomeViewModel(
         allPresetsJob?.cancel()
         favoritesJob?.cancel()
         customPresetsJob?.cancel()
+        // 清理 Repository 的协程作用域，避免内存泄漏
+        repository.cleanup()
     }
 }
 
