@@ -1,6 +1,7 @@
 package com.silas.omaster.data.repository
 
 import android.content.Context
+import com.silas.omaster.data.config.ConfigCenter
 import com.silas.omaster.data.local.CustomPresetManager
 import com.silas.omaster.data.local.FavoriteManager
 import com.silas.omaster.model.MasterPreset
@@ -49,8 +50,6 @@ class PresetRepository(
      */
     private val appContext = context.applicationContext
 
-    private val subscriptionManager = com.silas.omaster.data.local.SubscriptionManager.getInstance(appContext)
-
     // 缓存默认预设（内存缓存，App 重启后清空）
     private val _defaultPresets = MutableStateFlow<List<MasterPreset>>(emptyList())
     private val defaultPresetsLoaded = MutableStateFlow(false)
@@ -58,12 +57,12 @@ class PresetRepository(
     init {
         // 初始化时加载默认预设
         loadDefaultPresets()
-        
+
         // 监听订阅状态变化，自动重新加载预设
         // 注意：这里使用 Flow 的特性，只有当订阅列表内容真正发生变化时才触发重载
         kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.Main) {
-            subscriptionManager.subscriptionsFlow.collect { subs ->
-                android.util.Log.d("PresetRepository", "Subscription status changed, reloading...")
+            ConfigCenter.getInstance(appContext).subscriptionsFlow.collect { subs ->
+                android.util.Log.d("PresetRepository", "Subscription status changed via ConfigCenter, reloading...")
                 reloadDefaultPresets()
             }
         }
