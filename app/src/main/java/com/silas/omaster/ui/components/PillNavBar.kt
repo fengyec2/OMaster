@@ -10,6 +10,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -51,6 +52,7 @@ import com.silas.omaster.R
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import com.silas.omaster.util.perform
+import com.silas.omaster.ui.theme.GlassColors
 
 private val NavBarBackground = Color(0xFF1A1A1A)
 private val NavBarBorder = Color(0xFF2A2A2A)
@@ -187,7 +189,7 @@ fun PillNavBar(
                         label = "capsuleOffset"
                     )
 
-                    // 选中胶囊背景
+                    // 选中胶囊背景 - Glass 风格
                     if (selectedIndex >= 0) {
                         Box(
                             modifier = Modifier
@@ -195,7 +197,14 @@ fun PillNavBar(
                                 .height(48.dp)
                                 .offset(x = capsuleOffset.dp)
                                 .clip(RoundedCornerShape(24.dp))
-                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
+                                .background(
+                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                                )
+                                .border(
+                                    width = 0.5.dp,
+                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                    shape = RoundedCornerShape(24.dp)
+                                )
                         )
                     }
 
