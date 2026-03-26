@@ -189,7 +189,7 @@ fun PillNavBar(
                         label = "capsuleOffset"
                     )
 
-                    // 选中胶囊背景 - Glass 风格
+                    // 选中胶囊背景 - Glass 风格 (统一使用 GlassColors)
                     if (selectedIndex >= 0) {
                         Box(
                             modifier = Modifier
@@ -198,11 +198,11 @@ fun PillNavBar(
                                 .offset(x = capsuleOffset.dp)
                                 .clip(RoundedCornerShape(24.dp))
                                 .background(
-                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                                    color = GlassColors.BorderHighlight.copy(alpha = 0.15f)
                                 )
                                 .border(
                                     width = 0.5.dp,
-                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                    color = GlassColors.BorderHighlight,
                                     shape = RoundedCornerShape(24.dp)
                                 )
                         )
