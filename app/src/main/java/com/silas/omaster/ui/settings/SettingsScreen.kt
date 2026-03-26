@@ -172,7 +172,7 @@ fun SettingsScreen() {
                 appLanguage = language
                 showLanguageDialog = false
                 // 提示用户并重启应用
-                Toast.makeText(context, "语言已切换，正在重启应用...", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.toast_language_changed), Toast.LENGTH_SHORT).show()
                 // 延迟一点让用户看到 Toast
                 android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
                     val intent = Intent(context, MainActivity::class.java)
@@ -236,11 +236,11 @@ fun SettingsScreen() {
             // Language Setting
             SettingsClickableItem(
                 icon = Icons.Default.Cloud,
-                title = "语言",
+                title = stringResource(R.string.language),
                 subtitle = when (appLanguage) {
-                    AppLanguage.SYSTEM -> "跟随系统"
-                    AppLanguage.CHINESE -> "简体中文"
-                    AppLanguage.ENGLISH -> "English"
+                    AppLanguage.SYSTEM -> stringResource(R.string.language_system)
+                    AppLanguage.CHINESE -> stringResource(R.string.language_chinese)
+                    AppLanguage.ENGLISH -> stringResource(R.string.language_english)
                 },
                 onClick = { showLanguageDialog = true }
             )
@@ -344,7 +344,7 @@ fun SettingsScreen() {
                         color = Color.Gray
                     )
                     Text(
-                        text = "推荐56%",
+                        text = stringResource(R.string.recommended) + "56%",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
                     )
@@ -361,14 +361,14 @@ fun SettingsScreen() {
 
         // Update Section
         SettingsSectionCard {
-            SettingsSectionTitle(title = "更新设置")
+            SettingsSectionTitle(title = stringResource(R.string.settings_section_update))
 
             SettingsClickableItem(
                 icon = Icons.Default.Update,
-                title = "更新渠道",
+                title = stringResource(R.string.update_channel),
                 subtitle = when (updateChannel) {
-                    UpdateChannel.GITEE -> "Gitee（国内推荐）"
-                    UpdateChannel.GITHUB -> "GitHub（国际）"
+                    UpdateChannel.GITEE -> stringResource(R.string.update_channel_gitee)
+                    UpdateChannel.GITHUB -> stringResource(R.string.update_channel_github)
                 },
                 onClick = { showChannelDialog = true }
             )
@@ -401,7 +401,7 @@ fun SettingsScreen() {
 
         // Cache Section
         SettingsSectionCard {
-            SettingsSectionTitle(title = "存储")
+            SettingsSectionTitle(title = stringResource(R.string.settings_section_storage))
 
             SettingsClickableItem(
                 icon = Icons.Default.Delete,
@@ -419,8 +419,8 @@ fun SettingsScreen() {
             // Export Logs
             SettingsClickableItem(
                 icon = Icons.Default.BugReport,
-                title = "导出日志",
-                subtitle = "日志大小: $logSize",
+                title = stringResource(R.string.export_logs),
+                subtitle = stringResource(R.string.log_size, logSize),
                 onClick = {
                     haptic.perform(HapticFeedbackType.Confirm)
                     LogExporter.exportAndShare(context) { success ->
@@ -440,9 +440,9 @@ fun SettingsScreen() {
                 text = {
                     Text(
                         if (cacheSize > 0) {
-                            "当前缓存大小为 %.2f MB，清理后将释放存储空间，下次浏览时需要重新下载图片。".format(cacheSize)
+                            stringResource(R.string.cache_clear_confirm, cacheSize)
                         } else {
-                            "当前没有缓存图片"
+                            stringResource(R.string.cache_empty)
                         }
                     )
                 },
@@ -456,7 +456,7 @@ fun SettingsScreen() {
                         },
                         enabled = cacheSize > 0
                     ) {
-                        Text("清理")
+                        Text(stringResource(R.string.clear))
                     }
                 },
                 dismissButton = {
@@ -473,9 +473,9 @@ fun SettingsScreen() {
         if (showClearLogDialog) {
             AlertDialog(
                 onDismissRequest = { showClearLogDialog = false },
-                title = { Text("清空日志") },
+                title = { Text(stringResource(R.string.clear_logs)) },
                 text = {
-                    Text("确定要清空所有日志文件吗？此操作不可恢复。")
+                    Text(stringResource(R.string.clear_logs_confirm_msg))
                 },
                 confirmButton = {
                     TextButton(
@@ -484,10 +484,10 @@ fun SettingsScreen() {
                             logSize = LogExporter.getFormattedLogSize()
                             showClearLogDialog = false
                             haptic.perform(HapticFeedbackType.Confirm)
-                            Toast.makeText(context, "日志已清空", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, context.getString(R.string.logs_cleared), Toast.LENGTH_SHORT).show()
                         }
                     ) {
-                        Text("清空", color = MaterialTheme.colorScheme.error)
+                        Text(stringResource(R.string.clear), color = MaterialTheme.colorScheme.error)
                     }
                 },
                 dismissButton = {
@@ -635,10 +635,10 @@ private fun SettingsClickableItem(
 @Composable
 private fun getTabName(tabIndex: Int): String {
     return when (tabIndex) {
-        0 -> "全部"
-        1 -> "收藏"
-        2 -> "我的"
-        else -> "全部"
+        0 -> stringResource(R.string.tab_all)
+        1 -> stringResource(R.string.tab_favorites)
+        2 -> stringResource(R.string.tab_my)
+        else -> stringResource(R.string.tab_all)
     }
 }
 
@@ -714,12 +714,17 @@ fun TabSelectionDialog(
     onTabSelected: (Int) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val tabs = listOf("全部" to 0, "收藏" to 1, "我的" to 2)
+    val context = LocalContext.current
+    val tabs = listOf(
+        context.getString(R.string.tab_all) to 0,
+        context.getString(R.string.tab_favorites) to 1,
+        context.getString(R.string.tab_my) to 2
+    )
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = "选择默认启动页面")
+            Text(text = stringResource(R.string.dialog_title_select_tab))
         },
         text = {
             LazyColumn {
@@ -765,19 +770,16 @@ fun UpdateChannelDialog(
     onChannelSelected: (UpdateChannel) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val channels = listOf(
-        UpdateChannel.GITEE to "Gitee（国内推荐）",
-        UpdateChannel.GITHUB to "GitHub（国际）"
-    )
+    val context = LocalContext.current
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = "选择更新渠道")
+            Text(text = stringResource(R.string.dialog_title_select_channel))
         },
         text = {
             LazyColumn {
-                items(channels) { (channel, name) ->
+                items(UpdateChannel.entries) { channel ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -796,14 +798,17 @@ fun UpdateChannelDialog(
                         Spacer(modifier = Modifier.width(16.dp))
                         Column {
                             Text(
-                                text = name,
+                                text = when (channel) {
+                                    UpdateChannel.GITEE -> context.getString(R.string.update_channel_gitee)
+                                    UpdateChannel.GITHUB -> context.getString(R.string.update_channel_github)
+                                },
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = Color.White
                             )
                             Text(
                                 text = when (channel) {
-                                    UpdateChannel.GITEE -> "国内访问速度快"
-                                    UpdateChannel.GITHUB -> "国际访问，国内可能需要代理"
+                                    UpdateChannel.GITEE -> context.getString(R.string.channel_gitee_desc)
+                                    UpdateChannel.GITHUB -> context.getString(R.string.channel_github_desc)
                                 },
                                 style = MaterialTheme.typography.bodySmall,
                                 color = Color.Gray
@@ -829,21 +834,16 @@ fun LanguageSelectionDialog(
     onLanguageSelected: (AppLanguage) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val languages = listOf(
-        AppLanguage.SYSTEM to "跟随系统" to "使用系统默认语言",
-        AppLanguage.CHINESE to "简体中文" to "Simplified Chinese",
-        AppLanguage.ENGLISH to "English" to "英文"
-    )
+    val context = LocalContext.current
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = "选择语言")
+            Text(text = stringResource(R.string.dialog_title_select_language))
         },
         text = {
             LazyColumn {
-                items(languages) { (pair, desc) ->
-                    val (language, name) = pair
+                items(AppLanguage.entries) { language ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -862,12 +862,20 @@ fun LanguageSelectionDialog(
                         Spacer(modifier = Modifier.width(16.dp))
                         Column {
                             Text(
-                                text = name,
+                                text = when (language) {
+                                    AppLanguage.SYSTEM -> context.getString(R.string.language_system)
+                                    AppLanguage.CHINESE -> context.getString(R.string.language_chinese)
+                                    AppLanguage.ENGLISH -> context.getString(R.string.language_english)
+                                },
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = Color.White
                             )
                             Text(
-                                text = desc,
+                                text = when (language) {
+                                    AppLanguage.SYSTEM -> context.getString(R.string.language_system_desc)
+                                    AppLanguage.CHINESE -> context.getString(R.string.language_chinese_desc)
+                                    AppLanguage.ENGLISH -> context.getString(R.string.language_english_desc)
+                                },
                                 style = MaterialTheme.typography.bodySmall,
                                 color = Color.Gray
                             )
