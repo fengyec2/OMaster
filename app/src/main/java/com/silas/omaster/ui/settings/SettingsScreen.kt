@@ -188,6 +188,32 @@ fun SettingsScreen() {
     }
 
     val scrollState = rememberScrollState()
+    var hasHapticAtTop by remember { mutableStateOf(false) }
+    var hasHapticAtBottom by remember { mutableStateOf(false) }
+
+    // 监听滚动状态，实现顶部和底部震感
+    androidx.compose.runtime.LaunchedEffect(scrollState.value) {
+        val currentValue = scrollState.value
+        val maxValue = scrollState.maxValue
+
+        if (maxValue > 0) {
+            if (currentValue <= 0 && !hasHapticAtTop) {
+                // 滚动到顶部
+                haptic.perform(HapticFeedbackType.TextHandleMove)
+                hasHapticAtTop = true
+                hasHapticAtBottom = false
+            } else if (currentValue >= maxValue && !hasHapticAtBottom) {
+                // 滚动到底部
+                haptic.perform(HapticFeedbackType.TextHandleMove)
+                hasHapticAtBottom = true
+                hasHapticAtTop = false
+            } else if (currentValue > 0 && currentValue < maxValue) {
+                // 在中间位置，重置状态
+                hasHapticAtTop = false
+                hasHapticAtBottom = false
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -589,7 +615,9 @@ private fun SettingsSwitchItem(
                 onCheckedChange = onCheckedChange,
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = MaterialTheme.colorScheme.primary,
-                    checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                    checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                    uncheckedThumbColor = Color.White.copy(alpha = 0.8f),
+                    uncheckedTrackColor = Color.White.copy(alpha = 0.2f)
                 )
             )
         },
