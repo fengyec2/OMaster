@@ -14,6 +14,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -305,6 +307,10 @@ fun AboutScreen(
 
             ProjectCard(context)
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            QQGroupCard(context)
+
             Spacer(modifier = Modifier.height(24.dp))
 
             FooterSection(context, onNavigateToPrivacyPolicy, onNavigateToOpenSourceLicense)
@@ -318,8 +324,12 @@ fun AboutScreen(
 @Composable
 private fun AppTitleSection(currentVersionName: String) {
     Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // 应用名称（O 使用主题色）
         Text(
             text = buildAnnotatedString {
                 withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
@@ -329,30 +339,37 @@ private fun AppTitleSection(currentVersionName: String) {
                     append("Master")
                 }
             },
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // 副标题
         Text(
             text = stringResource(R.string.app_slogan),
             style = MaterialTheme.typography.bodyLarge,
-            color = Color.White.copy(alpha = 0.7f)
+            color = Color.White.copy(alpha = 0.6f)
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
+        // 版本号标签
         Box(
             modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
-                    shape = RoundedCornerShape(12.dp)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(20.dp)
                 )
-                .padding(horizontal = 12.dp, vertical = 4.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                    shape = RoundedCornerShape(20.dp)
+                )
+                .padding(horizontal = 16.dp, vertical = 6.dp)
         ) {
             Text(
-                text = "v$currentVersionName",
+                text = "Version $currentVersionName",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Medium
@@ -714,8 +731,9 @@ private fun CreditsCard(context: android.content.Context) {
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // 标题
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -734,88 +752,47 @@ private fun CreditsCard(context: android.content.Context) {
                 )
             }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = null,
-                    tint = Color.White.copy(alpha = 0.6f),
-                    modifier = Modifier.size(16.dp)
-                )
-                Text(
-                    text = stringResource(R.string.developer) + "：",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White.copy(alpha = 0.6f)
-                )
-            }
-
-            // 开发者标签
-            val developers = listOf(
-                "Silas" to "https://xhslink.com/m/2gh56F1blnO",
-                "Luminary" to "https://github.com/fengyec2"
-            )
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(start = 24.dp)
-            ) {
-                developers.forEach { (name, url) ->
-                    DeveloperChip(name = name, url = url, context = context)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // QQ群号
-            Box(
-                modifier = Modifier
-                    .padding(start = 24.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-                        shape = RoundedCornerShape(16.dp)
-                    )
-                    .padding(horizontal = 12.dp, vertical = 6.dp)
+            // 开发者区域
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "软件共创QQ群: 1083543279",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
+                    text = stringResource(R.string.developer),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.5f)
                 )
-            }
 
-            Spacer(modifier = Modifier.height(8.dp))
+                val developers = listOf(
+                    "Silas" to "https://xhslink.com/m/2gh56F1blnO",
+                    "Luminary" to "https://github.com/fengyec2"
+                )
 
-            Text(
-                text = stringResource(R.string.material_provider),
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.White.copy(alpha = 0.5f)
-            )
-
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    contributors.take(3).forEach { contributor ->
-                        ContributorItem(
-                            name = contributor.name,
-                            url = contributor.url,
-                            context = context
-                        )
+                    developers.forEach { (name, url) ->
+                        DeveloperChip(name = name, url = url, context = context)
                     }
                 }
-                Column(
-                    modifier = Modifier.weight(1f),
+            }
+
+            // 素材提供区域
+            Column(
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.material_provider),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.5f)
+                )
+
+                // 贡献者标签云
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    contributors.drop(3).forEach { contributor ->
-                        ContributorItem(
+                    contributors.forEach { contributor ->
+                        ContributorChip(
                             name = contributor.name,
                             url = contributor.url,
                             context = context
@@ -827,35 +804,32 @@ private fun CreditsCard(context: android.content.Context) {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun ContributorItem(
+private fun ContributorChip(
     name: String,
     url: String,
     context: android.content.Context
 ) {
-    Row(
+    Box(
         modifier = Modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color.White.copy(alpha = 0.08f))
+            .border(
+                width = 1.dp,
+                color = Color.White.copy(alpha = 0.15f),
+                shape = RoundedCornerShape(12.dp)
+            )
             .clickable {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 context.startActivity(intent)
             }
-            .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 10.dp, vertical = 5.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .size(6.dp)
-                .background(
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                    RoundedCornerShape(50)
-                )
-        )
-        Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = name,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
-            textDecoration = TextDecoration.Underline
+            style = MaterialTheme.typography.bodySmall,
+            color = Color.White.copy(alpha = 0.8f)
         )
     }
 }
@@ -878,7 +852,7 @@ private fun DeveloperChip(name: String, url: String, context: android.content.Co
             .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         Text(
-            text = "@$name",
+            text = name,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Medium
@@ -942,6 +916,84 @@ private fun ProjectCard(context: android.content.Context) {
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = "GitHub - iCurrer/OMaster",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White.copy(alpha = 0.5f)
+                    )
+                }
+            }
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.OpenInNew,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun QQGroupCard(context: android.content.Context) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = CardBorderLight,
+                shape = RoundedCornerShape(16.dp)
+            )
+            .clickable {
+                // 使用正确的QQ群跳转链接
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fc%2Fcgi-bin%2Fqm%2Fqr%3Fk%3D1083543279"))
+                try {
+                    context.startActivity(intent)
+                } catch (e: Exception) {
+                    // 如果QQ未安装，跳转到网页版
+                    val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://qm.qq.com/q/1083543279"))
+                    context.startActivity(webIntent)
+                }
+            },
+        colors = CardDefaults.cardColors(
+            containerColor = DarkGray
+        ),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                            shape = RoundedCornerShape(10.dp)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "QQ",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Column {
+                    Text(
+                        text = "加入QQ群",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = "群号: 1083543279",
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.White.copy(alpha = 0.5f)
                     )
