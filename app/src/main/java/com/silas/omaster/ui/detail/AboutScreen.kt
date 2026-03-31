@@ -105,6 +105,7 @@ fun AboutScreen(
     onNavigateToSettings: () -> Unit,
     onScrollStateChanged: (Boolean) -> Unit,
     onNavigateToPrivacyPolicy: () -> Unit = {},
+    onNavigateToOpenSourceLicense: () -> Unit = {},
     currentVersionCode: Int = VersionInfo.VERSION_CODE,
     currentVersionName: String = VersionInfo.VERSION_NAME
 ) {
@@ -306,7 +307,7 @@ fun AboutScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            FooterSection(context, onNavigateToPrivacyPolicy)
+            FooterSection(context, onNavigateToPrivacyPolicy, onNavigateToOpenSourceLicense)
         }
     }
 }
@@ -956,7 +957,8 @@ private fun ProjectCard(context: android.content.Context) {
 @Composable
 private fun FooterSection(
     context: android.content.Context,
-    onNavigateToPrivacyPolicy: () -> Unit
+    onNavigateToPrivacyPolicy: () -> Unit,
+    onNavigateToOpenSourceLicense: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -971,10 +973,30 @@ private fun FooterSection(
         Text(
             text = stringResource(R.string.privacy_policy),
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
-            textDecoration = TextDecoration.Underline,
+            color = Color.White.copy(alpha = 0.4f),
             modifier = Modifier.clickable {
                 onNavigateToPrivacyPolicy()
+            }
+        )
+
+        // ICP 备案号
+        Text(
+            text = "豫ICP 备 2026011707 号 -1A",
+            style = MaterialTheme.typography.bodySmall,
+            color = Color.White.copy(alpha = 0.4f),
+            modifier = Modifier.clickable {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://beian.miit.gov.cn/"))
+                context.startActivity(intent)
+            }
+        )
+
+        // 开源许可
+        Text(
+            text = stringResource(R.string.open_source_license),
+            style = MaterialTheme.typography.bodySmall,
+            color = Color.White.copy(alpha = 0.4f),
+            modifier = Modifier.clickable {
+                onNavigateToOpenSourceLicense()
             }
         )
     }

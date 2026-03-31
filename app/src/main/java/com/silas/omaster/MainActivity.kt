@@ -42,6 +42,7 @@ import com.silas.omaster.ui.create.UniversalCreatePresetViewModel
 import com.silas.omaster.ui.create.UniversalCreatePresetViewModelFactory
 import com.silas.omaster.ui.detail.AboutScreen
 import com.silas.omaster.ui.detail.DetailScreen
+import com.silas.omaster.ui.detail.OpenSourceLicenseScreen
 import com.silas.omaster.ui.detail.PrivacyPolicyScreen
 import com.silas.omaster.ui.home.HomeScreen
 import com.silas.omaster.ui.service.FloatingWindowController
@@ -89,6 +90,9 @@ sealed class Screen {
 
     @Serializable
     data object PrivacyPolicy : Screen()
+
+    @Serializable
+    data object OpenSourceLicense : Screen()
 }
 
 class MainActivity : ComponentActivity() {
@@ -160,27 +164,39 @@ fun WelcomeFlow(
     onDisagree: () -> Unit
 ) {
     var showPrivacyPolicy by remember { mutableStateOf(false) }
+    var showOpenSourceLicense by remember { mutableStateOf(false) }
 
     // 处理系统返回键
-    androidx.activity.compose.BackHandler(enabled = showPrivacyPolicy) {
+    androidx.activity.compose.BackHandler(enabled = showPrivacyPolicy || showOpenSourceLicense) {
         showPrivacyPolicy = false
+        showOpenSourceLicense = false
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        if (showPrivacyPolicy) {
-            PrivacyPolicyScreen(
-                onBack = {
-                    showPrivacyPolicy = false
-                }
-            )
-        } else {
-            WelcomeDialog(
-                onAgree = onAgree,
-                onDisagree = onDisagree,
-                onViewPrivacyPolicy = {
-                    showPrivacyPolicy = true
-                }
-            )
+        when {
+            showPrivacyPolicy -> {
+                PrivacyPolicyScreen(
+                    onBack = {
+                        showPrivacyPolicy = false
+                    }
+                )
+            }
+            showOpenSourceLicense -> {
+                OpenSourceLicenseScreen(
+                    onBack = {
+                        showOpenSourceLicense = false
+                    }
+                )
+            }
+            else -> {
+                WelcomeDialog(
+                    onAgree = onAgree,
+                    onDisagree = onDisagree,
+                    onViewPrivacyPolicy = {
+                        showPrivacyPolicy = true
+                    }
+                )
+            }
         }
     }
 }
@@ -470,6 +486,9 @@ fun MainApp(
                     onNavigateToPrivacyPolicy = {
                         navController.navigate(Screen.PrivacyPolicy)
                     },
+                    onNavigateToOpenSourceLicense = {
+                        navController.navigate(Screen.OpenSourceLicense)
+                    },
                     currentVersionCode = VersionInfo.VERSION_CODE,
                     currentVersionName = VersionInfo.VERSION_NAME
                 )
@@ -488,6 +507,14 @@ fun MainApp(
 
             composable<Screen.PrivacyPolicy> {
                 PrivacyPolicyScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable<Screen.OpenSourceLicense> {
+                OpenSourceLicenseScreen(
                     onBack = {
                         navController.popBackStack()
                     }
