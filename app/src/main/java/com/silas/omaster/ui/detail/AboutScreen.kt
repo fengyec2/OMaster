@@ -1062,16 +1062,5 @@ private fun FooterSection(
                 }
             )
         }
-
-        // 第三行：ICP 备案号
-        Text(
-            text = "豫ICP 备 2026011707 号 -1A",
-            style = MaterialTheme.typography.bodySmall,
-            color = Color.White.copy(alpha = 0.4f),
-            modifier = Modifier.clickable {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://beian.miit.gov.cn/"))
-                context.startActivity(intent)
-            }
-        )
     }
 }
