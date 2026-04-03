@@ -556,7 +556,7 @@ private fun SettingsSectionCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = DarkGray.copy(alpha = 0.5f)
         ),
@@ -615,9 +615,9 @@ private fun SettingsSwitchItem(
                 onCheckedChange = onCheckedChange,
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = MaterialTheme.colorScheme.primary,
-                    checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                    uncheckedThumbColor = Color.White.copy(alpha = 0.8f),
-                    uncheckedTrackColor = Color.White.copy(alpha = 0.2f)
+                    checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                    uncheckedThumbColor = Color(0xFFE0E0E0),
+                    uncheckedTrackColor = Color(0xFF757575)
                 )
             )
         },

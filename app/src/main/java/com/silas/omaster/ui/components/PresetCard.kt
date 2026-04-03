@@ -47,6 +47,8 @@ import com.silas.omaster.ui.theme.CardBorderHighlight
 import com.silas.omaster.ui.theme.CardBorderLight
 import com.silas.omaster.ui.theme.DarkGray
 import com.silas.omaster.ui.theme.GlassColors
+import com.silas.omaster.ui.theme.PrimaryText
+import com.silas.omaster.ui.theme.SecondaryText
 import com.silas.omaster.util.PresetI18n
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -77,19 +79,19 @@ fun PresetCard(
                     GlassColors.BorderHighlight
                 else
                     GlassColors.BorderOuter,
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(12.dp)
             )
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
                 onClick = onClick
             ),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = DarkGray
         ),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = if (isPressed) 10.dp else 5.dp
+            defaultElevation = if (isPressed) 8.dp else 2.dp
         )
     ) {
         Box {
@@ -98,7 +100,7 @@ fun PresetCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(imageHeight.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                    .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
             ) {
                 PresetImage(
                     preset = preset,
@@ -131,9 +133,9 @@ fun PresetCard(
                             else
                                 stringResource(R.string.preset_favorite),
                             tint = if (preset.isFavorite)
-                                MaterialTheme.colorScheme.primary
-                            else
-                                Color.White.copy(alpha = 0.95f),
+                                    MaterialTheme.colorScheme.primary
+                                else
+                                    PrimaryText,
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -179,7 +181,7 @@ fun PresetCard(
                             )
                             .border(
                                 width = 0.5.dp,
-                                color = Color.White.copy(alpha = 0.3f),
+                                color = Color.White.copy(alpha = 0.12f),
                                 shape = RoundedCornerShape(6.dp)
                             )
                             .padding(horizontal = 10.dp, vertical = 5.dp)
@@ -216,7 +218,7 @@ fun PresetCard(
                 Text(
                     text = PresetI18n.getLocalizedPresetName(preset.name),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White.copy(alpha = 0.95f),
+                    color = PrimaryText,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -250,7 +252,7 @@ fun PresetCardPlaceholder(
             Text(
                 text = stringResource(R.string.empty_no_data),
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.White.copy(alpha = 0.5f)
+                color = SecondaryText
             )
         }
     }

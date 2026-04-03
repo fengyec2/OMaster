@@ -34,6 +34,13 @@ val LightGray = Color(0xFF999999)
 val OffWhite = Color(0xFFF5F5F5)
 
 /**
+ * 文字颜色优化 - 提升深色模式对比度
+ */
+val PrimaryText = Color(0xFFFFFFFF)           // 主文字 - 100% 不透明度
+val SecondaryText = Color(0xFFB0B0B0)         // 次要文字 - 70% 不透明度
+val TertiaryText = Color(0xFF808080)          // 第三优先级文字 - 50% 不透明度
+
+/**
  * 功能色
  */
 val SuccessGreen = Color(0xFF4CAF50)
@@ -42,9 +49,10 @@ val WarningYellow = Color(0xFFFFB300)
 
 /**
  * UI 扩展色
+ * 优化对比度以提升深色模式下的可见性
  */
-val CardBorderLight = Color(0xFFFFFFFF).copy(alpha = 0.05f)
-val CardBorderHighlight = Color(0xFFEC7223).copy(alpha = 0.3f)
+val CardBorderLight = Color(0xFFFFFFFF).copy(alpha = 0.12f)
+val CardBorderHighlight = Color(0xFFEC7223).copy(alpha = 0.5f)
 val SurfaceElevated = Color(0xFF222222)
 val GradientOrangeStart = Color(0xFFEC7223)
 val GradientOrangeEnd = Color(0xFFF08A4A)
