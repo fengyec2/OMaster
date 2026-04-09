@@ -34,6 +34,7 @@ import com.silas.omaster.data.repository.PresetRepository
 import com.silas.omaster.model.Subscription
 import com.silas.omaster.network.PresetRemoteManager
 import com.silas.omaster.ui.components.OMasterTopAppBar
+import com.silas.omaster.ui.theme.AppDesign
 import com.silas.omaster.ui.theme.CardBorderLight
 import com.silas.omaster.ui.theme.DarkGray
 import com.silas.omaster.ui.theme.PureBlack
@@ -172,8 +173,8 @@ fun SubscriptionScreen(
                 } else {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        contentPadding = PaddingValues(AppDesign.ContentPadding),
+                        verticalArrangement = Arrangement.spacedBy(AppDesign.SectionSpacing)
                     ) {
                         items(subscriptions, key = { it.url }) { sub ->
                             SubscriptionItem(
@@ -204,13 +205,13 @@ fun SubscriptionScreen(
             onClick = { showAddDialog = true },
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = Color.White,
-            shape = RoundedCornerShape(20.dp),
+            shape = AppDesign.ButtonShape,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(end = 24.dp, bottom = 100.dp)
-                .size(64.dp)
+                .padding(end = AppDesign.ScreenPadding, bottom = 100.dp)
+                .size(AppDesign.FABSize + 8.dp)
         ) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.sub_add), modifier = Modifier.size(32.dp))
+            Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.sub_add), modifier = Modifier.size(AppDesign.FABSize / 2 + 4.dp))
         }
 
         if (showBottomSheet && selectedSubscription != null) {

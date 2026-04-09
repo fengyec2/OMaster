@@ -358,8 +358,14 @@
 
     <!-- 功能介绍 -->
     <string name="feature_title">功能介绍</string>
-    <string name="feature_desc_1">OMaster 是一款专为OPPO/一加/Realme手机摄影爱好者设计的调色参数管理工具。</string>
-    <string name="feature_desc_2">您可以在这里查看、收藏和复现大师模式的摄影调色参数，包括曝光、对比度、饱和度、色温等专业参数。</string>
+    <string name="feature_custom_title">个性化定制</string>
+    <string name="feature_custom_desc">丰富的预设参数，满足各种场景需求</string>
+    <string name="feature_cloud_title">云端订阅</string>
+    <string name="feature_cloud_desc">支持订阅云端预设库，手动更新</string>
+    <string name="feature_update_title">持续更新</string>
+    <string name="feature_update_desc">社区共创预设，内容持续更新</string>
+    <string name="feature_safe_title">安全可靠</string>
+    <string name="feature_safe_desc">本地存储为主，保护用户隐私</string>
 
     <!-- 制作信息 -->
     <string name="credits_title">制作信息</string>
@@ -369,9 +375,9 @@
 
     <!-- 页脚 -->
     <string name="footer_local"></string>
-    <string name="user_agreement">《用户协议》</string>
-    <string name="privacy_policy">《隐私政策》</string>
-    <string name="open_source_license">《开源许可》</string>
+    <string name="user_agreement">用户协议</string>
+    <string name="privacy_policy">隐私政策</string>
+    <string name="open_source_license">开源许可</string>
 
     <!-- 隐私政策页 -->
     <string name="privacy_title">用户协议和隐私政策</string>

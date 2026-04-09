@@ -48,6 +48,7 @@ class FloatingWindowService : Service() {
     private var floatingView: View? = null
     private var params: WindowManager.LayoutParams? = null
     private var isExpanded = true
+    private var edgeAnimator: ValueAnimator? = null  // ✅ 新增：保存动画引用用于生命周期管理
 
     // 配色方案
     private val primaryColor = Color.parseColor("#FF6B35")      // 品牌橙色
@@ -144,6 +145,9 @@ class FloatingWindowService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        // ✅ 取消正在执行的贴边动画，防止内存泄漏和崩溃
+        edgeAnimator?.cancel()
+        edgeAnimator = null
         removeWindow()
         instance = null
     }
@@ -902,9 +906,15 @@ class FloatingWindowService : Service() {
                     }
                     setImageResource(R.mipmap.ic_launcher_round)
                     scaleType = ImageView.ScaleType.FIT_CENTER
+                    // 禁用 ImageView 的触摸事件，让事件传递给父容器
+                    isClickable = false
+                    isFocusable = false
                 }
                 
                 addView(iconView)
+                // 禁用 button 容器的触摸事件拦截，让事件传递给最外层容器
+                isClickable = false
+                isFocusable = false
             }
 
             addView(glowView)
@@ -912,6 +922,9 @@ class FloatingWindowService : Service() {
 
             // 整个容器可点击
             setOnClickListener { onExpand() }
+            // 确保外层容器可以接收触摸事件用于拖动
+            isClickable = true
+            isFocusable = true
         }
     }
 
@@ -1230,6 +1243,7 @@ class FloatingWindowService : Service() {
             private var touchY = 0f
             private var isClick = false
             private val clickThreshold = 20f
+            private var isDragging = false  // ✅ 新增：跟踪是否正在拖动
 
             override fun onTouch(v: View, event: MotionEvent): Boolean {
                 when (event.action) {
@@ -1239,41 +1253,53 @@ class FloatingWindowService : Service() {
                         touchX = event.rawX
                         touchY = event.rawY
                         isClick = true
+                        isDragging = false  // ✅ 重置拖动状态
                     }
                     MotionEvent.ACTION_MOVE -> {
                         val dx = event.rawX - touchX
                         val dy = event.rawY - touchY
                         if (Math.abs(dx) > clickThreshold || Math.abs(dy) > clickThreshold) {
                             isClick = false
+                            isDragging = true  // ✅ 标记为拖动中
                         }
-                        
-                        val metrics = DisplayMetrics()
-                        wm.defaultDisplay.getMetrics(metrics)
-                        
-                        params?.x = initialX + dx.toInt()
-                        
-                        // 垂直方向限制，防止超出屏幕
-                        val newY = initialY + dy.toInt()
-                        val maxY = metrics.heightPixels - (floatingView?.height ?: 0)
-                        params?.y = newY.coerceIn(0, maxY)
-                        
-                        floatingView?.let { view ->
-                            params?.let { p ->
-                                wm.updateViewLayout(view, p)
+
+                        // 只有在拖动时才更新位置
+                        if (isDragging) {
+                            val metrics = DisplayMetrics()
+                            wm.defaultDisplay.getMetrics(metrics)
+
+                            params?.x = initialX + dx.toInt()
+
+                            // 垂直方向限制，防止超出屏幕
+                            val newY = initialY + dy.toInt()
+                            val viewHeight = floatingView?.height ?: dpToPx(56)
+                            val maxY = metrics.heightPixels - viewHeight
+                            params?.y = newY.coerceIn(0, maxY.coerceAtLeast(0))
+
+                            floatingView?.let { view ->
+                                params?.let { p ->
+                                    try {
+                                        wm.updateViewLayout(view, p)
+                                    } catch (e: Exception) {
+                                        Logger.e("FloatingWindowService", "拖动更新布局失败", e)
+                                    }
+                                }
                             }
                         }
                     }
                     MotionEvent.ACTION_UP -> {
-                        if (!isClick) {
-                            // 实现贴边收纳逻辑
+                        if (isDragging) {
+                            // ✅ 只在拖动操作时才贴边，避免与点击事件冲突
                             snapToEdge(wm)
                         }
+                        isDragging = false  // ✅ 重置拖动状态
+                        // ✅ 如果是点击操作，返回 false 让 onClick 处理
+                        // ✅ 如果是拖动操作，返回 true 消费事件，防止触发 onClick
+                        return !isClick
                     }
                 }
-                // 返回 true 消费事件，防止传递给子视图造成冲突
-                // 但这样会导致按钮无法点击，所以需要在按钮上单独设置点击监听
-                // 这里改为：如果是点击操作，返回 false 让子视图处理；如果是拖动，返回 true
-                return !isClick && event.action == MotionEvent.ACTION_MOVE
+                // ✅ MOVE 事件：只在拖动时返回 true 消费事件
+                return isDragging && event.action == MotionEvent.ACTION_MOVE
             }
         })
     }
@@ -1284,31 +1310,102 @@ class FloatingWindowService : Service() {
     private fun snapToEdge(wm: WindowManager) {
         val view = floatingView ?: return
         val p = params ?: return
-        
-        val metrics = DisplayMetrics()
-        wm.defaultDisplay.getMetrics(metrics)
-        val screenWidth = metrics.widthPixels
-        val viewWidth = view.width
+
+        // ✅ 检查视图是否已经有效测量
+        if (view.width <= 0 || view.height <= 0) {
+            Logger.w("FloatingWindowService", "snapToEdge: 视图尚未完成测量，跳过贴边")
+            return
+        }
+
+        // ✅ 取消之前的动画（防止重复执行）
+        edgeAnimator?.cancel()
+        edgeAnimator = null
+
+        try {
+            val metrics = DisplayMetrics()
+            wm.defaultDisplay.getMetrics(metrics)
+            val screenWidth = metrics.widthPixels
+            val viewWidth = view.width
 
         // 计算目标位置：左边(0)或右边(screenWidth - viewWidth)
         // 如果是收起状态，可以进一步实现“半收纳”效果，即只露出一半图标
         val targetX = if (p.x + viewWidth / 2 < screenWidth / 2) {
-            if (!isExpanded) -viewWidth / 2 else 0
+            // 左侧收纳
+            if (!isExpanded) {
+                // 收起状态：半收纳，限制最小值防止崩溃
+                (-viewWidth / 2).coerceAtLeast(-dpToPx(28))
+            } else {
+                0
+            }
         } else {
-            if (!isExpanded) screenWidth - viewWidth / 2 else screenWidth - viewWidth
+            // 右侧收纳
+            if (!isExpanded) {
+                // 收起状态：半收纳，限制最大值防止崩溃
+                (screenWidth - viewWidth / 2).coerceAtMost(screenWidth - dpToPx(28))
+            } else {
+                (screenWidth - viewWidth).coerceAtLeast(0)
+            }
         }
 
         // 使用动画平滑移动
-        val animator = ValueAnimator.ofInt(p.x, targetX)
-        animator.duration = 300
-        animator.interpolator = DecelerateInterpolator()
-        animator.addUpdateListener { animation ->
-            if (floatingView != null) {
-                p.x = animation.animatedValue as Int
-                wm.updateViewLayout(view, p)
+            // ✅ 增加完整的生命周期管理和异常保护
+            val animator = ValueAnimator.ofInt(p.x, targetX)
+            animator.duration = 300
+            animator.interpolator = DecelerateInterpolator()
+
+            animator.addUpdateListener { animation ->
+                try {
+                    // ✅ 多重检查，确保安全更新布局
+                    if (floatingView !== view || params !== p) {
+                        // View 或 Params 已被替换，取消动画
+                        animator.cancel()
+                        return@addUpdateListener
+                    }
+
+                    // ✅ 检查 View 的父容器是否还存在（即是否仍附加在 WindowManager 上）
+                    if (view.parent == null) {
+                        animator.cancel()
+                        return@addUpdateListener
+                    }
+
+                    p.x = animation.animatedValue as Int
+                    wm.updateViewLayout(view, p)
+                } catch (e: IllegalArgumentException) {
+                    // ✅ View 未附加到窗口管理器
+                    Logger.e("FloatingWindowService", "snapToEdge 动画更新失败: View not attached to window manager", e)
+                    animator.cancel()
+                } catch (e: IllegalStateException) {
+                    // ✅ View 已被移除或状态异常
+                    Logger.e("FloatingWindowService", "snapToEdge 动画更新失败: View removed or invalid state", e)
+                    animator.cancel()
+                } catch (e: Exception) {
+                    // ✅ 其他未知异常
+                    Logger.e("FloatingWindowService", "snapToEdge 动画更新异常", e)
+                    animator.cancel()
+                }
             }
+
+            // ✅ 动画结束时清理引用，防止内存泄漏
+            animator.addListener(object : android.animation.Animator.AnimatorListener {
+                override fun onAnimationStart(animation: android.animation.Animator) {}
+                override fun onAnimationEnd(animation: android.animation.Animator) {
+                    if (edgeAnimator === animator) {
+                        edgeAnimator = null
+                    }
+                }
+                override fun onAnimationCancel(animation: android.animation.Animator) {
+                    if (edgeAnimator === animator) {
+                        edgeAnimator = null
+                    }
+                }
+                override fun onAnimationRepeat(animation: android.animation.Animator) {}
+            })
+
+            edgeAnimator = animator
+            animator.start()
+        } catch (e: Exception) {
+            Logger.e("FloatingWindowService", "snapToEdge 执行失败", e)
         }
-        animator.start()
     }
 
     private fun removeWindow() {

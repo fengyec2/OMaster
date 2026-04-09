@@ -62,6 +62,7 @@ import com.silas.omaster.ui.animation.AnimationSpecs
 import com.silas.omaster.util.DownloadResult
 import com.silas.omaster.util.ImageCacheManager
 import com.silas.omaster.util.ImageDownloadCallback
+import com.silas.omaster.ui.theme.AppDesign
 import com.silas.omaster.ui.theme.DarkGray
 import com.silas.omaster.ui.theme.PureBlack
 import java.io.File
@@ -128,6 +129,7 @@ fun FeatureCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
+        shape = AppDesign.CardShape,
         colors = CardDefaults.cardColors(
             containerColor = DarkGray
         )
@@ -135,17 +137,17 @@ fun FeatureCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(AppDesign.ContentPadding),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(AppDesign.IconButtonSize),
                 contentAlignment = Alignment.Center
             ) {
                 icon()
             }
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(AppDesign.ItemSpacing * 1.5f))
 
             Column {
                 Text(
@@ -155,12 +157,12 @@ fun FeatureCard(
                     color = Color.White
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(AppDesign.ItemSpacing / 2))
 
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.White.copy(alpha = 0.7f)
+                    color = Color.White.copy(alpha = AppDesign.SecondaryAlpha)
                 )
             }
         }
@@ -219,9 +221,9 @@ fun ParameterItem(
         Text(
             text = label,
             style = MaterialTheme.typography.bodySmall,
-            color = Color.White.copy(alpha = 0.6f)
+            color = Color.White.copy(alpha = AppDesign.TertiaryAlpha)
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(AppDesign.ItemSpacing / 2))
         Text(
             text = value,
             style = MaterialTheme.typography.titleMedium,
@@ -439,9 +441,9 @@ fun ParameterCard(
             Text(
                 text = label,
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.White.copy(alpha = 0.6f)
+                color = Color.White.copy(alpha = AppDesign.TertiaryAlpha)
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(AppDesign.ItemSpacing / 2))
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleMedium,

@@ -32,13 +32,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
@@ -66,6 +70,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -77,6 +82,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.silas.omaster.R
 import com.silas.omaster.ui.components.OMasterTopAppBar
+import com.silas.omaster.ui.theme.AppDesign
 import com.silas.omaster.ui.theme.CardBorderLight
 import com.silas.omaster.ui.theme.DarkGray
 import com.silas.omaster.ui.theme.NearBlack
@@ -232,7 +238,7 @@ fun AboutScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
-                .padding(24.dp),
+                .padding(AppDesign.ScreenPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AppTitleSection(currentVersionName)
@@ -297,7 +303,7 @@ fun AboutScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            FeatureCard()
+            FeatureList()
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -648,33 +654,53 @@ private fun UpdateCard(
 }
 
 @Composable
-private fun FeatureCard() {
+private fun FeatureList() {
+    val features = listOf(
+        FeatureItem(
+            icon = Icons.Default.Palette,
+            title = stringResource(R.string.feature_custom_title),
+            description = stringResource(R.string.feature_custom_desc)
+        ),
+        FeatureItem(
+            icon = Icons.Default.Cloud,
+            title = stringResource(R.string.feature_cloud_title),
+            description = stringResource(R.string.feature_cloud_desc)
+        ),
+        FeatureItem(
+            icon = Icons.Default.Update,
+            title = stringResource(R.string.feature_update_title),
+            description = stringResource(R.string.feature_update_desc)
+        )
+    )
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .border(
                 width = 1.dp,
                 color = CardBorderLight,
-                shape = RoundedCornerShape(16.dp)
+                shape = AppDesign.CardShape
             ),
         colors = CardDefaults.cardColors(
             containerColor = DarkGray
         ),
-        shape = RoundedCornerShape(16.dp)
+        shape = AppDesign.CardShape
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(AppDesign.ContentPadding),
+            verticalArrangement = Arrangement.spacedBy(AppDesign.ItemSpacing)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(AppDesign.ItemSpacing)
             ) {
                 Icon(
                     imageVector = Icons.Default.Info,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(AppDesign.IconButtonSize - 16.dp)
                 )
                 Text(
                     text = stringResource(R.string.feature_title),
@@ -683,21 +709,53 @@ private fun FeatureCard() {
                     color = Color.White
                 )
             }
+
+            features.forEach { feature ->
+                FeatureListItem(feature)
+            }
+        }
+    }
+}
+
+@Composable
+private fun FeatureListItem(feature: FeatureItem) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = AppDesign.ItemSpacing / 2),
+        horizontalArrangement = Arrangement.spacedBy(AppDesign.ItemSpacing)
+    ) {
+        Icon(
+            imageVector = feature.icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(24.dp)
+        )
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
             Text(
-                text = stringResource(R.string.feature_desc_1),
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.White.copy(alpha = 0.8f),
-                textAlign = TextAlign.Start
+                text = feature.title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Medium,
+                color = Color.White
             )
             Text(
-                text = stringResource(R.string.feature_desc_2),
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.White.copy(alpha = 0.8f),
+                text = feature.description,
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.White.copy(alpha = AppDesign.SecondaryAlpha),
                 textAlign = TextAlign.Start
             )
         }
     }
 }
+
+private data class FeatureItem(
+    val icon: ImageVector,
+    val title: String,
+    val description: String
+)
 
 private data class Contributor(
     val name: String,
@@ -1017,50 +1075,70 @@ private fun FooterSection(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // 第一行：版权信息
         Text(
             text = "© 2026 OMaster",
             style = MaterialTheme.typography.bodySmall,
-            color = Color.White.copy(alpha = 0.4f)
+            color = Color.White.copy(alpha = 0.5f)
         )
 
-        // 第二行：用户协议、隐私政策和开源许可并排
         Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = stringResource(R.string.user_agreement),
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.White.copy(alpha = 0.4f),
+                color = Color.White.copy(alpha = 0.6f),
                 modifier = Modifier.clickable {
-                    // 直接打开飞书文档链接
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://ocnquih40x3i.feishu.cn/docx/WHVldUhumozJAUx7ZFhcO9uznaf?from=from_copylink"))
                     context.startActivity(intent)
                 }
             )
 
+            androidx.compose.material3.Divider(
+                modifier = Modifier
+                    .height(12.dp)
+                    .width(1.dp),
+                color = Color.White.copy(alpha = 0.2f)
+            )
+
             Text(
                 text = stringResource(R.string.privacy_policy),
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.White.copy(alpha = 0.4f),
+                color = Color.White.copy(alpha = 0.6f),
                 modifier = Modifier.clickable {
-                    // 直接打开飞书文档链接
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://ocnquih40x3i.feishu.cn/docx/NSgednMU0oeq9RxnGmcc9vRenvd?from=from_copylink"))
                     context.startActivity(intent)
                 }
             )
 
+            androidx.compose.material3.Divider(
+                modifier = Modifier
+                    .height(12.dp)
+                    .width(1.dp),
+                color = Color.White.copy(alpha = 0.2f)
+            )
+
             Text(
                 text = stringResource(R.string.open_source_license),
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.White.copy(alpha = 0.4f),
+                color = Color.White.copy(alpha = 0.6f),
                 modifier = Modifier.clickable {
                     onNavigateToOpenSourceLicense()
                 }
             )
         }
+
+        Text(
+            text = "豫 ICP 备 2026011707 号 -1A",
+            style = MaterialTheme.typography.bodySmall,
+            color = Color.White.copy(alpha = 0.35f),
+            modifier = Modifier.clickable {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://beian.miit.gov.cn"))
+                context.startActivity(intent)
+            }
+        )
     }
 }

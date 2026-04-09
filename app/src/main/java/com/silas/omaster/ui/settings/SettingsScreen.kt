@@ -72,6 +72,7 @@ import com.silas.omaster.data.local.AppLanguage
 import com.silas.omaster.data.local.FloatingWindowMode
 import com.silas.omaster.data.local.UpdateChannel
 import com.silas.omaster.ui.components.OMasterTopAppBar
+import com.silas.omaster.ui.theme.AppDesign
 import com.silas.omaster.ui.theme.BrandTheme
 import com.silas.omaster.ui.theme.DarkGray
 import com.silas.omaster.ui.theme.PureBlack
@@ -335,7 +336,7 @@ fun SettingsScreen() {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .padding(horizontal = AppDesign.ContentPadding, vertical = AppDesign.ItemSpacing + 4.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -555,8 +556,8 @@ private fun SettingsSectionCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(12.dp),
+            .padding(horizontal = AppDesign.ContentPadding),
+        shape = AppDesign.CardShape,
         colors = CardDefaults.cardColors(
             containerColor = DarkGray.copy(alpha = 0.5f)
         ),
@@ -572,7 +573,7 @@ private fun SettingsSectionTitle(title: String) {
         text = title,
         style = MaterialTheme.typography.labelLarge,
         color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
+        modifier = Modifier.padding(start = AppDesign.ContentPadding, top = AppDesign.ContentPadding, bottom = AppDesign.ItemSpacing)
     )
 }
 
