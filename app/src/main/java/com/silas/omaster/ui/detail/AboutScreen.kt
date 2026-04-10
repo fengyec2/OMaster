@@ -1000,14 +1000,47 @@ private fun QQGroupCard(context: android.content.Context) {
                 shape = RoundedCornerShape(16.dp)
             )
             .clickable {
-                // 使用正确的QQ群跳转链接
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fc%2Fcgi-bin%2Fqm%2Fqr%3Fk%3D1083543279"))
-                try {
-                    context.startActivity(intent)
-                } catch (e: Exception) {
-                    // 如果QQ未安装，跳转到网页版
-                    val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://qm.qq.com/q/1083543279"))
-                    context.startActivity(webIntent)
+                // 群号
+                val groupId = "1083543279"
+                
+                // 尝试使用URL Scheme打开QQ群
+                val schemes = listOf(
+                    // 方式1：使用腾讯官方API（推荐）
+                    "mqqapi://card/show_pslcard?src_type=internal&version=1&uin=$groupId&card_type=group&source=qrcode",
+                    // 方式2：使用QQ群加群链接（兼容旧版）
+                    "mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fc%2Fcgi-bin%2Fqm%2Fqr%3Fk%3D$groupId",
+                    // 方式3：使用简化版scheme
+                    "mqq://card/show_pslcard?src_type=internal&version=1&uin=$groupId&card_type=group"
+                )
+
+                var opened = false
+                for (scheme in schemes) {
+                    if (!opened) {
+                        try {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(scheme))
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            // 检查是否有应用可以处理这个intent
+                            if (intent.resolveActivity(context.packageManager) != null) {
+                                context.startActivity(intent)
+                                opened = true
+                                break
+                            }
+                        } catch (e: Exception) {
+                            // 尝试下一个方式
+                        }
+                    }
+                }
+
+                // 如果所有scheme都失败，使用网页版链接（浏览器会提示打开QQ）
+                if (!opened) {
+                    try {
+                        val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://qm.qq.com/cgi-bin/qm/qr?k=$groupId&jump_from=webapi"))
+                        webIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(webIntent)
+                    } catch (e: Exception) {
+                        // 如果浏览器也打不开，提示用户
+                        android.widget.Toast.makeText(context, "无法打开QQ群，请检查是否安装QQ", android.widget.Toast.LENGTH_SHORT).show()
+                    }
                 }
             },
         colors = CardDefaults.cardColors(

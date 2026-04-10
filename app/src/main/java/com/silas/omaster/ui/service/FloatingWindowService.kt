@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.PixelFormat
 import android.graphics.Shader
+import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.IBinder
@@ -309,15 +310,16 @@ class FloatingWindowService : Service() {
     }
 
     /**
-     * 紧凑模式：只更新 8 个参数值（不重建视图）
+     * 紧凑模式：动态更新参数值（不重建视图）
+     * 根据实际存在的参数数量动态更新
      */
     private fun updateCompactContent(sections: List<PresetSection>) {
-        val paramValues = extract8Params(sections)
-        
-        // 紧凑模式有 8 个固定的参数视图，直接按索引更新
-        for (i in 0 until 8) {
-            val valueView = floatingView?.findViewWithTag<TextView>("compact_value_$i")
-            valueView?.text = paramValues[i]
+        val paramData = extractDynamicParams(sections)
+
+        // 动态更新参数值 - 只更新实际存在的参数
+        paramData.forEachIndexed { index, (value, _) ->
+            val valueView = floatingView?.findViewWithTag<TextView>("compact_value_$index")
+            valueView?.text = value
         }
     }
 
@@ -605,19 +607,21 @@ class FloatingWindowService : Service() {
     }
 
     /**
-     * 创建紧凑内容区域 - 8 参数横向排列
+     * 创建紧凑内容区域 - 动态适配参数数量（支持8-11参数）
+     * 根据实际传入的 sections 中的参数数量动态显示，避免空白占位符
      */
     private fun createCompactContentArea(sections: List<PresetSection>): LinearLayout {
+        // 提取实际存在的参数（过滤掉无效的"-"）
+        val paramData = extractDynamicParams(sections)
+        val actualParamCount = paramData.size
+
         return LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                dpToPx(80) // 参数区域高度 80dp
+                dpToPx(80) // 参数区域高度保持 80dp
             )
-            setPadding(dpToPx(8), dpToPx(4), dpToPx(8), dpToPx(4))
-
-            // 提取 8 个参数值
-            val paramValues = extract8Params(sections)
+            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
 
             // 第一行：参数值（带索引 Tag）
             val valuesRow = LinearLayout(context).apply {
@@ -629,8 +633,8 @@ class FloatingWindowService : Service() {
                 )
                 gravity = Gravity.CENTER_VERTICAL
 
-                // ✅ 为每个参数值传递索引，用于添加唯一 Tag
-                paramValues.forEachIndexed { index, value ->
+                // 只显示实际存在的参数值
+                paramData.forEachIndexed { index, (value, _) ->
                     addView(createCompactValueCell(value, index))
                 }
             }
@@ -645,7 +649,7 @@ class FloatingWindowService : Service() {
                 setBackgroundColor(Color.parseColor("#20FFFFFF"))
             })
 
-            // 第二行：图标（使用 Iconfont）
+            // 第二行：图标（使用 Iconfont 或文字标签）
             val iconsRow = LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL
                 layoutParams = LinearLayout.LayoutParams(
@@ -655,7 +659,8 @@ class FloatingWindowService : Service() {
                 )
                 gravity = Gravity.CENTER_VERTICAL
 
-                IconFont.ICONS.forEach { iconCode ->
+                // 只显示实际存在的参数对应的图标
+                paramData.forEach { (_, iconCode) ->
                     addView(createCompactIconCell(iconCode))
                 }
             }
@@ -664,12 +669,116 @@ class FloatingWindowService : Service() {
     }
 
     /**
-     * 从 sections 中提取8个参数值
+     * 从 sections 中动态提取参数（支持8-11参数）
+     * 只返回实际存在的参数，不包含空白占位符
+     * 返回: List<Pair<参数值, 图标编码>>
      */
-    private fun extract8Params(sections: List<PresetSection>): List<String> {
-        val result = MutableList(8) { "-" }
+    private fun extractDynamicParams(sections: List<PresetSection>): List<Pair<String, String>> {
+        val result = mutableListOf<Pair<String, String>>()
 
-        // 参数标签到索引的映射
+        // 检查是否有Realme特有参数
+        var hasRealmeParams = false
+        var hasRealmeExtendedParams = false
+        sections.forEach { section ->
+            section.items.forEach { item ->
+                if (item.label.contains("对比度（亮部）") || item.label.contains("对比度（暗部）")) {
+                    hasRealmeParams = true
+                }
+                if (item.label.contains("清晰") || item.label.contains("对比度") || 
+                    item.label.contains("褪色") || item.label.contains("颗粒") || 
+                    item.label.contains("颗粒强度")) {
+                    hasRealmeExtendedParams = true
+                }
+            }
+        }
+
+        // 根据预设类型选择参数映射
+        val labelToIcon = if (hasRealmeParams) {
+            // Realme GR预设：特有参数顺序，全部使用文字
+            listOf(
+                // Realme特有参数顺序
+                listOf("滤镜", "Filter") to IconFont.FILTER_TEXT,
+                listOf("饱和", "Saturation") to IconFont.SATURATION_TEXT,
+                listOf("冷暖", "Warm") to IconFont.WARM_COOL_TEXT,
+                listOf("影调", "Tone") to IconFont.TONE_TEXT,
+                listOf("对比度", "Contrast") to IconFont.CONTRAST,
+                listOf("对比度（亮部）", "contrast_highlight") to IconFont.CONTRAST_HIGHLIGHT_TEXT,
+                listOf("对比度（暗部）", "contrast_shadow") to IconFont.CONTRAST_SHADOW_TEXT,
+                listOf("锐度", "Sharpness") to IconFont.SHARPNESS_TEXT,
+                listOf("暗角", "Vignette") to IconFont.VIGNETTE_TEXT,
+                listOf("清晰", "Clarity") to IconFont.CLARITY,
+                listOf("颗粒", "颗粒强度", "Grain") to IconFont.GRAIN_INTENSITY_TEXT
+            )
+        } else if (hasRealmeExtendedParams) {
+            // Realme预设（老版本）：全部使用文字
+            listOf(
+                // 基础8参数 - 文字
+                listOf("滤镜", "Filter") to IconFont.FILTER_TEXT,
+                listOf("柔光", "Soft") to IconFont.SOFT_LIGHT_TEXT,
+                listOf("影调", "Tone") to IconFont.TONE_TEXT,
+                listOf("饱和", "Saturation") to IconFont.SATURATION_TEXT,
+                listOf("冷暖", "Warm") to IconFont.WARM_COOL_TEXT,
+                listOf("青品", "Cyan") to IconFont.CYAN_TEXT,
+                listOf("锐度", "Sharpness") to IconFont.SHARPNESS_TEXT,
+                listOf("暗角", "Vignette") to IconFont.VIGNETTE_TEXT,
+                // 扩展3参数 - 文字
+                listOf("清晰", "Clarity") to IconFont.CLARITY,
+                listOf("对比度", "褪色", "Contrast", "Fade") to IconFont.CONTRAST,
+                listOf("颗粒", "颗粒强度", "Grain") to IconFont.GRAIN
+            )
+        } else {
+            // OPPO/一加预设：使用图标
+            listOf(
+                // 基础8参数 - 图标
+                listOf("滤镜", "Filter") to IconFont.FILTER,
+                listOf("柔光", "Soft") to IconFont.SOFT_LIGHT,
+                listOf("影调", "Tone") to IconFont.TONE,
+                listOf("饱和", "Saturation") to IconFont.SATURATION,
+                listOf("冷暖", "Warm") to IconFont.WARM_COOL,
+                listOf("青品", "Cyan") to IconFont.CYAN,
+                listOf("锐度", "Sharpness") to IconFont.SHARPNESS,
+                listOf("暗角", "Vignette") to IconFont.VIGNETTE,
+                // 扩展3参数 - 文字
+                listOf("清晰", "Clarity") to IconFont.CLARITY,
+                listOf("对比度", "褪色", "Contrast", "Fade") to IconFont.CONTRAST,
+                listOf("颗粒", "颗粒强度", "Grain") to IconFont.GRAIN
+            )
+        }
+
+        // 按顺序检查每个参数是否存在
+        labelToIcon.forEach { (labels, icon) ->
+            var found = false
+            var value = "-"
+
+            sections.forEach { section ->
+                section.items.forEach { item ->
+                    labels.forEach { label ->
+                        if (!found && item.label.contains(label)) {
+                            value = PresetI18n.resolveValue(this, item.value)
+                            found = true
+                        }
+                    }
+                }
+            }
+
+            // 只添加实际存在的参数（值不为"-"）
+            if (found && value != "-") {
+                result.add(value to icon)
+            }
+        }
+
+        return result
+    }
+
+    /**
+     * 从 sections 中提取11个参数值（支持真我理光GR等11参数预设）
+     * 用于更新模式，保持固定11个位置
+     */
+    private fun extract11Params(sections: List<PresetSection>): List<String> {
+        val result = MutableList(11) { "-" }
+
+        // 参数标签到索引的映射（11个参数）
+        // 注意：标签名称必须与 strings.xml 中的定义完全一致
         val labelToIndex = mapOf(
             "滤镜" to 0, "Filter" to 0,
             "柔光" to 1, "Soft" to 1,
@@ -678,7 +787,10 @@ class FloatingWindowService : Service() {
             "冷暖" to 4, "Warm" to 4,
             "青品" to 5, "Cyan" to 5,
             "锐度" to 6, "Sharpness" to 6,
-            "暗角" to 7, "Vignette" to 7
+            "暗角" to 7, "Vignette" to 7,
+            "清晰" to 8, "Clarity" to 8,  // strings.xml 中是 "清晰" 不是 "清晰度"
+            "对比度" to 9, "褪色" to 9, "Contrast" to 9, "Fade" to 9,  // 用对比度代替褪色
+            "颗粒" to 10, "Grain" to 10, "颗粒强度" to 10
         )
 
         sections.forEach { section ->
@@ -700,29 +812,34 @@ class FloatingWindowService : Service() {
     private fun createCompactValueCell(value: String, index: Int = 0): TextView {
         return TextView(this).apply {
             text = value
-            textSize = 11f
+            textSize = 10f  // 11列时减小字体，避免溢出
             setTextColor(textPrimary)
             gravity = Gravity.CENTER
             layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-            setPadding(0, dpToPx(4), 0, dpToPx(4))
+            setPadding(0, dpToPx(2), 0, dpToPx(2))
             // ✅ 添加唯一 Tag 用于数据刷新
             tag = "compact_value_$index"
         }
     }
 
     /**
-     * 创建紧凑图标单元格（使用 Iconfont）
+     * 创建紧凑图标单元格（支持 Iconfont 和文字标签）
      */
     private fun createCompactIconCell(iconCode: String): TextView {
         return TextView(this).apply {
             text = iconCode
-            textSize = 16f
+            textSize = 14f  // 11列时减小图标，保持美观
             setTextColor(primaryColor)
             gravity = Gravity.CENTER
             layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-            setPadding(0, dpToPx(4), 0, dpToPx(4))
-            // 使用 Iconfont 字体
-            typeface = IconFont.getTypeface(this@FloatingWindowService)
+            setPadding(0, dpToPx(2), 0, dpToPx(2))
+            // 判断是否为 Iconfont 图标（Unicode 编码字符）
+            // 如果是文字标签（如"清晰"、"褪色"、"颗粒"），使用默认字体
+            if (iconCode.startsWith("\\u") || iconCode.length == 1 && iconCode[0].code > 0xE600) {
+                typeface = IconFont.getTypeface(this@FloatingWindowService)
+            } else {
+                typeface = Typeface.DEFAULT  // 文字标签使用默认字体
+            }
         }
     }
 
