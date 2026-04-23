@@ -1687,7 +1687,7 @@
         "https://cdn.fky.ltd/crqx_02.webp"
       ],
       "author": "@屋顶橙子味",
-      
+
       "sections": [
         {
           "title": "@string/section_color_grading",
@@ -1742,6 +1742,28 @@
         "title": "Shooting Tips",
         "content": "【环境建议】春日户外，光线柔和的场景\n【场景推荐】花卉、人像、风景、日常记录\n【拍摄要点】清新明亮的色调，适合表现春天的生机与活力"
       }
+    },
+    {
+      "_comment": "【占位预设】用于保留Realme预设特有的字符串资源，防止R8资源压缩导致反射获取失败",
+      "name": "_placeholder_realme_params",
+      "coverPath": "",
+      "author": "@OMaster",
+      "sections": [
+        {
+          "title": "@string/section_color_grading",
+          "items": [
+            {"label": "@string/param_hue", "value": "", "span": 1},
+            {"label": "@string/param_contrast", "value": "", "span": 1},
+            {"label": "@string/param_contrast_highlight", "value": "", "span": 1},
+            {"label": "@string/param_contrast_shadow", "value": "", "span": 1},
+            {"label": "@string/param_brightness", "value": "", "span": 1},
+            {"label": "@string/param_clarity", "value": "", "span": 1},
+            {"label": "@string/param_grain", "value": "", "span": 1},
+            {"label": "@string/param_grain_size", "value": "", "span": 1}
+          ]
+        }
+      ],
+      "tags": ["Auto"]
     }
   ]
 }
