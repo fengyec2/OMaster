@@ -1,5 +1,8 @@
 package com.silas.omaster.ui.frame
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,6 +30,7 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -54,6 +58,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.silas.omaster.R
 import com.silas.omaster.ui.components.OMasterTopAppBar
@@ -64,6 +69,7 @@ import com.silas.omaster.ui.theme.themedTextPrimary
 import com.silas.omaster.ui.theme.themedTextSecondary
 import com.silas.omaster.util.ImageExporter
 import com.silas.omaster.util.OutputRatio
+import com.silas.omaster.util.PermissionUtil
 
 @Composable
 fun PhotoFrameScreen(
@@ -86,6 +92,26 @@ fun PhotoFrameScreen(
         uri?.let {
             exifSynced = false
             viewModel.loadImage(it)
+        }
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            imagePickerLauncher.launch("image/*")
+        } else {
+            val permName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) "照片和视频" else "存储"
+            Toast.makeText(context, "需要${permName}权限才能选择图片，请在系统设置中授予权限", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    fun launchImagePicker() {
+        if (PermissionUtil.hasMediaPermission(context)) {
+            imagePickerLauncher.launch("image/*")
+        } else {
+            val perm = PermissionUtil.mediaPermission
+            permissionLauncher.launch(perm)
         }
     }
 
@@ -126,7 +152,7 @@ fun PhotoFrameScreen(
         )
 
         if (state.sourceBitmap == null) {
-            EmptyPickerContent(onPickImage = { imagePickerLauncher.launch("image/*") })
+            EmptyPickerContent(onPickImage = { launchImagePicker() })
         } else {
             Column(
                 modifier = Modifier
@@ -165,7 +191,7 @@ fun PhotoFrameScreen(
                         },
                         onPickNewImage = {
                             exifSynced = false
-                            imagePickerLauncher.launch("image/*")
+                            launchImagePicker()
                         }
                     )
                 }

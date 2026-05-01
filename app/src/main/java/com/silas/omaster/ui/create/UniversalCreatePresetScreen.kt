@@ -1,6 +1,10 @@
 package com.silas.omaster.ui.create
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -25,10 +29,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
 import com.silas.omaster.R
 import com.silas.omaster.model.PresetItem
 import com.silas.omaster.model.PresetSection
+import com.silas.omaster.util.PermissionUtil
 import com.silas.omaster.util.PresetI18n
 
 import java.io.File
@@ -48,6 +54,26 @@ fun UniversalCreatePresetScreen(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         viewModel.updateImageUri(uri)
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            imagePicker.launch("image/*")
+        } else {
+            val permName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) "照片和视频" else "存储"
+            Toast.makeText(context, "需要${permName}权限才能选择图片，请在系统设置中授予权限", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    fun launchImagePicker() {
+        if (PermissionUtil.hasMediaPermission(context)) {
+            imagePicker.launch("image/*")
+        } else {
+            val perm = PermissionUtil.mediaPermission
+            permissionLauncher.launch(perm)
+        }
     }
 
     // Dialog states
@@ -160,7 +186,7 @@ fun UniversalCreatePresetScreen(
                                 .height(200.dp)
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(MaterialTheme.colorScheme.surfaceVariant)
-                                .clickable { imagePicker.launch("image/*") },
+                                .clickable { launchImagePicker() },
                             contentAlignment = Alignment.Center
                         ) {
                             if (uiState.imageUri != null) {
