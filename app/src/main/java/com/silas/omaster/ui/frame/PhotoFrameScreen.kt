@@ -24,8 +24,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Crop169
-import androidx.compose.material.icons.filled.CropSquare
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Save
@@ -52,6 +50,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.foundation.Canvas
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -101,8 +103,11 @@ fun PhotoFrameScreen(
         if (granted) {
             imagePickerLauncher.launch("image/*")
         } else {
-            val permName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) "照片和视频" else "存储"
-            Toast.makeText(context, "需要${permName}权限才能选择图片，请在系统设置中授予权限", Toast.LENGTH_LONG).show()
+            val permName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                context.getString(R.string.photoframe_permission_media_name)
+            else
+                context.getString(R.string.photoframe_permission_storage_name)
+            Toast.makeText(context, context.getString(R.string.photoframe_permission_denied, permName), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -140,12 +145,14 @@ fun PhotoFrameScreen(
                         onClick = {
                             val bitmap = state.renderedBitmap ?: return@TextButton
                             val success = ImageExporter.saveToGallery(context, bitmap)
-                            val msg = if (success) "已保存到相册" else "保存失败"
+                            val msg = context.getString(
+                                if (success) R.string.photoframe_saved else R.string.photoframe_save_failed
+                            )
                             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                         }
                     ) {
                         Icon(Icons.Default.Save, null, Modifier.size(18.dp))
-                        Text("保存")
+                        Text(stringResource(R.string.save))
                     }
                 }
             }
@@ -215,9 +222,9 @@ private fun EmptyPickerContent(onPickImage: () -> Unit) {
             ) {
                 Icon(Icons.Default.PhotoLibrary, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(48.dp))
                 Spacer(Modifier.height(16.dp))
-                Text("选择照片", style = MaterialTheme.typography.titleLarge, color = themedTextPrimary(), fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.photoframe_pick_photo), style = MaterialTheme.typography.titleLarge, color = themedTextPrimary(), fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
-                Text("自动读取拍摄时间，生成精美分享图", style = MaterialTheme.typography.bodyMedium, color = themedTextSecondary(), textAlign = TextAlign.Center)
+                Text(stringResource(R.string.photoframe_pick_desc), style = MaterialTheme.typography.bodyMedium, color = themedTextSecondary(), textAlign = TextAlign.Center)
             }
         }
     }
@@ -233,10 +240,10 @@ private fun PreviewArea(state: FrameState) {
     ) {
         if (state.renderedBitmap != null) {
             val img = remember(state.renderedBitmap) { state.renderedBitmap.asImageBitmap() }
-            Image(bitmap = img, contentDescription = "预览图", contentScale = ContentScale.Fit, modifier = Modifier.fillMaxWidth())
+            Image(bitmap = img, contentDescription = stringResource(R.string.photoframe_preview), contentScale = ContentScale.Fit, modifier = Modifier.fillMaxWidth())
         } else if (state.sourceBitmap != null) {
             val img = remember(state.sourceBitmap) { state.sourceBitmap.asImageBitmap() }
-            Image(bitmap = img, contentDescription = "原始图", contentScale = ContentScale.Fit, modifier = Modifier.fillMaxWidth())
+            Image(bitmap = img, contentDescription = stringResource(R.string.photoframe_original), contentScale = ContentScale.Fit, modifier = Modifier.fillMaxWidth())
         }
     }
 }
@@ -262,7 +269,7 @@ private fun EditPanel(
         shape = RoundedCornerShape(AppDesign.LargeRadius)
     ) {
         Column(Modifier.padding(16.dp)) {
-            Text("画面比例", style = MaterialTheme.typography.bodyMedium, color = themedTextPrimary())
+            Text(stringResource(R.string.photoframe_aspect_ratio), style = MaterialTheme.typography.bodyMedium, color = themedTextPrimary())
 
             Spacer(Modifier.height(8.dp))
 
@@ -270,22 +277,56 @@ private fun EditPanel(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                val ratios = listOf(
-                    OutputRatio.SQUARE to Icons.Default.CropSquare,
-                    OutputRatio.PORTRAIT_4_5 to Icons.Default.CropSquare,
-                    OutputRatio.PORTRAIT_3_4 to Icons.Default.CropSquare,
-                    OutputRatio.FULL to Icons.Default.Crop169,
-                    OutputRatio.LANDSCAPE_16_9 to Icons.Default.Crop169,
+                StyleButton(
+                    selected = selectedRatio == OutputRatio.SQUARE,
+                    onClick = { onRatioChanged(OutputRatio.SQUARE) },
+                    modifier = Modifier.weight(1f),
+                    content = {
+                        RatioIcon(widthToHeight = 1f)
+                        Spacer(Modifier.height(4.dp))
+                        Text(OutputRatio.SQUARE.label, style = MaterialTheme.typography.labelSmall)
+                    }
                 )
-                ratios.forEachIndexed { index, (ratio, icon) ->
-                    StyleButton(
-                        icon = icon,
-                        label = ratio.label,
-                        selected = selectedRatio == ratio,
-                        onClick = { onRatioChanged(ratio) },
-                        modifier = Modifier.weight(1f)
-                    )
-                }
+                StyleButton(
+                    selected = selectedRatio == OutputRatio.PORTRAIT_4_5,
+                    onClick = { onRatioChanged(OutputRatio.PORTRAIT_4_5) },
+                    modifier = Modifier.weight(1f),
+                    content = {
+                        RatioIcon(widthToHeight = 4f / 5f)
+                        Spacer(Modifier.height(4.dp))
+                        Text(OutputRatio.PORTRAIT_4_5.label, style = MaterialTheme.typography.labelSmall)
+                    }
+                )
+                StyleButton(
+                    selected = selectedRatio == OutputRatio.PORTRAIT_3_4,
+                    onClick = { onRatioChanged(OutputRatio.PORTRAIT_3_4) },
+                    modifier = Modifier.weight(1f),
+                    content = {
+                        RatioIcon(widthToHeight = 3f / 4f)
+                        Spacer(Modifier.height(4.dp))
+                        Text(OutputRatio.PORTRAIT_3_4.label, style = MaterialTheme.typography.labelSmall)
+                    }
+                )
+                StyleButton(
+                    selected = selectedRatio == OutputRatio.FULL,
+                    onClick = { onRatioChanged(OutputRatio.FULL) },
+                    modifier = Modifier.weight(1f),
+                    content = {
+                        RatioIcon(widthToHeight = 9f / 16f)
+                        Spacer(Modifier.height(4.dp))
+                        Text(OutputRatio.FULL.label, style = MaterialTheme.typography.labelSmall)
+                    }
+                )
+                StyleButton(
+                    selected = selectedRatio == OutputRatio.LANDSCAPE_16_9,
+                    onClick = { onRatioChanged(OutputRatio.LANDSCAPE_16_9) },
+                    modifier = Modifier.weight(1f),
+                    content = {
+                        RatioIcon(widthToHeight = 16f / 9f)
+                        Spacer(Modifier.height(4.dp))
+                        Text(OutputRatio.LANDSCAPE_16_9.label, style = MaterialTheme.typography.labelSmall)
+                    }
+                )
             }
 
             Spacer(Modifier.height(16.dp))
@@ -293,8 +334,8 @@ private fun EditPanel(
             OutlinedTextField(
                 value = dateTimeText,
                 onValueChange = onDateTimeChange,
-                label = { Text("拍摄时间") },
-                placeholder = { Text("如：2024.03.15 14:30") },
+                label = { Text(stringResource(R.string.photoframe_shoot_time)) },
+                placeholder = { Text(stringResource(R.string.photoframe_time_placeholder)) },
                 leadingIcon = { Icon(Icons.Default.Schedule, null, tint = themedTextSecondary(), modifier = Modifier.size(20.dp)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -304,7 +345,7 @@ private fun EditPanel(
 
             Spacer(Modifier.height(16.dp))
 
-            Text("图片样式", style = MaterialTheme.typography.bodyMedium, color = themedTextPrimary())
+            Text(stringResource(R.string.photoframe_image_style), style = MaterialTheme.typography.bodyMedium, color = themedTextPrimary())
 
             Spacer(Modifier.height(8.dp))
 
@@ -313,18 +354,24 @@ private fun EditPanel(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 StyleButton(
-                    icon = Icons.Default.CropSquare,
-                    label = "圆角",
                     selected = useRounded,
                     onClick = { onRoundedChanged(true) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    content = {
+                        RoundedCornerIcon()
+                        Spacer(Modifier.height(4.dp))
+                        Text(stringResource(R.string.photoframe_rounded), style = MaterialTheme.typography.labelSmall)
+                    }
                 )
                 StyleButton(
-                    icon = Icons.Default.Crop169,
-                    label = "直角",
                     selected = !useRounded,
                     onClick = { onRoundedChanged(false) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    content = {
+                        SharpCornerIcon()
+                        Spacer(Modifier.height(4.dp))
+                        Text(stringResource(R.string.photoframe_sharp), style = MaterialTheme.typography.labelSmall)
+                    }
                 )
             }
 
@@ -336,7 +383,7 @@ private fun EditPanel(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Icon(Icons.Default.Image, null, Modifier.size(18.dp))
-                Text("重新选择图片")
+                Text(stringResource(R.string.photoframe_reselect))
             }
         }
     }
@@ -344,12 +391,12 @@ private fun EditPanel(
 
 @Composable
 private fun StyleButton(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    label: String,
     selected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
 ) {
+    val tint = if (selected) MaterialTheme.colorScheme.primary else themedTextSecondary()
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
@@ -364,18 +411,78 @@ private fun StyleButton(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                icon, null,
-                tint = if (selected) MaterialTheme.colorScheme.primary else themedTextSecondary(),
-                modifier = Modifier.size(20.dp)
-            )
-            Spacer(Modifier.height(4.dp))
-            Text(
-                label,
-                style = MaterialTheme.typography.labelSmall,
-                color = if (selected) MaterialTheme.colorScheme.primary else themedTextSecondary(),
-                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal
-            )
+            CompositionLocalProvider(
+                LocalContentColor provides tint
+            ) {
+                content()
+            }
         }
+    }
+}
+
+@Composable
+private fun RatioIcon(widthToHeight: Float) {
+    val iconColor = LocalContentColor.current
+    Canvas(modifier = Modifier.size(width = 28.dp, height = 20.dp)) {
+        val containerWidth = size.width
+        val containerHeight = size.height
+        val maxDrawWidth = containerWidth * 0.85f
+        val maxDrawHeight = containerHeight * 0.85f
+
+        val drawWidth: Float
+        val drawHeight: Float
+        if (widthToHeight >= 1f) {
+            drawWidth = maxDrawWidth
+            drawHeight = maxDrawWidth / widthToHeight
+        } else {
+            drawHeight = maxDrawHeight
+            drawWidth = maxDrawHeight * widthToHeight
+        }
+
+        val left = (containerWidth - drawWidth) / 2f
+        val top = (containerHeight - drawHeight) / 2f
+
+        drawRoundRect(
+            color = iconColor,
+            topLeft = androidx.compose.ui.geometry.Offset(left, top),
+            size = androidx.compose.ui.geometry.Size(drawWidth, drawHeight),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(4f),
+            style = Stroke(width = 2.5f)
+        )
+    }
+}
+
+@Composable
+private fun RoundedCornerIcon() {
+    val iconColor = LocalContentColor.current
+    Canvas(modifier = Modifier.size(width = 28.dp, height = 20.dp)) {
+        val w = size.width * 0.85f
+        val h = size.height * 0.85f
+        val left = (size.width - w) / 2f
+        val top = (size.height - h) / 2f
+        drawRoundRect(
+            color = iconColor,
+            topLeft = androidx.compose.ui.geometry.Offset(left, top),
+            size = androidx.compose.ui.geometry.Size(w, h),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(8f),
+            style = Stroke(width = 2.5f)
+        )
+    }
+}
+
+@Composable
+private fun SharpCornerIcon() {
+    val iconColor = LocalContentColor.current
+    Canvas(modifier = Modifier.size(width = 28.dp, height = 20.dp)) {
+        val w = size.width * 0.85f
+        val h = size.height * 0.85f
+        val left = (size.width - w) / 2f
+        val top = (size.height - h) / 2f
+        drawRect(
+            color = iconColor,
+            topLeft = androidx.compose.ui.geometry.Offset(left, top),
+            size = androidx.compose.ui.geometry.Size(w, h),
+            style = Stroke(width = 2.5f)
+        )
     }
 }

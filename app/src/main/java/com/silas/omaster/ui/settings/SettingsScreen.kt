@@ -285,6 +285,7 @@ fun SettingsScreen() {
                     AppLanguage.SYSTEM -> stringResource(R.string.language_system)
                     AppLanguage.CHINESE -> stringResource(R.string.language_chinese)
                     AppLanguage.ENGLISH -> stringResource(R.string.language_english)
+                    AppLanguage.JAPANESE -> stringResource(R.string.language_japanese)
                 },
                 onClick = { showLanguageDialog = true }
             )
@@ -1260,8 +1261,8 @@ fun UpdateChannelDialog(
                             )
                             Text(
                                 text = when (channel) {
-                                    UpdateChannel.GITEE -> "国内访问更快"
-                                    UpdateChannel.GITHUB -> "国际访问，可能较慢"
+                                    UpdateChannel.GITEE -> context.getString(R.string.channel_gitee_desc_detail)
+                                    UpdateChannel.GITHUB -> context.getString(R.string.channel_github_desc_detail)
                                 },
                                 style = MaterialTheme.typography.bodySmall,
                                 color = themedTextSecondary()
@@ -1437,6 +1438,7 @@ fun LanguageSelectionDialog(
                                 AppLanguage.SYSTEM -> context.getString(R.string.language_system)
                                 AppLanguage.CHINESE -> context.getString(R.string.language_chinese)
                                 AppLanguage.ENGLISH -> context.getString(R.string.language_english)
+                                AppLanguage.JAPANESE -> context.getString(R.string.language_japanese)
                             },
                             style = MaterialTheme.typography.bodyLarge,
                             color = themedTextPrimary()

@@ -62,8 +62,11 @@ fun UniversalCreatePresetScreen(
         if (granted) {
             imagePicker.launch("image/*")
         } else {
-            val permName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) "照片和视频" else "存储"
-            Toast.makeText(context, "需要${permName}权限才能选择图片，请在系统设置中授予权限", Toast.LENGTH_LONG).show()
+            val permName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                context.getString(R.string.photoframe_permission_media_name)
+            else
+                context.getString(R.string.photoframe_permission_storage_name)
+            Toast.makeText(context, context.getString(R.string.photoframe_permission_denied, permName), Toast.LENGTH_LONG).show()
         }
     }
 
