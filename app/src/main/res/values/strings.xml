@@ -733,8 +733,8 @@
     <string name="checkin_weekday_sat">六</string>
     <string name="checkin_mark_complete">标记完成</string>
     <string name="checkin_completed">已完成</string>
-    <string name="photoframe_card_title">画映</string>
-    <string name="photoframe_card_desc">以画入框，以彩映心，生成你的专属分享图</string>
+    <string name="photoframe_card_title">相框出片</string>
+    <string name="photoframe_card_desc">自动读取拍摄信息，一键生成精美相框分享图</string>
 
     <!-- 画映功能页面 -->
     <string name="photoframe_permission_media_name">照片和视频</string>
