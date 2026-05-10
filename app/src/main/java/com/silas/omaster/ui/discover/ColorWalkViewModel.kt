@@ -116,6 +116,10 @@ class ColorWalkViewModel(
     fun dismissUiState() {
         _uiState.value = ColorWalkUiState.Normal
     }
+
+    override fun onCleared() {
+        super.onCleared()
+    }
 }
 
 data class ColorWalkState(

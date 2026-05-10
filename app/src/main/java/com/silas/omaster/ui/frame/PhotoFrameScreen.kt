@@ -1,8 +1,6 @@
 package com.silas.omaster.ui.frame
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
+import android.app.Application
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -71,14 +69,13 @@ import com.silas.omaster.ui.theme.themedTextPrimary
 import com.silas.omaster.ui.theme.themedTextSecondary
 import com.silas.omaster.util.ImageExporter
 import com.silas.omaster.util.OutputRatio
-import com.silas.omaster.util.PermissionUtil
 
 @Composable
 fun PhotoFrameScreen(
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
-    val viewModel: FrameViewModel = viewModel(factory = FrameViewModelFactory(context))
+    val viewModel: FrameViewModel = viewModel(factory = FrameViewModelFactory(context.applicationContext as Application))
     val state by viewModel.state.collectAsState()
 
     var dateTimeText by remember { mutableStateOf("") }
@@ -97,27 +94,8 @@ fun PhotoFrameScreen(
         }
     }
 
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if (granted) {
-            imagePickerLauncher.launch("image/*")
-        } else {
-            val permName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                context.getString(R.string.photoframe_permission_media_name)
-            else
-                context.getString(R.string.photoframe_permission_storage_name)
-            Toast.makeText(context, context.getString(R.string.photoframe_permission_denied, permName), Toast.LENGTH_LONG).show()
-        }
-    }
-
     fun launchImagePicker() {
-        if (PermissionUtil.hasMediaPermission(context)) {
-            imagePickerLauncher.launch("image/*")
-        } else {
-            val perm = PermissionUtil.mediaPermission
-            permissionLauncher.launch(perm)
-        }
+        imagePickerLauncher.launch("image/*")
     }
 
     LaunchedEffect(state.dateTime) {

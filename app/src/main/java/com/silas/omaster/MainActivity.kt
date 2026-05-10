@@ -1,6 +1,7 @@
 package com.silas.omaster
 
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -487,7 +488,7 @@ fun MainApp(
                 val repository = PresetRepository.getInstance(localContext)
                 
                 val viewModel: UniversalCreatePresetViewModel = viewModel(
-                    factory = UniversalCreatePresetViewModelFactory(localContext, repository)
+                    factory = UniversalCreatePresetViewModelFactory(localContext.applicationContext as Application, repository)
                 )
                 
                 // Load template if not already loaded (to avoid reloading on recomposition)
@@ -519,7 +520,7 @@ fun MainApp(
                 val repository = PresetRepository.getInstance(localContext)
                 
                 val viewModel: UniversalCreatePresetViewModel = viewModel(
-                    factory = UniversalCreatePresetViewModelFactory(localContext, repository)
+                    factory = UniversalCreatePresetViewModelFactory(localContext.applicationContext as Application, repository)
                 )
 
                 LaunchedEffect(editPreset.presetId) {

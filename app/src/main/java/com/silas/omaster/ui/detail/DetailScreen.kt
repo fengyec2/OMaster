@@ -31,11 +31,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -90,17 +88,10 @@ fun DetailScreen(
         viewModel.loadPreset(presetId)
     }
     
-    // 当 refreshTrigger 变化时重新加载数据（用于编辑后刷新）
-    // 使用 snapshotFlow 确保持续监听，即使页面不可见时也能捕获变化
-    var lastRefreshTrigger by remember { mutableIntStateOf(refreshTrigger) }
-    LaunchedEffect(Unit) {
-        snapshotFlow { refreshTrigger }
-            .collect { newValue ->
-                if (newValue != lastRefreshTrigger && newValue > 0) {
-                    lastRefreshTrigger = newValue
-                    viewModel.loadPreset(presetId)
-                }
-            }
+    LaunchedEffect(refreshTrigger) {
+        if (refreshTrigger > 0) {
+            viewModel.loadPreset(presetId)
+        }
     }
 
     val preset by viewModel.preset.collectAsState()

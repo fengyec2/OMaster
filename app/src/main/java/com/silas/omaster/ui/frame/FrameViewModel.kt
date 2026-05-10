@@ -1,9 +1,10 @@
 package com.silas.omaster.ui.frame
 
-import android.content.Context
+import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -21,8 +22,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class FrameViewModel(
-    private val context: Context
-) : ViewModel() {
+    application: Application
+) : AndroidViewModel(application) {
+
+    private val appContext = getApplication<Application>()
 
     private val _state = MutableStateFlow(FrameState())
     val state: StateFlow<FrameState> = _state.asStateFlow()
@@ -37,7 +40,7 @@ class FrameViewModel(
         extractJob = viewModelScope.launch {
             try {
                 val bitmap = withContext(Dispatchers.IO) { decodeSampledBitmap(uri) }
-                val exifInfo = ExifReader.read(context, uri)
+                val exifInfo = ExifReader.read(appContext, uri)
                 val colors = ColorExtractor.extract(bitmap)
 
                 _state.value = _state.value.copy(
@@ -86,6 +89,7 @@ class FrameViewModel(
                         ratio = s.outputRatio
                     )
                 )
+                s.renderedBitmap?.recycle()
                 _state.value = _state.value.copy(renderedBitmap = result)
             } catch (e: Exception) {
                 android.util.Log.e("FrameViewModel", "Failed to render", e)
@@ -96,12 +100,12 @@ class FrameViewModel(
 
     private suspend fun decodeSampledBitmap(uri: Uri): Bitmap = withContext(Dispatchers.IO) {
         val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        context.contentResolver.openInputStream(uri)?.use { s -> BitmapFactory.decodeStream(s, null, options) }
+        appContext.contentResolver.openInputStream(uri)?.use { s -> BitmapFactory.decodeStream(s, null, options) }
         options.apply {
             inSampleSize = calculateInSampleSize(options, 1920, 1920)
             inJustDecodeBounds = false
         }
-        context.contentResolver.openInputStream(uri)?.use { s ->
+        appContext.contentResolver.openInputStream(uri)?.use { s ->
             BitmapFactory.decodeStream(s, null, options)
         } ?: throw IllegalStateException("无法读取图片")
     }
@@ -116,6 +120,8 @@ class FrameViewModel(
         super.onCleared()
         extractJob?.cancel()
         renderJob?.cancel()
+        _state.value.sourceBitmap?.recycle()
+        _state.value.renderedBitmap?.recycle()
     }
 }
 
@@ -132,8 +138,8 @@ data class FrameState(
 )
 
 class FrameViewModelFactory(
-    private val context: Context
+    private val application: Application
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T = FrameViewModel(context) as T
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = FrameViewModel(application) as T
 }

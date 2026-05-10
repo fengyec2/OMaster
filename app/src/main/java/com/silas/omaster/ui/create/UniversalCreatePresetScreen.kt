@@ -1,10 +1,6 @@
 package com.silas.omaster.ui.create
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -29,12 +25,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
 import com.silas.omaster.R
 import com.silas.omaster.model.PresetItem
 import com.silas.omaster.model.PresetSection
-import com.silas.omaster.util.PermissionUtil
 import com.silas.omaster.util.PresetI18n
 
 import java.io.File
@@ -56,27 +50,8 @@ fun UniversalCreatePresetScreen(
         viewModel.updateImageUri(uri)
     }
 
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if (granted) {
-            imagePicker.launch("image/*")
-        } else {
-            val permName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                context.getString(R.string.photoframe_permission_media_name)
-            else
-                context.getString(R.string.photoframe_permission_storage_name)
-            Toast.makeText(context, context.getString(R.string.photoframe_permission_denied, permName), Toast.LENGTH_LONG).show()
-        }
-    }
-
     fun launchImagePicker() {
-        if (PermissionUtil.hasMediaPermission(context)) {
-            imagePicker.launch("image/*")
-        } else {
-            val perm = PermissionUtil.mediaPermission
-            permissionLauncher.launch(perm)
-        }
+        imagePicker.launch("image/*")
     }
 
     // Dialog states
