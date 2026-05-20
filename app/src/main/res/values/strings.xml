@@ -757,4 +757,39 @@
     <!-- 更新渠道描述 -->
     <string name="channel_gitee_desc_detail">国内访问更快</string>
     <string name="channel_github_desc_detail">国际访问，可能较慢</string>
+
+    <!-- 节假日问候 -->
+    <string name="holiday_new_year_title">元旦快乐</string>
+    <string name="holiday_new_year_1">新的一年，愿你拍下的每一帧都是大师之作。</string>
+    <string name="holiday_new_year_2">2026，期待与你记录更多光影瞬间。</string>
+    <string name="holiday_valentine_title">情人节快乐</string>
+    <string name="holiday_valentine_1">最好的滤镜，是和你在一起的光。</string>
+    <string name="holiday_valentine_2">爱是唯一不需要调色的风景。</string>
+    <string name="holiday_labor_day_title">劳动节快乐</string>
+    <string name="holiday_labor_day_1">每一帧都值得用心创作，致敬每一个热爱光影的你。</string>
+    <string name="holiday_national_day_title">国庆快乐</string>
+    <string name="holiday_national_day_1">锦绣山河，每一帧都值得珍藏。</string>
+    <string name="holiday_national_day_2">960万平方公里，等你取景。</string>
+    <string name="holiday_christmas_title">圣诞快乐</string>
+    <string name="holiday_christmas_1">即使没有下雪，也想送你一个温暖的冬天。</string>
+    <string name="holiday_christmas_2">按下快门的声音，就是今晚的铃铛。</string>
+    <string name="holiday_spring_festival_title">春节快乐</string>
+    <string name="holiday_spring_festival_1">快门声声响，年味慢慢藏。</string>
+    <string name="holiday_spring_festival_2">拍一张全家福，胜过千言万语。</string>
+    <string name="holiday_lantern_festival_title">元宵安康</string>
+    <string name="holiday_lantern_festival_1">灯火万家，不及取景框里的你。</string>
+    <string name="holiday_lantern_festival_2">吃完汤圆，出门拍一轮满月吧。</string>
+    <string name="holiday_dragon_boat_title">端午安康</string>
+    <string name="holiday_dragon_boat_1">粽叶飘香，愿你的作品也经得起回味。</string>
+    <string name="holiday_dragon_boat_2">龙舟竞渡，取景追光。</string>
+    <string name="holiday_qixi_title">七夕快乐</string>
+    <string name="holiday_qixi_1">星河滚烫，不如取景框里的你。</string>
+    <string name="holiday_qixi_2">今天的滤镜是心动。</string>
+    <string name="holiday_mid_autumn_title">中秋快乐</string>
+    <string name="holiday_mid_autumn_1">月是故乡明，色是大师调。</string>
+    <string name="holiday_mid_autumn_2">愿月光照亮你的每一帧。</string>
+    <string name="holiday_double_ninth_title">重阳安康</string>
+    <string name="holiday_double_ninth_1">登高望远，镜头里都是好风景。</string>
+    <string name="holiday_double_ninth_2">时光爬上了山坡，也温柔了你的镜头。</string>
+    <string name="holiday_btn_start">开始拍摄</string>
 </resources>

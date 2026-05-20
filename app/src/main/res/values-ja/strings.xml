@@ -538,6 +538,41 @@
 
     <!-- Frame Art画面 -->
     <string name="photoframe_card_title">フォトフレーム</string>
+
+    <!-- ホリデーグリーティング -->
+    <string name="holiday_new_year_title">明けましておめでとうございます</string>
+    <string name="holiday_new_year_1">新しい年、あなたの撮るすべてのフレームが傑作でありますように。</string>
+    <string name="holiday_new_year_2">2026年、あなたと共により多くの光と影を記録できますように。</string>
+    <string name="holiday_valentine_title">ハッピーバレンタイン</string>
+    <string name="holiday_valentine_1">最高のフィルターは、あなたと一緒にいる光です。</string>
+    <string name="holiday_valentine_2">愛は唯一、色調整のいらない風景。</string>
+    <string name="holiday_labor_day_title">メーデーおめでとう</string>
+    <string name="holiday_labor_day_1">すべてのフレームに心を込めて。光を追うすべての人に敬意を。</string>
+    <string name="holiday_national_day_title">国慶節おめでとう</string>
+    <string name="holiday_national_day_1">美しい山河、すべてのフレームが宝物。</string>
+    <string name="holiday_national_day_2">960万平方キロメートル、あなたのレンズを待っています。</string>
+    <string name="holiday_christmas_title">メリークリスマス</string>
+    <string name="holiday_christmas_1">雪がなくても、温かい冬をあなたに届けたい。</string>
+    <string name="holiday_christmas_2">シャッター音が今夜の鈴の音。</string>
+    <string name="holiday_spring_festival_title">新年あけましておめでとう</string>
+    <string name="holiday_spring_festival_1">シャッターの響きに、年越しの温もりを閉じ込めて。</string>
+    <string name="holiday_spring_festival_2">一枚の家族写真は、千の言葉に勝る。</string>
+    <string name="holiday_lantern_festival_title">元宵節おめでとう</string>
+    <string name="holiday_lantern_festival_1">万の灯りよりも、ファインダーの中のあなたが輝いている。</string>
+    <string name="holiday_lantern_festival_2">団子を食べたら、満月を撮りに出かけよう。</string>
+    <string name="holiday_dragon_boat_title">端午の節句おめでとう</string>
+    <string name="holiday_dragon_boat_1">ちまきの香りと共に、あなたの作品も長く愛されますように。</string>
+    <string name="holiday_dragon_boat_2">龍舟が競うように、あなたのレンズも光を追いかける。</string>
+    <string name="holiday_qixi_title">七夕おめでとう</string>
+    <string name="holiday_qixi_1">天の川の輝きも、ファインダーの中のあなたには敵わない。</string>
+    <string name="holiday_qixi_2">今日のフィルターは胸のときめき。</string>
+    <string name="holiday_mid_autumn_title">中秋節おめでとう</string>
+    <string name="holiday_mid_autumn_1">故郷の月はひときわ明るく、色はマスターが調える。</string>
+    <string name="holiday_mid_autumn_2">月光があなたのすべてのフレームを照らしますように。</string>
+    <string name="holiday_double_ninth_title">重陽の節句おめでとう</string>
+    <string name="holiday_double_ninth_1">高く登って遠くを見れば、レンズの先には美しい風景。</string>
+    <string name="holiday_double_ninth_2">時は丘を登り、あなたのレンズを優しく包む。</string>
+    <string name="holiday_btn_start">撮影を始める</string>
     <string name="photoframe_card_desc">撮影情報を自動読取、美しいフレーム付き画像を生成</string>
     <string name="photoframe_permission_media_name">写真と動画</string>
     <string name="photoframe_permission_storage_name">ストレージ</string>

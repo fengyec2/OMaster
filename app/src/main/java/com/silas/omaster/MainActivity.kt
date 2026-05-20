@@ -80,6 +80,9 @@ import com.silas.omaster.data.repository.PresetRepository
 
 import androidx.compose.runtime.collectAsState
 import com.silas.omaster.data.config.ConfigCenter
+import com.silas.omaster.data.local.HolidayGreeting
+import com.silas.omaster.data.local.HolidayGreetingManager
+import com.silas.omaster.ui.components.HolidayGreetingDialog
 import com.silas.omaster.ui.settings.SettingsScreen
 import com.silas.omaster.util.UpdateChecker
 import kotlinx.coroutines.delay
@@ -325,10 +328,12 @@ fun MainApp(
     val updateChannel by config.updateChannelFlow.collectAsState()
     var showUpdateDialog by remember { mutableStateOf<UpdateChecker.UpdateInfo?>(null) }
 
+    // 节假日问候弹窗状态
+    var holidayGreeting by remember { mutableStateOf<HolidayGreeting?>(null) }
+
     // 冷启动时自动检查更新
     LaunchedEffect(Unit) {
         if (autoCheckUpdate) {
-            // 延迟2秒，避免启动时立即弹窗影响用户体验
             delay(2000)
             try {
                 val result = UpdateChecker.checkUpdate(context, VersionInfo.VERSION_CODE, updateChannel)
@@ -336,8 +341,17 @@ fun MainApp(
                     showUpdateDialog = result
                 }
             } catch (e: Exception) {
-                // 静默失败，不打扰用户
             }
+        }
+    }
+
+    // 节假日问候检查（主界面就绪后立即检查）
+    LaunchedEffect(Unit) {
+        delay(600)
+        val manager = HolidayGreetingManager.getInstance(context)
+        val today = manager.getTodayHoliday()
+        if (today != null) {
+            holidayGreeting = today
         }
     }
 
@@ -791,6 +805,17 @@ fun MainApp(
                 containerColor = MaterialTheme.colorScheme.surface,
                 titleContentColor = MaterialTheme.colorScheme.onSurface,
                 textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        // 节假日问候弹窗
+        holidayGreeting?.let { holiday ->
+            HolidayGreetingDialog(
+                holiday = holiday,
+                onDismiss = {
+                    HolidayGreetingManager.getInstance(context).markShown(holiday.holidayKey)
+                    holidayGreeting = null
+                }
             )
         }
     }

@@ -756,4 +756,39 @@
 
     <!-- Version Check Hint -->
     <string name="version_check_hint">Tap to check for updates</string>
+
+    <!-- Holiday Greetings -->
+    <string name="holiday_new_year_title">Happy New Year</string>
+    <string name="holiday_new_year_1">May every frame you capture be a masterpiece this year.</string>
+    <string name="holiday_new_year_2">2026, looking forward to more light and shadow with you.</string>
+    <string name="holiday_valentine_title">Happy Valentine\'s Day</string>
+    <string name="holiday_valentine_1">The best filter is the light of being with you.</string>
+    <string name="holiday_valentine_2">Love is the only landscape that needs no color grading.</string>
+    <string name="holiday_labor_day_title">Happy Labor Day</string>
+    <string name="holiday_labor_day_1">Every frame deserves passion. Salute to every light chaser.</string>
+    <string name="holiday_national_day_title">Happy National Day</string>
+    <string name="holiday_national_day_1">A land of splendor, every frame worth treasuring.</string>
+    <string name="holiday_national_day_2">9.6 million square kilometers, waiting for your lens.</string>
+    <string name="holiday_christmas_title">Merry Christmas</string>
+    <string name="holiday_christmas_1">Even without snow, we wish you a warm winter.</string>
+    <string name="holiday_christmas_2">The shutter sound is tonight\'s jingle bell.</string>
+    <string name="holiday_spring_festival_title">Happy Spring Festival</string>
+    <string name="holiday_spring_festival_1">Shutter clicks echo, sealing the festive spirit frame by frame.</string>
+    <string name="holiday_spring_festival_2">A family portrait says more than a thousand words.</string>
+    <string name="holiday_lantern_festival_title">Happy Lantern Festival</string>
+    <string name="holiday_lantern_festival_1">Ten thousand lights, yet none outshines you in the viewfinder.</string>
+    <string name="holiday_lantern_festival_2">After sweet dumplings, step out and capture the full moon.</string>
+    <string name="holiday_dragon_boat_title">Dragon Boat Blessings</string>
+    <string name="holiday_dragon_boat_1">Like aged rice dumplings, may your work stand the test of time.</string>
+    <string name="holiday_dragon_boat_2">Dragon boats race, your lens chases the light.</string>
+    <string name="holiday_qixi_title">Happy Qixi Festival</string>
+    <string name="holiday_qixi_1">The galaxy burns bright, yet fades beside you in the frame.</string>
+    <string name="holiday_qixi_2">Today\'s filter is heartbeat.</string>
+    <string name="holiday_mid_autumn_title">Happy Mid-Autumn Festival</string>
+    <string name="holiday_mid_autumn_1">The moon shines brightest on home, colors tuned by the master.</string>
+    <string name="holiday_mid_autumn_2">May moonlight illuminate every frame of yours.</string>
+    <string name="holiday_double_ninth_title">Double Ninth Blessings</string>
+    <string name="holiday_double_ninth_1">Climb high, see far — beautiful scenes fill your viewfinder.</string>
+    <string name="holiday_double_ninth_2">Time climbs the hillside, gently softening your lens.</string>
+    <string name="holiday_btn_start">Start Shooting</string>
 </resources>
