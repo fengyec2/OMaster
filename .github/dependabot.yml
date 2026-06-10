@@ -24,8 +24,18 @@ updates:
       - aliyun-gradle-plugin
     schedule:
       interval: "monthly"
+    # open-pull-requests-limit: 5
+    groups:
+      dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "monthly"
+    # open-pull-requests-limit: 5
+    groups:
+      dependencies:
+        patterns:
+          - "*"
